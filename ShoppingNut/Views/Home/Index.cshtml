@@ -1,0 +1,43 @@
+﻿<html ng-app="shoppingNut">
+<head>
+	<title>Angular One</title>
+
+	<link href="@Url.Content("~/css/app.css")" rel="stylesheet" type="text/css"/>
+
+	<script type="text/javascript" ng:autobind src="@Url.Content("~/scripts/lib/angular/angular.js")"></script>
+	<script type="text/javascript" ng:autobind src="@Url.Content("~/scripts/app.js")"></script>
+	<script type="text/javascript" ng:autobind src="@Url.Content("~/scripts/controllers.js")"></script>
+</head>
+	<body>
+		<div id="userSettings">
+			@Html.Partial("_UserSettings")
+		</div>
+		@if (@User.Identity.IsAuthenticated)
+		{
+			<a href="/#/recipes">recipes</a> <span>|</span>
+			<a href="/#/recipes/add">add recipe</a> <span>|</span>
+			<a href="/#/lists">lists</a> <span>|</span>
+			<a href="/#/lists/add">add list</a> <span>|</span>
+			<div ng-view></div>
+		}
+		else
+		{
+			<div class="todoList" id="loginPanel">
+				<section id="localLoginPanel">
+					<h2>Log in</h2>
+					@Html.Partial("_Login")
+				</section>
+				<section id="socialLoginPanel">
+					<h2>Log in using another service</h2>
+					@Html.Action("ExternalLoginsList", "Account", new {ReturnUrl = ViewBag.ReturnUrl})
+				</section>
+				<p>First time here? <a id="showRegister">Sign up</a></p>
+			</div>
+			<div class="todoList" id="registerPanel">
+				<h2>Sign up</h2>
+				@Html.Partial("_Register")
+				<p>Already signed up? <a id="showLogin">Log in</a></p>
+			</div>
+		}
+	</body>
+</html>

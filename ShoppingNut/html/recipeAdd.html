@@ -1,0 +1,44 @@
+﻿<form name="addReceipeForm">
+	<p>
+		<input type="text" ng-model="recipe.Name" placeholder="Name" required />
+	</p>
+	<p>
+		<textarea ng-model="recipe.Description" placeholder="Description"></textarea>
+	</p>
+	<p>
+		<input type="number" ng-model="recipe.Servings" placeholder="Servings" />		
+	</p>
+	<p>
+	</p>
+	<p>Ingredients</p>
+	<ul>
+		<li ng-repeat="ingredient in recipe.Ingredients">{{ingredient.Quantity}} {{ingredient.QuantityType.Name}} {{ingredient.Food.Name}} 
+			<input type="button" value="delete" ng-click="deleteIngredient($index)" />
+		</li>
+	</ul>
+	<ng:form name="ingredientsForm">
+		<input id="foodSearchTextBox" type="text" ng-model="foodSearch" placeholder="search for foods..." required />
+		<select ng-model="quantityType" ng-options="ingType.Name for ingType in ingredientQuantityTypes" required />
+		<input type="number" min="0" ng-model="quantity" placeholder="quantity" required />
+		<input type="submit" ng-click="addIngredient(); " value="add" ng-disabled="ingredientsForm.$invalid" />
+		<div>
+			<ul>
+				<li ng-repeat="food in foods" ng-click="foodClicked(food)">
+					{{food.Name}}
+				</li>
+			</ul>
+		</div>
+	</ng:form>
+	<p>Instructions</p>
+	<ul>
+		<li ng-repeat="instruction in recipe.Instructions">{{instruction.Text}}
+			<input type="button" value="delete" ng-click="deleteInstruction($index)" />
+		</li>
+	</ul>
+	<ng:form name="instructionsForm">
+		<textarea name="instruction" ng-model="newInstruction" placeholder="add new instruction" required></textarea>
+		<input type="button" ng-click="addInstruction()" value="add" ng-disabled="instructionsForm.$invalid"/>
+	</ng:form>
+
+	<input type="submit" ng-click="save()" value="Save Recipe">
+</form>

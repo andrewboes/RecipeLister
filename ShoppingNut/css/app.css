@@ -1,0 +1,9 @@
+﻿.done_false {
+	text-decoration: none;
+	color: red;
+}
+
+.done_true {
+	text-decoration: line-through;
+	color: gray;
+}

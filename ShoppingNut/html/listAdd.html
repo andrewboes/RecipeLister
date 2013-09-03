@@ -1,0 +1,44 @@
+﻿<form>
+	<p>
+		<input type="text" ng-model="list.Name" placeholder="List Name" required />
+	</p>
+
+	<div>
+		<ul>
+			<li ng-repeat="item in list.Items">
+				{{item.Quantity}} <span ng-if="item.QuantityType">{{item.QuantityType.Name}}(s)</span> {{item.Name}}
+			</li>
+		</ul>
+	</div>
+
+	<ng:form name="ingredientsForm">
+		<input type="text" ng-model="foodSearch" placeholder="item" required />
+		<input type="number" ng-model="quantity" placeholder="quantity" />
+		<select ng-model="quantityType" ng-options="ingType.Name for ingType in ingredientQuantityTypes" />
+		<input type="button" ng-click="addItem()" value="add" ng-disabled="ingredientsForm.$invalid" />
+		<div>
+			<ul>
+				<li ng-repeat="food in foods" ng-click="foodClicked(food)">
+					{{food.Name}}
+				</li>
+			</ul>
+		</div>
+	</ng:form>
+
+	<p>Recipes</p>
+	<div>Search:</div>
+	<input ng-model="query">
+	<ul>
+		<li ng-repeat="recipe in recipes| filter:query">{{recipe.Name}}
+			<input type="button" value="show items" ng-click="getIngredientsForRecipe($index, updateRecipe)"  />
+			<input type="button" value="add all items" ng-click="addAllIngredients($index)" />
+			<ul>
+				<li ng-repeat="ing in recipe.Ingredients">
+					<input type="button" value="add item" ng-click="addIngredient($parent.$index, $index)" />
+					{{ing.Quantity}} {{ing.Food.Name}}
+				</li>
+			</ul>
+		</li>
+	</ul>
+	<input type="submit" ng-click="save()" value="Save List">
+</form>

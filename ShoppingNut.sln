@@ -1,0 +1,26 @@
+﻿
+Microsoft Visual Studio Solution File, Format Version 12.00
+# Visual Studio 2012
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "ShoppingNut", "ShoppingNut\ShoppingNut.csproj", "{2F6469AB-52DE-4F9E-937A-BCE68D4C7635}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "UsdaMigration", "UsdaMigration\UsdaMigration.csproj", "{16339809-5A9A-49A6-8719-F60EDBE782CA}"
+EndProject
+Global
+	GlobalSection(SolutionConfigurationPlatforms) = preSolution
+		Debug|Any CPU = Debug|Any CPU
+		Release|Any CPU = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(ProjectConfigurationPlatforms) = postSolution
+		{2F6469AB-52DE-4F9E-937A-BCE68D4C7635}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{2F6469AB-52DE-4F9E-937A-BCE68D4C7635}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{2F6469AB-52DE-4F9E-937A-BCE68D4C7635}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{2F6469AB-52DE-4F9E-937A-BCE68D4C7635}.Release|Any CPU.Build.0 = Release|Any CPU
+		{16339809-5A9A-49A6-8719-F60EDBE782CA}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{16339809-5A9A-49A6-8719-F60EDBE782CA}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{16339809-5A9A-49A6-8719-F60EDBE782CA}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{16339809-5A9A-49A6-8719-F60EDBE782CA}.Release|Any CPU.Build.0 = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(SolutionProperties) = preSolution
+		HideSolutionNode = FALSE
+	EndGlobalSection
+EndGlobal

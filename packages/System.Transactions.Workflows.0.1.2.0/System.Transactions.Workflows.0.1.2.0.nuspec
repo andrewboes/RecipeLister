@@ -1,0 +1,14 @@
+<?xml version="1.0"?>
+<package xmlns="http://schemas.microsoft.com/packaging/2010/07/nuspec.xsd">
+  <metadata>
+    <id>System.Transactions.Workflows</id>
+    <version>0.1.2.0</version>
+    <title />
+    <authors>Christian Droulers</authors>
+    <owners>Christian Droulers</owners>
+    <licenseUrl>http://awesome-utilities.googlecode.com/hg/LICENSE</licenseUrl>
+    <projectUrl>http://code.google.com/p/awesome-utilities/</projectUrl>
+    <requireLicenseAcceptance>false</requireLicenseAcceptance>
+    <description>A transaction workflow library.</description>
+  </metadata>
+</package>

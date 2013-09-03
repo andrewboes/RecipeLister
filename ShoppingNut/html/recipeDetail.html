@@ -1,0 +1,14 @@
+﻿<p>Name: {{recipe.Name}}</p>
+<p>Description: {{recipe.Description}}</p>
+<p>Servings: {{recipe.Servings}}</p>
+<p>Calories per serving: {{recipe.CaloriesPerServing}}</p>
+
+Ingredient
+<ul>
+	<li ng-repeat="ing in recipe.Ingredients">{{ing.Quantity}} {{ing.Food.Name}}</li>
+</ul>
+
+Instructions
+<ul>
+	<li ng-repeat="instruction in recipe.Instructions | orderBy:instruction.Order">{{instruction.Text}}</li>
+</ul>

@@ -1,0 +1,12 @@
+﻿<div class="container-fluid">
+	<div class="row-fluid">
+		{{list.Name}}
+		<div class="span10">
+			<ul>
+				<li ng-repeat="item in list.Items">
+					{{item.Quantity}} {{item.QuantityType}} {{item.Name}}
+				</li>
+			</ul>
+		</div>
+	</div>
+</div>

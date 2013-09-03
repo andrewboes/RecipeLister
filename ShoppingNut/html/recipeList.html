@@ -1,0 +1,28 @@
+﻿<div class="container-fluid">
+	<div class="row-fluid">
+		<div class="span2">
+			<!--Sidebar content-->
+
+			<div>Search:</div>
+			<input ng-model="query">
+			<div>
+				Order by:
+			</div>
+			<div>
+				<select ng-model="orderProp">
+					<option value="name">Alphabetical</option>
+					<option value="caloriesPerServing">Calories Per Serving</option>
+				</select>
+			</div>
+		</div>
+		<div class="span10">
+			<!--Body content-->
+			<ul>
+				<li ng-repeat="recipe in recipes| filter:query | orderBy:orderProp">
+					<a href="#/recipes/{{recipe.Id}}">{{recipe.Name}}</a>
+					<p>{{recipe.Description}}</p>
+				</li>
+			</ul>
+		</div>
+	</div>
+</div>

@@ -1,0 +1,70 @@
+﻿<?xml version="1.0" encoding="utf-8"?><Database Name="UsdaFood4" Class="DataClasses1DataContext" xmlns="http://schemas.microsoft.com/linqtosql/dbml/2007">
+  <Connection Mode="AppSettings" ConnectionString="Data Source=.;Initial Catalog=UsdaFood4;Integrated Security=True" SettingsObjectName="UsdaMigration.Properties.Settings" SettingsPropertyName="UsdaFood4ConnectionString" Provider="System.Data.SqlClient" />
+  <Table Name="dbo.ABBREV" Member="ABBREVs">
+    <Type Name="ABBREV">
+      <Column Name="NDB_No" Type="System.String" DbType="NVarChar(5)" CanBeNull="true" />
+      <Column Name="Shrt_Desc" Type="System.String" DbType="NVarChar(255)" CanBeNull="true" />
+      <Column Name="[Water_(g)]" Member="Water__g_" Type="System.Double" DbType="Float" CanBeNull="true" />
+      <Column Name="Energ_Kcal" Type="System.Double" DbType="Float" CanBeNull="true" />
+      <Column Name="[Protein_(g)]" Member="Protein__g_" Type="System.Double" DbType="Float" CanBeNull="true" />
+      <Column Name="[Lipid_Tot_(g)]" Member="Lipid_Tot__g_" Type="System.Double" DbType="Float" CanBeNull="true" />
+      <Column Name="[Ash_(g)]" Member="Ash__g_" Type="System.Double" DbType="Float" CanBeNull="true" />
+      <Column Name="[Carbohydrt_(g)]" Member="Carbohydrt__g_" Type="System.Double" DbType="Float" CanBeNull="true" />
+      <Column Name="[Fiber_TD_(g)]" Member="Fiber_TD__g_" Type="System.Double" DbType="Float" CanBeNull="true" />
+      <Column Name="[Sugar_Tot_(g)]" Member="Sugar_Tot__g_" Type="System.Double" DbType="Float" CanBeNull="true" />
+      <Column Name="[Calcium_(mg)]" Member="Calcium__mg_" Type="System.Double" DbType="Float" CanBeNull="true" />
+      <Column Name="[Iron_(mg)]" Member="Iron__mg_" Type="System.Double" DbType="Float" CanBeNull="true" />
+      <Column Name="[Magnesium_(mg)]" Member="Magnesium__mg_" Type="System.Double" DbType="Float" CanBeNull="true" />
+      <Column Name="[Phosphorus_(mg)]" Member="Phosphorus__mg_" Type="System.Double" DbType="Float" CanBeNull="true" />
+      <Column Name="[Potassium_(mg)]" Member="Potassium__mg_" Type="System.Double" DbType="Float" CanBeNull="true" />
+      <Column Name="[Sodium_(mg)]" Member="Sodium__mg_" Type="System.Double" DbType="Float" CanBeNull="true" />
+      <Column Name="[Zinc_(mg)]" Member="Zinc__mg_" Type="System.Double" DbType="Float" CanBeNull="true" />
+      <Column Name="[Copper_mg)]" Member="Copper_mg_" Type="System.Double" DbType="Float" CanBeNull="true" />
+      <Column Name="[Manganese_(mg)]" Member="Manganese__mg_" Type="System.Double" DbType="Float" CanBeNull="true" />
+      <Column Name="[Selenium_(µg)]" Member="Selenium__µg_" Type="System.Double" DbType="Float" CanBeNull="true" />
+      <Column Name="[Vit_C_(mg)]" Member="Vit_C__mg_" Type="System.Double" DbType="Float" CanBeNull="true" />
+      <Column Name="[Thiamin_(mg)]" Member="Thiamin__mg_" Type="System.Double" DbType="Float" CanBeNull="true" />
+      <Column Name="[Riboflavin_(mg)]" Member="Riboflavin__mg_" Type="System.Double" DbType="Float" CanBeNull="true" />
+      <Column Name="[Niacin_(mg)]" Member="Niacin__mg_" Type="System.Double" DbType="Float" CanBeNull="true" />
+      <Column Name="[Panto_Acid_mg)]" Member="Panto_Acid_mg_" Type="System.Double" DbType="Float" CanBeNull="true" />
+      <Column Name="[Vit_B6_(mg)]" Member="Vit_B6__mg_" Type="System.Double" DbType="Float" CanBeNull="true" />
+      <Column Name="[Folate_Tot_(µg)]" Member="Folate_Tot__µg_" Type="System.Double" DbType="Float" CanBeNull="true" />
+      <Column Name="[Folic_Acid_(µg)]" Member="Folic_Acid__µg_" Type="System.Double" DbType="Float" CanBeNull="true" />
+      <Column Name="[Food_Folate_(µg)]" Member="Food_Folate__µg_" Type="System.Double" DbType="Float" CanBeNull="true" />
+      <Column Name="[Folate_DFE_(µg)]" Member="Folate_DFE__µg_" Type="System.Double" DbType="Float" CanBeNull="true" />
+      <Column Name="[Choline_Tot_ (mg)]" Member="Choline_Tot___mg_" Type="System.Double" DbType="Float" CanBeNull="true" />
+      <Column Name="[Vit_B12_(µg)]" Member="Vit_B12__µg_" Type="System.Double" DbType="Float" CanBeNull="true" />
+      <Column Name="Vit_A_IU" Type="System.Double" DbType="Float" CanBeNull="true" />
+      <Column Name="Vit_A_RAE" Type="System.Double" DbType="Float" CanBeNull="true" />
+      <Column Name="[Retinol_(µg)]" Member="Retinol__µg_" Type="System.Double" DbType="Float" CanBeNull="true" />
+      <Column Name="[Alpha_Carot_(µg)]" Member="Alpha_Carot__µg_" Type="System.Double" DbType="Float" CanBeNull="true" />
+      <Column Name="[Beta_Carot_(µg)]" Member="Beta_Carot__µg_" Type="System.Double" DbType="Float" CanBeNull="true" />
+      <Column Name="[Beta_Crypt_(µg)]" Member="Beta_Crypt__µg_" Type="System.Double" DbType="Float" CanBeNull="true" />
+      <Column Name="[Lycopene_(µg)]" Member="Lycopene__µg_" Type="System.Double" DbType="Float" CanBeNull="true" />
+      <Column Name="[Lut+Zea_ (µg)]" Member="Lut_Zea___µg_" Type="System.Double" DbType="Float" CanBeNull="true" />
+      <Column Name="[Vit_E_(mg)]" Member="Vit_E__mg_" Type="System.Double" DbType="Float" CanBeNull="true" />
+      <Column Name="Vit_D_µg" Type="System.Double" DbType="Float" CanBeNull="true" />
+      <Column Name="ViVit_D_IU" Type="System.Double" DbType="Float" CanBeNull="true" />
+      <Column Name="[Vit_K_*(µg)]" Member="Vit_K___µg_" Type="System.Double" DbType="Float" CanBeNull="true" />
+      <Column Name="[FA_Sat_(g)]" Member="FA_Sat__g_" Type="System.Double" DbType="Float" CanBeNull="true" />
+      <Column Name="[FA_Mono_(g)]" Member="FA_Mono__g_" Type="System.Double" DbType="Float" CanBeNull="true" />
+      <Column Name="[FA_Poly_(g)]" Member="FA_Poly__g_" Type="System.Double" DbType="Float" CanBeNull="true" />
+      <Column Name="[Cholestrl_(mg)]" Member="Cholestrl__mg_" Type="System.Double" DbType="Float" CanBeNull="true" />
+      <Column Name="GmWt_1" Type="System.Double" DbType="Float" CanBeNull="true" />
+      <Column Name="GmWt_Desc1" Type="System.String" DbType="NVarChar(255)" CanBeNull="true" />
+      <Column Name="GmWt_2" Type="System.Double" DbType="Float" CanBeNull="true" />
+      <Column Name="GmWt_Desc2" Type="System.String" DbType="NVarChar(255)" CanBeNull="true" />
+      <Column Name="Refuse_Pct" Type="System.Double" DbType="Float" CanBeNull="true" />
+    </Type>
+  </Table>
+  <Table Name="dbo.WEIGHT" Member="WEIGHTs">
+    <Type Name="WEIGHT">
+      <Column Name="NDB_No" Type="System.String" DbType="NVarChar(5)" CanBeNull="true" />
+      <Column Name="Seq" Type="System.String" DbType="NVarChar(2)" CanBeNull="true" />
+      <Column Name="Amount" Type="System.Double" DbType="Float" CanBeNull="true" />
+      <Column Name="Msre_Desc" Type="System.String" DbType="NVarChar(84)" CanBeNull="true" />
+      <Column Name="Gm_Wgt" Type="System.Double" DbType="Float" CanBeNull="true" />
+      <Column Name="Num_Data_Pts" Type="System.Int16" DbType="SmallInt" CanBeNull="true" />
+    </Type>
+  </Table>
+</Database>
