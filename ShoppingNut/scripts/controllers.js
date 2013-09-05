@@ -1,7 +1,7 @@
 ﻿'use strict';
 
 function recipeListCtrl($scope, $http) {
-	$http.get('http://localhost:59220/Home/GetAllRecipes').success(function (data) {
+	$http.get('/Home/GetAllRecipes').success(function (data) {
 		$scope.recipes = data;
 	}).error(function (data, status, headers, config) {
 		alert("error");
@@ -9,7 +9,7 @@ function recipeListCtrl($scope, $http) {
 }
 
 function shoppingListCtrl($scope, $http) {
-	$http.get('http://localhost:59220/Home/GetShoppingLists').success(function (data) {
+	$http.get('/Home/GetShoppingLists').success(function (data) {
 		$scope.lists = data;
 	}).error(function (data, status, headers, config) {
 		alert("error");
@@ -17,7 +17,7 @@ function shoppingListCtrl($scope, $http) {
 }
 
 function recipeDetailCtrl($scope, $routeParams, $http) {
-	$http.get('http://localhost:59220/Home/GetRecipeById?id=' + $routeParams.recipeId).success(function (data) {
+	$http.get('/Home/GetRecipeById?id=' + $routeParams.recipeId).success(function (data) {
 		$scope.recipe = data;
 		var sum = 0;
 		var ings = $scope.recipe.Ingredients;
@@ -34,7 +34,7 @@ function recipeDetailCtrl($scope, $routeParams, $http) {
 function recipeAddCtrl($scope, $http, $location, $routeParams) {
 	var id = $routeParams.recipeId;
 	if (id) {
-		$http.get('http://localhost:59220/Home/GetRecipeById?id=' + $routeParams.recipeId).success(function (data) {
+		$http.get('/Home/GetRecipeById?id=' + $routeParams.recipeId).success(function (data) {
 			$scope.recipe = data;
 		}).error(function (data, status, headers, config) {
 			alert("error");
@@ -45,7 +45,7 @@ function recipeAddCtrl($scope, $http, $location, $routeParams) {
 	}
 	
 	$scope.save = function () {
-		$http.post('http://localhost:59220/Home/AddRecipe', $scope.recipe).success(function (data) {
+		$http.post('/Home/AddRecipe', $scope.recipe).success(function (data) {
 			if (data.Success) {
 				$location.path('/');
 			} else {
@@ -86,7 +86,7 @@ function recipeAddCtrl($scope, $http, $location, $routeParams) {
 	};
 
 	$scope.foodClicked = function (food) {
-		$http.get('http://localhost:59220/Home/GetFoodQuantityTypes?id=' + food.Id).success(function (data) {
+		$http.get('/Home/GetFoodQuantityTypes?id=' + food.Id).success(function (data) {
 			$scope.ingredientQuantityTypes = data;
 		});
 		$scope.foodSearch = food.Name;
@@ -96,7 +96,7 @@ function recipeAddCtrl($scope, $http, $location, $routeParams) {
 	$scope.$watch('foodSearch', function () {
 		if ($scope.foodSearch != null) {
 			if ($scope.foodSearch.length > 2) {
-				$http.get('http://localhost:59220/Home/GetFoods?filter=' + $scope.foodSearch).success(function (data) {
+				$http.get('/Home/GetFoods?filter=' + $scope.foodSearch).success(function (data) {
 					if (data.length == 1) {
 						$scope.ingredientType = data;
 					} else {
@@ -113,7 +113,7 @@ function recipeAddCtrl($scope, $http, $location, $routeParams) {
 function listAddCtrl($scope, $http, $location) {
 	$scope.list = { Name: '', Items: [] };
 	
-	$http.get('http://localhost:59220/Home/GetAllRecipes').success(function (data) {
+	$http.get('/Home/GetAllRecipes').success(function (data) {
 		$scope.recipes = data;
 	}).error(function (data, status, headers, config) {
 		alert("error");
@@ -125,7 +125,7 @@ function listAddCtrl($scope, $http, $location) {
 
 	$scope.getIngredientsForRecipe = function (index, func) {
 		var id = $scope.recipes[index].Id;
-		$http.get('http://localhost:59220/Home/GetRecipeById?id=' + id).success(function (data) {
+		$http.get('/Home/GetRecipeById?id=' + id).success(function (data) {
 			func(index, data);
 		}).error(function (data, status, headers, config) {
 			alert("error");
@@ -172,7 +172,7 @@ function listAddCtrl($scope, $http, $location) {
 	};
 
 	$scope.foodClicked = function (food) {
-		$http.get('http://localhost:59220/Home/GetFoodQuantityTypes?id=' + food.Id).success(function (data) {
+		$http.get('/Home/GetFoodQuantityTypes?id=' + food.Id).success(function (data) {
 			$scope.ingredientQuantityTypes = data;
 		});
 		$scope.foodSearch = food.Name;
@@ -182,7 +182,7 @@ function listAddCtrl($scope, $http, $location) {
 	$scope.$watch('foodSearch', function () {
 		if ($scope.foodSearch != null) {
 			if ($scope.foodSearch.length > 2) {
-				$http.get('http://localhost:59220/Home/GetFoods?filter=' + $scope.foodSearch).success(function (data) {
+				$http.get('/Home/GetFoods?filter=' + $scope.foodSearch).success(function (data) {
 					if (data.length == 1) {
 						$scope.ingredientType = data;
 					} else {
@@ -216,7 +216,7 @@ function listAddCtrl($scope, $http, $location) {
 	};
 
 	$scope.save = function () {
-		$http.post('http://localhost:59220/Home/InsertOrUpdateShoppingList', $scope.list).success(function (data) {
+		$http.post('/Home/InsertOrUpdateShoppingList', $scope.list).success(function (data) {
 			if (data.Success) {
 				$location.path('/');
 			} else {
@@ -231,7 +231,7 @@ function listAddCtrl($scope, $http, $location) {
 }
 
 function listDetailCtrl($scope, $http, $routeParams) {
-	$http.get('http://localhost:59220/Home/GetListById?id=' + $routeParams.listId).success(function (data) {
+	$http.get('/Home/GetListById?id=' + $routeParams.listId).success(function (data) {
 		$scope.list = data;
 	}).error(function (data, status, headers, config) {
 		alert("error");

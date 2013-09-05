@@ -44,7 +44,7 @@ namespace ShoppingNut.Controllers
 			var users = new UserProfileRepository();
 			var id = users.All.Single(x => x.UserName == User.Identity.Name).UserId;
 			var lists = new ShoppingListRepository();
-			var userLists = lists.All.Where(x => x.UserId == id).Select(x=>new {x.Id, x.Name}).ToList();
+			var userLists = lists.All.Where(x => x.UserId == id).Select(x => new { x.Id, x.Name }).ToList();
 			return Json(userLists, JsonRequestBehavior.AllowGet);
 		}
 
@@ -118,10 +118,13 @@ namespace ShoppingNut.Controllers
 				UserProfileRepository users = new UserProfileRepository();
 
 				recipe.UserId = users.All.Single(x => x.UserName == this.User.Identity.Name).UserId;
-				foreach (var v in recipe.Ingredients)
+				if (recipe.Ingredients != null && recipe.Ingredients.Any())
 				{
-					v.Food = null;
-					v.QuantityType = null;
+					foreach (var v in recipe.Ingredients)
+					{
+						v.Food = null;
+						v.QuantityType = null;
+					}
 				}
 				RecipeRepository recipes = new RecipeRepository();
 				recipes.InsertOrUpdate(recipe);
@@ -129,19 +132,22 @@ namespace ShoppingNut.Controllers
 
 				IngredientRepository ingredients = new IngredientRepository();
 
-				foreach (var v in recipe.Ingredients)
+				if (recipe.Ingredients != null && recipe.Ingredients.Any())
 				{
-					Ingredient newIng = new Ingredient
+					foreach (var v in recipe.Ingredients)
 					{
-						RecipeId	= recipe.Id,
-						Id = v.Id,
-						FoodId = v.FoodId,
-						Quantity = v.Quantity,
-						QuantityTypeId = v.QuantityTypeId
-					};
-					ingredients.InsertOrUpdate(newIng);
+						Ingredient newIng = new Ingredient
+							{
+								RecipeId = recipe.Id,
+								Id = v.Id,
+								FoodId = v.FoodId,
+								Quantity = v.Quantity,
+								QuantityTypeId = v.QuantityTypeId
+							};
+						ingredients.InsertOrUpdate(newIng);
+					}
+					ingredients.Save();
 				}
-				ingredients.Save();
 
 				return Json(new { Success = true }, JsonRequestBehavior.AllowGet);
 			}
@@ -191,7 +197,7 @@ namespace ShoppingNut.Controllers
 			}
 			catch (Exception ex)
 			{
-				return Json(new { Success = false, Message = ex.Message}, JsonRequestBehavior.AllowGet);
+				return Json(new { Success = false, Message = ex.Message }, JsonRequestBehavior.AllowGet);
 			}
 		}
 	}

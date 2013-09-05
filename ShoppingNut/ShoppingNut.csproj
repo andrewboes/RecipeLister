@@ -234,8 +234,12 @@
     <Content Include="html\listDetail.html" />
     <Content Include="html\listList.html" />
     <Content Include="html\recipeAdd.html" />
-    <Content Include="scripts\app.js" />
-    <Content Include="scripts\controllers.js" />
+    <Content Include="scripts\app.js">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Content>
+    <Content Include="scripts\controllers.js">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Content>
     <Content Include="scripts\lib\angular\angular-cookies.js" />
     <Content Include="scripts\lib\angular\angular-cookies.min.js" />
     <Content Include="scripts\lib\angular\angular-loader.js" />
@@ -247,6 +251,8 @@
     <Content Include="scripts\lib\angular\angular-sanitize.min.js" />
     <Content Include="scripts\lib\angular\angular-scenario.js" />
     <Content Include="scripts\lib\angular\angular.1.0.7.js" />
+    <Content Include="scripts\lib\angular\angular.js" />
+    <Content Include="scripts\lib\angular\angular.min.js" />
     <Content Include="scripts\lib\angular\i18n\angular-locale_af-na.js" />
     <Content Include="scripts\lib\angular\i18n\angular-locale_af-za.js" />
     <Content Include="scripts\lib\angular\i18n\angular-locale_af.js" />
@@ -536,7 +542,9 @@
     <Content Include="scripts\lib\angular\i18n\angular-locale_zu.js" />
     <Content Include="html\recipeDetail.html" />
     <Content Include="html\recipeList.html" />
-    <Content Include="Web.config" />
+    <Content Include="Web.config">
+      <SubType>Designer</SubType>
+    </Content>
     <Content Include="Web.Debug.config">
       <DependentUpon>Web.config</DependentUpon>
     </Content>
@@ -574,6 +582,10 @@
     <EmbeddedResource Include="Migrations\201307261927242_blah.resx">
       <DependentUpon>201307261927242_blah.cs</DependentUpon>
     </EmbeddedResource>
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="Properties\PublishProfiles\recipelist - FTP.pubxml" />
+    <None Include="Properties\PublishProfiles\recipelist - Web Deploy.pubxml" />
   </ItemGroup>
   <PropertyGroup>
     <VisualStudioVersion Condition="'$(VisualStudioVersion)' == ''">10.0</VisualStudioVersion>
