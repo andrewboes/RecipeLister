@@ -6,7 +6,7 @@
 	<div>
 		<ul>
 			<li ng-repeat="item in list.Items">
-				{{item.Quantity}} <span ng-if="item.QuantityType">{{item.QuantityType.Name}}(s)</span> {{item.Name}}
+				{{item.Quantity}} <span ng-if="item.QuantityType">{{item.QuantityType}}(s)</span> {{item.Name}}
 			</li>
 		</ul>
 	</div>
@@ -26,7 +26,7 @@
 	</ng:form>
 
 	<p>Recipes</p>
-	<div>Search:</div>
+	<div>Search my recipes:</div>
 	<input ng-model="query">
 	<ul>
 		<li ng-repeat="recipe in recipes| filter:query">{{recipe.Name}}
@@ -35,7 +35,7 @@
 			<ul>
 				<li ng-repeat="ing in recipe.Ingredients">
 					<input type="button" value="add item" ng-click="addIngredient($parent.$index, $index)" />
-					{{ing.Quantity}} {{ing.Food.Name}}
+					{{ing.Quantity}} {{ing.QuantityType.Name}} {{ing.Food.Name}}
 				</li>
 			</ul>
 		</li>

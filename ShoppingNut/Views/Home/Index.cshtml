@@ -3,42 +3,103 @@
 	<title>Angular One</title>
 
 	<link href="@Url.Content("~/css/app.css")" rel="stylesheet" type="text/css"/>
-
-	<script type="text/javascript" ng:autobind src="@Url.Content("~/scripts/lib/angular/angular.js")"></script>
-	<script type="text/javascript" ng:autobind src="@Url.Content("~/scripts/app.js")"></script>
-	<script type="text/javascript" ng:autobind src="@Url.Content("~/scripts/controllers.js")"></script>
+	<link href="@Url.Content("~/css/bootstrap.min.css")" rel="stylesheet" type="text/css"/>
 
 </head>
-	<body>
-		<div id="userSettings">
+<body>
+	@*<div id="userSettings">
 			@Html.Partial("_UserSettings")
+		</div>*@
+	@if (@User.Identity.IsAuthenticated)
+ {
+		<div class="navbar navbar-default navbar-fixed-top">
+			<div class="container">
+				<div class="navbar-header">
+					<button type="button" class="navbar-toggle" data-toggle="collapse" data-target=".navbar-collapse">
+						<span class="icon-bar"></span>
+						<span class="icon-bar"></span>
+						<span class="icon-bar"></span>
+					</button>
+					<a class="navbar-brand" href="#">Recipe List</a>
+				</div>
+				<div class="navbar-collapse collapse">
+					<ul class="nav navbar-nav">
+						@*<li class="active"><a href="#">Home</a></li>*@
+						<li><a href="#">Home</a></li>
+						<li><a href="/#/recipes">Recipes</a></li>
+						<li><a href="/#/recipes/add">Add recipe</a></li>
+						<li><a href="/#/lists">Lists</a></li>
+						<li><a href="/#/lists/add">Add list</a></li>
+					</ul>
+					<ul class="nav navbar-nav navbar-right">
+
+						@if (Request.IsAuthenticated)
+			{
+							<text>
+							<li>
+								@Html.ActionLink(User.Identity.Name, "Manage", "Account", routeValues: new { area = "" }, htmlAttributes: new { @class = "username", title = "Manage" })
+							</li>
+							<li>
+								@using (Html.BeginForm("LogOff", "Account", new { area = "" }, FormMethod.Post, new { id = "logoutForm" }))
+				{
+									@Html.AntiForgeryToken()
+									<a href="javascript:document.getElementById('logoutForm').submit()">Log off</a>
+				}
+							</li>
+							</text>
+			}
+					</ul>
+				</div>
+				<!--/.nav-collapse -->
+			</div>
+		</div>@*
+		
+		<a href="/#/recipes">recipes</a> <span>|</span>
+		<a href="/#/recipes/add">add recipe</a> <span>|</span>
+		<a href="/#/lists">lists</a> <span>|</span>
+		<a href="/#/lists/add">add list</a>*@
+		<div class="container" ng-view></div>
+ }
+ else
+ {
+		<div class="navbar navbar-default navbar-fixed-top">
+			<div class="container">
+				<div class="navbar-header">
+					<button type="button" class="navbar-toggle" data-toggle="collapse" data-target=".navbar-collapse">
+						<span class="icon-bar"></span>
+						<span class="icon-bar"></span>
+						<span class="icon-bar"></span>
+					</button>
+					<a class="navbar-brand" href="#">Recipe List</a>
+				</div>
+				<div class="navbar-collapse collapse">
+					<ul class="nav navbar-nav">
+						<li class="active"><a href="#">Home</a></li>
+					</ul>
+				</div>
+				<!--/.nav-collapse -->
+			</div>
 		</div>
-		@if (@User.Identity.IsAuthenticated)
-		{
-			<a href="/#/recipes">recipes</a> <span>|</span>
-			<a href="/#/recipes/add">add recipe</a> <span>|</span>
-			<a href="/#/lists">lists</a> <span>|</span>
-			<a href="/#/lists/add">add list</a> <span>|</span>
-			<div ng-view></div>
-		}
-		else
-		{
-			<div class="todoList" id="loginPanel">
-				<section id="localLoginPanel">
-					<h2>Log in</h2>
-					@Html.Partial("_Login")
-				</section>
-				<section id="socialLoginPanel">
-					<h2>Log in using another service</h2>
-					@Html.Action("ExternalLoginsList", "Account", new {ReturnUrl = ViewBag.ReturnUrl})
-				</section>
-				<p>First time here? <a id="showRegister">Sign up</a></p>
+		<div class="container">
+			<div class="col-lg-4">
+				@Html.Partial("_Login")
 			</div>
-			<div class="todoList" id="registerPanel">
-				<h2>Sign up</h2>
+			<div class="col-lg-4">
+				@Html.Action("ExternalLoginsList", "Account", new { ReturnUrl = ViewBag.ReturnUrl })
+			</div>
+			<div class="col-lg-4">
 				@Html.Partial("_Register")
-				<p>Already signed up? <a id="showLogin">Log in</a></p>
 			</div>
-		}
-	</body>
+		</div>
+ }
+</body>
+
+<script type="text/javascript" ng:autobind src="@Url.Content("~/scripts/lib/angular/angular.js")"></script>
+<script type="text/javascript" ng:autobind src="@Url.Content("~/scripts/lib/jquery/jquery.min.js")"></script>
+<script type="text/javascript" ng:autobind src="@Url.Content("~/scripts/lib/bootstrap/bootstrap.min.js")"></script>
+<script type="text/javascript" ng:autobind src="@Url.Content("~/scripts/app.js")"></script>
+<script type="text/javascript" ng:autobind src="@Url.Content("~/scripts/controllers.js")"></script>
+@*<script type="text/javascript" ng:autobind src="@Url.Content("~/scripts/lib/angular-ui/ui-bootstrap-tpls-0.5.0.min.js")"></script>*@
+<script type="text/javascript" ng:autobind src="http://angular-ui.github.com/bootstrap/ui-bootstrap-tpls-0.5.0.js"></script>
+
 </html>

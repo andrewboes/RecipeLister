@@ -1,30 +1,18 @@
 ﻿@model ShoppingNut.Models.LoginModel
 
-@using (Html.BeginForm("Login", "Account", new { ReturnUrl = ViewBag.ReturnUrl }, FormMethod.Post, new { id = "loginForm" }))
+@using (Html.BeginForm("Login", "Account", new { ReturnUrl = ViewBag.ReturnUrl }, FormMethod.Post, new { id = "loginForm", @class = "form-signin" }))
 {
-    @Html.AntiForgeryToken()
+	@Html.AntiForgeryToken()
 
-    <fieldset>
-        <legend>Log in Form</legend>
-        <ol>
-            <li>
-                @Html.LabelFor(m => m.UserName)
-                @Html.TextBoxFor(m => m.UserName, new { autofocus = "autofocus", id = "loginName" })
-                @Html.ValidationMessageFor(m => m.UserName)
-            </li>
-            <li>
-                @Html.LabelFor(m => m.Password)
-                @Html.PasswordFor(m => m.Password)
-                @Html.ValidationMessageFor(m => m.Password)
-            </li>
-            <li>
-                @Html.CheckBoxFor(m => m.RememberMe)
-                @Html.LabelFor(m => m.RememberMe, new { @class = "checkbox" })
-            </li>
-            <li>
-                <input type="submit" value="Log in" />
-            </li>
-        </ol>
-        @Html.ValidationSummary() 
-    </fieldset>
+	<h2 class="form-signin-heading">Log in</h2>
+	@Html.TextBoxFor(m => m.UserName, new { autofocus = "autofocus", id = "loginName", placeholder = "User name", @class = "form-control" })
+	@Html.ValidationMessageFor(m => m.UserName)
+	@Html.PasswordFor(m => m.Password, new { placeholder = "Password", @class = "form-control" })
+	@Html.ValidationMessageFor(m => m.Password)
+	<label class="checkbox">
+		@Html.CheckBoxFor(m => m.RememberMe, new { @class = "checkbox", value="Remember me" })
+		Remember Me
+	</label>
+	<input class="btn btn-lg btn-primary btn-block" type="submit" value="Log in" />
+	@Html.ValidationSummary() 
 }

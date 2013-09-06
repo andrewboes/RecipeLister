@@ -32,6 +32,7 @@ function recipeDetailCtrl($scope, $routeParams, $http) {
 }
 
 function recipeAddCtrl($scope, $http, $location, $routeParams) {
+
 	var id = $routeParams.recipeId;
 	if (id) {
 		$http.get('/Home/GetRecipeById?id=' + $routeParams.recipeId).success(function (data) {
@@ -85,29 +86,46 @@ function recipeAddCtrl($scope, $http, $location, $routeParams) {
 		$scope.recipe.Instructions.splice(index, 1);
 	};
 
-	$scope.foodClicked = function (food) {
-		$http.get('/Home/GetFoodQuantityTypes?id=' + food.Id).success(function (data) {
+	//$scope.foodClicked = function (food) {
+	//	$http.get('/Home/GetFoodQuantityTypes?id=' + food.Id).success(function (data) {
+	//		$scope.ingredientQuantityTypes = data;
+	//	});
+	//	$scope.foodSearch = food.Name;
+	//	$scope.currentSelectedFood = food;
+	//};
+
+	//$scope.$watch('foodSearch', function () {
+	//	if ($scope.foodSearch != null) {
+	//		if ($scope.foodSearch.length > 2) {
+	//			$http.get('/Home/GetFoods?filter=' + $scope.foodSearch).success(function (data) {
+	//				if (data.length == 1) {
+	//					$scope.ingredientType = data;
+	//				} else {
+	//					$scope.foods = data;
+	//				}
+	//			}).error(function (data, status, headers, config) { alert("error"); });
+	//		} else {
+	//			$scope.foods = [];
+	//		}
+	//	}
+	//});
+
+	$scope.foodSelected = function($item) {
+		$http.get('/Home/GetFoodQuantityTypes?id=' + $item.Id).success(function (data) {
 			$scope.ingredientQuantityTypes = data;
 		});
-		$scope.foodSearch = food.Name;
-		$scope.currentSelectedFood = food;
+		$scope.currentSelectedFood = $item;
 	};
 
-	$scope.$watch('foodSearch', function () {
-		if ($scope.foodSearch != null) {
-			if ($scope.foodSearch.length > 2) {
-				$http.get('/Home/GetFoods?filter=' + $scope.foodSearch).success(function (data) {
-					if (data.length == 1) {
-						$scope.ingredientType = data;
-					} else {
-						$scope.foods = data;
-					}
-				}).error(function (data, status, headers, config) { alert("error"); });
-			} else {
-				$scope.foods = [];
-			}
+	$scope.foods = function (foodQuery) {
+		if (foodQuery != null && foodQuery.length > 2) {
+			return $http.get('/Home/GetFoods?filter=' + foodQuery).then(function(response) {
+				return response.data;
+			});
+		} else {
+			return [];
 		}
-	});
+	};
 }
 
 function listAddCtrl($scope, $http, $location) {

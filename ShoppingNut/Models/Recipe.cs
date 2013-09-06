@@ -32,7 +32,7 @@ namespace ShoppingNut.Models
 			//			Food = new {Name = ingredient.Food.Name}
 			//		};
 			//}
-			var Ingredients = this.Ingredients.Select(x => new
+			var ing = this.Ingredients.Select(x => new
 			{
 				x.Id,
 				x.FoodId,
@@ -41,9 +41,9 @@ namespace ShoppingNut.Models
 				x.Quantity,
 				QuantityType = new { Name = x.QuantityType.Name, Id = x.QuantityType.Id },
 				Calories = ((x.QuantityType.Grams * x.Food.Calories) / 100)
-			});
+			}).ToList();
 			var Instructions = this.Instructions.Select(x => new {x.Id, Order = x.Order, Text = x.Text});
-			return new { this.Id, this.Name, this.Servings, this.Description, Ingredients, Instructions };
+			return new { this.Id, this.Name, this.Servings, this.Description, Ingredients = ing, Instructions };
 		}
 	}
 }

@@ -229,6 +229,8 @@
     <Compile Include="App_Start\RouteConfig.cs" />
     <Compile Include="App_Start\WebApiConfig.cs" />
     <Content Include="css\app.css" />
+    <Content Include="css\bootstrap.css" />
+    <Content Include="css\bootstrap.min.css" />
     <Content Include="Global.asax" />
     <Content Include="html\listAdd.html" />
     <Content Include="html\listDetail.html" />
@@ -240,6 +242,8 @@
     <Content Include="scripts\controllers.js">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </Content>
+    <Content Include="scripts\lib\angular-ui\ui-bootstrap-tpls-0.5.0.js" />
+    <Content Include="scripts\lib\angular-ui\ui-bootstrap-tpls-0.5.0.min.js" />
     <Content Include="scripts\lib\angular\angular-cookies.js" />
     <Content Include="scripts\lib\angular\angular-cookies.min.js" />
     <Content Include="scripts\lib\angular\angular-loader.js" />
@@ -542,6 +546,11 @@
     <Content Include="scripts\lib\angular\i18n\angular-locale_zu.js" />
     <Content Include="html\recipeDetail.html" />
     <Content Include="html\recipeList.html" />
+    <Content Include="scripts\lib\bootstrap\bootstrap.js" />
+    <Content Include="scripts\lib\bootstrap\bootstrap.min.js" />
+    <Content Include="scripts\lib\jquery\jquery.min.js" />
+    <Content Include="scripts\lib\angular-ui\ui-bootstrap-0.5.0.js" />
+    <Content Include="scripts\lib\angular-ui\ui-bootstrap-0.5.0.min.js" />
     <Content Include="Web.config">
       <SubType>Designer</SubType>
     </Content>
@@ -550,6 +559,7 @@
     </Content>
     <Content Include="Web.Release.config">
       <DependentUpon>Web.config</DependentUpon>
+      <SubType>Designer</SubType>
     </Content>
     <Content Include="Views\Web.config" />
   </ItemGroup>
@@ -586,6 +596,7 @@
   <ItemGroup>
     <None Include="Properties\PublishProfiles\recipelist - FTP.pubxml" />
     <None Include="Properties\PublishProfiles\recipelist - Web Deploy.pubxml" />
+    <Content Include="Views\Home\Type.cshtml" />
   </ItemGroup>
   <PropertyGroup>
     <VisualStudioVersion Condition="'$(VisualStudioVersion)' == ''">10.0</VisualStudioVersion>

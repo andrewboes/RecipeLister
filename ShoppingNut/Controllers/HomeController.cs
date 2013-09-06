@@ -64,6 +64,7 @@ namespace ShoppingNut.Controllers
 			if (filters.Count() == 1)
 				foodsJson.AddRange(this.FoodsSearchStartsWith(filters, foods));
 			foodsJson.AddRange(this.FoodsSearchOne(filters, foods));
+			//return Json(foodsJson.Distinct().Select(x => x.Name).ToList(), JsonRequestBehavior.AllowGet);
 			return Json(foodsJson.Distinct().Select(x => new { x.Id, x.Name, x.Calories }).ToList(), JsonRequestBehavior.AllowGet);
 		}
 
@@ -76,7 +77,7 @@ namespace ShoppingNut.Controllers
 				var result = foodSearch.Where(x => x.Name.StartsWith(s));
 				foodSearchResults.AddRange(result.ToList());
 			}
-			return foodSearchResults.ToList();
+			return foodSearchResults.Take(100).ToList();
 		}
 
 		private List<Food> FoodsSearchOne(string[] filters, FoodRepository foods)
@@ -199,6 +200,11 @@ namespace ShoppingNut.Controllers
 			{
 				return Json(new { Success = false, Message = ex.Message }, JsonRequestBehavior.AllowGet);
 			}
+		}
+
+		public ActionResult Type()
+		{
+			return View();
 		}
 	}
 }

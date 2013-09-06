@@ -2,7 +2,7 @@
 
 /* App Module */
 
-angular.module('shoppingNut', []).
+angular.module('shoppingNut', ['ui.bootstrap']).
   config(['$routeProvider', function ($routeProvider) {
   	$routeProvider.
 				when('/lists', { templateUrl: 'html/listList.html', controller: shoppingListCtrl }).
