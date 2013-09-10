@@ -209,5 +209,10 @@ namespace ShoppingNut.Controllers
 		{
 			return View();
 		}
+
+		public ActionResult Boot2()
+		{
+			return View();
+		}
 	}
 }

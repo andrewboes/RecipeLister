@@ -8,6 +8,6 @@
 	@Html.TextBoxFor(m => m.UserName, new { id = "registerName", placeholder = "User name", @class = "form-control" })
 	@Html.PasswordFor(m => m.Password, new { placeholder = "Password", @class = "form-control" })
 	@Html.PasswordFor(m => m.ConfirmPassword, new { placeholder = "Confirm password", @class = "form-control" })
-	<input class="btn btn-lg btn-primary btn-block" type="submit" value="Sign up" />
+	<input class="btn btn-lg btn-primary" type="submit" value="Sign up" />
 	@Html.ValidationSummary()
 }

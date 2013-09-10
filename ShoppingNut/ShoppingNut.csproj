@@ -229,6 +229,10 @@
     <Compile Include="App_Start\RouteConfig.cs" />
     <Compile Include="App_Start\WebApiConfig.cs" />
     <Content Include="css\app.css" />
+    <Content Include="css\bootstrap-responsive.css" />
+    <Content Include="css\bootstrap-responsive.min.css" />
+    <Content Include="css\bootstrap.3.css" />
+    <Content Include="css\bootstrap.3.min.css" />
     <Content Include="css\bootstrap.css" />
     <Content Include="css\bootstrap.min.css" />
     <Content Include="Global.asax" />
@@ -242,8 +246,12 @@
     <Content Include="scripts\controllers.js">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </Content>
+    <Content Include="scripts\lib\angular-ui\ui-bootstrap-0.6.0.js" />
+    <Content Include="scripts\lib\angular-ui\ui-bootstrap-0.6.0.min.js" />
     <Content Include="scripts\lib\angular-ui\ui-bootstrap-tpls-0.5.0.js" />
     <Content Include="scripts\lib\angular-ui\ui-bootstrap-tpls-0.5.0.min.js" />
+    <Content Include="scripts\lib\angular-ui\ui-bootstrap-tpls-0.6.0.js" />
+    <Content Include="scripts\lib\angular-ui\ui-bootstrap-tpls-0.6.0.min.js" />
     <Content Include="scripts\lib\angular\angular-cookies.js" />
     <Content Include="scripts\lib\angular\angular-cookies.min.js" />
     <Content Include="scripts\lib\angular\angular-loader.js" />
@@ -546,6 +554,8 @@
     <Content Include="scripts\lib\angular\i18n\angular-locale_zu.js" />
     <Content Include="html\recipeDetail.html" />
     <Content Include="html\recipeList.html" />
+    <Content Include="scripts\lib\bootstrap\bootstrap.3.js" />
+    <Content Include="scripts\lib\bootstrap\bootstrap.3.min.js" />
     <Content Include="scripts\lib\bootstrap\bootstrap.js" />
     <Content Include="scripts\lib\bootstrap\bootstrap.min.js" />
     <Content Include="scripts\lib\jquery\jquery.min.js" />
@@ -598,6 +608,7 @@
     <None Include="Properties\PublishProfiles\recipelist - Web Deploy.pubxml" />
     <Content Include="Views\Home\Type.cshtml" />
     <Content Include="Views\Home\Boot.cshtml" />
+    <Content Include="Views\Home\Boot2.cshtml" />
   </ItemGroup>
   <PropertyGroup>
     <VisualStudioVersion Condition="'$(VisualStudioVersion)' == ''">10.0</VisualStudioVersion>
