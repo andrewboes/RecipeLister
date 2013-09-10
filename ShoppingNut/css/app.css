@@ -40,3 +40,28 @@ body {
   border-top-left-radius: 0;
   border-top-right-radius: 0;
 }
+
+textarea {
+    resize: none;
+}
+
+.restrict-text-no-wrap {
+	text-overflow:ellipsis;
+	overflow:hidden;
+	white-space:nowrap;
+	width: 320px;
+	  }
+
+/* Delete this once AngularUI supports bootstrap 3.0*/
+.collapsable {
+    display: inline-block;
+    overflow: hidden;
+    height: 0;
+    transition: height 1s;
+    -webkit-transition: height 1s;        
+    -moz-transition: height 1s;        
+    -o-transition: height 1s;         
+  }
+  .collapsable.showMe {
+    height: 100%;
+  }

@@ -1,65 +1,98 @@
-﻿<form name="addReceipeForm">
-	<div>
-	<input type="submit" ng-click="save()" value="Save Recipe">
-		</div>
-	<div class="row">
-		<div class="col-lg-2">
-			<input type="text" ng-model="recipe.Name" placeholder="Name" required />
-		</div>
-				
-		<div class="col-lg-2">
-
-			<input type="number" ng-model="recipe.Servings" placeholder="Servings" />
-		</div>
+﻿<form class="well" role="form" name="addReceipeForm">
+	<div class="form-group">
+		<!--Check form dirty. and also make sure user doesn't leave page with pending changes. -->
+		<!--Make sure user doesn't leave page with pending changes. -->
+		<input type="submit" class="btn btn-primary" ng-click="save()" value="Save Recipe">
 	</div>
-	<div>
-
-		<textarea ng-model="recipe.Description" placeholder="Description"></textarea>
+	<div class="form-group">
+		<input class="form-control" type="text" ng-model="recipe.Name" placeholder="Name" required />
+	</div>
+	<div class="form-group">
+		<textarea class="form-control" ng-model="recipe.Description" placeholder="Description" required></textarea>
 	</div>
 	<div class="row">
+		<div class="form-group col-lg-6">
+			<fieldset>
+				<legend>Ingredients</legend>
+				<ul>
+					<li ng-repeat="ingredient in recipe.Ingredients">{{ingredient.Quantity}} {{ingredient.QuantityType.Name}} {{ingredient.Food.Name}} 
+						<button class="close" ng-click="deleteIngredient($index)" aria-hidden="true">&times;</button>
+					</li>
+				</ul>
+				<ng:form name="ingredientsForm">
+					<div class="control-group">
+						<div class="row">
+							<div class="col-md-4">
+								<input class="form-control" required placeholder="Search..." type="text" ng-model="foodSearch" typeahead-on-select="foodSelected($item)" typeahead="suggestion.Name for suggestion in foods($viewValue)"/>
+							</div>
+							<div class="col-md-4">
+								<select class="form-control" required ng-model="quantityType" ng-options="ingType.Name for ingType in ingredientQuantityTypes" placeholder="quantity type">
+									<option style="color: #ccc" value="" disabled selected>quantity type</option>
+								</select>
+							</div>
+							<div class="col-md-4">
+								<input class="form-control" required type="number" min="0" ng-model="quantity" placeholder="quantity" />
+							</div>
+							<div class="col-md-3">
+								<input class="btn btn-primary btn-sm" type="button" ng-click="addIngredient(); " value="add" ng-disabled="ingredientsForm.$invalid" />
+							</div>
+						</div>
+					</div>
+				</ng:form>
+			</fieldset>
+		</div>
 		<div class="col-lg-6">
-			<h3>Ingredients</h3>
-			<ul>
-				<li ng-repeat="ingredient in recipe.Ingredients">{{ingredient.Quantity}} {{ingredient.QuantityType.Name}} {{ingredient.Food.Name}} 
-					<input type="button" value="delete" ng-click="deleteIngredient($index)" />
-				</li>
-			</ul>
-			<ng:form name="ingredientsForm">
-				<div>
-					<input type="text" ng-model="foodSearch" typeahead-on-select="foodSelected($item)" typeahead="suggestion.Name for suggestion in foods($viewValue)"/>
-					<select style="min-width: 100px; max-width: 200px;" ng-model="quantityType" ng-options="ingType.Name for ingType in ingredientQuantityTypes" placeholder="quantity type" required>
-						<option style="color: #ccc" value="" disabled selected>quantity type</option>
-					</select>
-					<input type="number" min="0" ng-model="quantity" placeholder="quantity" required />
-					<input type="button" ng-click="addIngredient(); " value="add" ng-disabled="ingredientsForm.$invalid" />
-					<!--<input type="text" ng-model="myTa" bs-typeahead="ta" />
-						<input id="foodSearchTextBox" type="text" ng-model="foodSearch" placeholder="search for foods..." required />
-						<select style="min-width: 100px; max-width: 200px;" ng-model="quantityType" ng-options="ingType.Name for ingType in ingredientQuantityTypes" placeholder="quantity type" required>
-							<option style="color: #ccc" value="" disabled selected>quantity type</option>
-						</select>
-						<input type="number" min="0" ng-model="quantity" placeholder="quantity" required />
-						<input type="submit" ng-click="addIngredient(); " value="add" ng-disabled="ingredientsForm.$invalid" />-->
+			<fieldset>
+				<legend>Instructions</legend>
+				<ul>
+					<li ng-repeat="instruction in recipe.Instructions">{{instruction.Text}}
+						<button class="close" ng-click="deleteInstruction($index)" aria-hidden="true">&times;</button>
+					</li>
+				</ul>
+				<ng:form name="instructionsForm">
+					<div class="control-group">
+						<textarea class="form-control" name="instruction" ng-model="newInstruction" placeholder="add new instruction" required ></textarea>
+					</div>
+					<div class="control-group">
+						<input class="btn btn-primary btn-sm" type="button" ng-click="addInstruction()" value="add" ng-disabled="instructionsForm.$invalid"/>
+					</div>
+				</ng:form>
+			</fieldset>
+		</div>
+	</div>
+	<div>
+
+
+	<button ng-click="open = !open" class="btn btn-info">Show misc.</button>
+		</div>
+		<div ng-class="{ showMe: open }" class="collapsable form-group">
+			<div class="form-group">
+				<div class="row">
+					<div class="col-lg-4">
+						<input class="form-control" type="number" ng-model="recipe.Servings" placeholder="Servings" />
+					</div>
+					<div class="col-lg-4">
+						<input class="form-control" type="text" ng-model="recipe.ActiveTime" placeholder="ActiveTime" />
+					</div>
+					<div class="col-lg-4">
+						<input class="form-control" type="text" ng-model="recipe.TotalTime" placeholder="TotalTime" />
+					</div>
 				</div>
-				<!--<div>
-					<ul>
-						<li ng-repeat="food in foods" ng-click="foodClicked(food)">
-							{{food.Name}}
-						</li>
-					</ul>
-				</div>-->
-			</ng:form>
-		</div>
-		<div class="col-lg-6">
-			<h3>Instructions</h3>
-			<ul>
-				<li ng-repeat="instruction in recipe.Instructions">{{instruction.Text}}
-					<input type="button" value="delete" ng-click="deleteInstruction($index)" />
-				</li>
-			</ul>
-			<ng:form name="instructionsForm">
-				<textarea name="instruction" ng-model="newInstruction" placeholder="add new instruction" required></textarea>
-				<input type="button" ng-click="addInstruction()" value="add" ng-disabled="instructionsForm.$invalid"/>
-			</ng:form>
-		</div>
-	</div>
+			</div>
+			<div class="form-group">
+				<div class="row">
+					<div class="col-md-4">
+						<input class="form-control" type="text" ng-model="recipe.Source" placeholder="Source" />
+					</div>
+					<div class="col-md-8">
+						<input class="form-control" type="url" ng-model="recipe.Url" placeholder="Url" />
+					</div>
+				</div>
+			</div>
+			<div class="form-group">
+				<input class="form-control" ng-model="recipe.Categories" placeholder="Categories" />
+			</div>
+			<div class="form-group">
+				<textarea class="form-control" ng-model="recipe.Notes" placeholder="Notes" />
+			</div>
 </form>

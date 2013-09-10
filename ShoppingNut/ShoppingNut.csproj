@@ -597,6 +597,7 @@
     <None Include="Properties\PublishProfiles\recipelist - FTP.pubxml" />
     <None Include="Properties\PublishProfiles\recipelist - Web Deploy.pubxml" />
     <Content Include="Views\Home\Type.cshtml" />
+    <Content Include="Views\Home\Boot.cshtml" />
   </ItemGroup>
   <PropertyGroup>
     <VisualStudioVersion Condition="'$(VisualStudioVersion)' == ''">10.0</VisualStudioVersion>

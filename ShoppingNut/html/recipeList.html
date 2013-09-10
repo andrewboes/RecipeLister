@@ -9,11 +9,24 @@
 		<option value="caloriesPerServing">Calories Per Serving</option>
 	</select>
 </div>-->
-<ul>
-	<li ng-repeat="recipe in recipes| filter:query">
-		<a href="#/recipes/{{recipe.Id}}">{{recipe.Name}}</a>
-		<p>{{recipe.Description}}</p>
+<ul class="list-unstyled">
+	<li class="col-lg-4" ng-repeat="recipe in recipes| filter:query">
+		<a href="#/recipes/{{recipe.Id}}">
+		<div class="img-thumbnail">
+			<img src="http://placehold.it/320x200" alt="No image">
+			<div class="caption">
+				<h3 class="restrict-text-no-wrap">{{recipe.Name}}</h3>
+				<h6 class="restrict-text-no-wrap">{{recipe.Description}}&nbsp;</h6>
+				<!--<p>{{recipe.Description}}</p>-->
+				<!--<p align="center"><a class="btn btn-primary btn-block" href="#/recipes/{{recipe.Id}}">Open</a></p>-->
+			</div>
+			<!--<a href="#/recipes/{{recipe.Id}}">{{recipe.Name}}</a>
+				<p>{{recipe.Description}}</p>-->
+		</div>
+			</a>
 	</li>
 </ul>
 
-http://bootsnipp.com/snipps/thumbnails-like-bootsnipp
+<!--http://bootsnipp.com/snipps/thumbnails-like-bootsnipp
+
+http://bootsnipp.com/snipps/user-preferences-in-nav-bar-->

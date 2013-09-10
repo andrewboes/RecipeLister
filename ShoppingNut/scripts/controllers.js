@@ -32,7 +32,6 @@ function recipeDetailCtrl($scope, $routeParams, $http) {
 }
 
 function recipeAddCtrl($scope, $http, $location, $routeParams) {
-
 	var id = $routeParams.recipeId;
 	if (id) {
 		$http.get('/Home/GetRecipeById?id=' + $routeParams.recipeId).success(function (data) {
@@ -85,30 +84,6 @@ function recipeAddCtrl($scope, $http, $location, $routeParams) {
 	$scope.deleteInstruction = function (index) {
 		$scope.recipe.Instructions.splice(index, 1);
 	};
-
-	//$scope.foodClicked = function (food) {
-	//	$http.get('/Home/GetFoodQuantityTypes?id=' + food.Id).success(function (data) {
-	//		$scope.ingredientQuantityTypes = data;
-	//	});
-	//	$scope.foodSearch = food.Name;
-	//	$scope.currentSelectedFood = food;
-	//};
-
-	//$scope.$watch('foodSearch', function () {
-	//	if ($scope.foodSearch != null) {
-	//		if ($scope.foodSearch.length > 2) {
-	//			$http.get('/Home/GetFoods?filter=' + $scope.foodSearch).success(function (data) {
-	//				if (data.length == 1) {
-	//					$scope.ingredientType = data;
-	//				} else {
-	//					$scope.foods = data;
-	//				}
-	//			}).error(function (data, status, headers, config) { alert("error"); });
-	//		} else {
-	//			$scope.foods = [];
-	//		}
-	//	}
-	//});
 
 	$scope.foodSelected = function($item) {
 		$http.get('/Home/GetFoodQuantityTypes?id=' + $item.Id).success(function (data) {

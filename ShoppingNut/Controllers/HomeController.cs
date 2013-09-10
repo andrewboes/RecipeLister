@@ -64,7 +64,6 @@ namespace ShoppingNut.Controllers
 			if (filters.Count() == 1)
 				foodsJson.AddRange(this.FoodsSearchStartsWith(filters, foods));
 			foodsJson.AddRange(this.FoodsSearchOne(filters, foods));
-			//return Json(foodsJson.Distinct().Select(x => x.Name).ToList(), JsonRequestBehavior.AllowGet);
 			return Json(foodsJson.Distinct().Select(x => new { x.Id, x.Name, x.Calories }).ToList(), JsonRequestBehavior.AllowGet);
 		}
 
@@ -77,7 +76,7 @@ namespace ShoppingNut.Controllers
 				var result = foodSearch.Where(x => x.Name.StartsWith(s));
 				foodSearchResults.AddRange(result.ToList());
 			}
-			return foodSearchResults.Take(100).ToList();
+			return foodSearchResults.Take(20).ToList();
 		}
 
 		private List<Food> FoodsSearchOne(string[] filters, FoodRepository foods)
@@ -119,6 +118,7 @@ namespace ShoppingNut.Controllers
 				UserProfileRepository users = new UserProfileRepository();
 
 				recipe.UserId = users.All.Single(x => x.UserName == this.User.Identity.Name).UserId;
+				Ingredient[] ings = null;
 				if (recipe.Ingredients != null && recipe.Ingredients.Any())
 				{
 					foreach (var v in recipe.Ingredients)
@@ -126,6 +126,9 @@ namespace ShoppingNut.Controllers
 						v.Food = null;
 						v.QuantityType = null;
 					}
+					ings = new Ingredient[recipe.Ingredients.Count];
+					recipe.Ingredients.CopyTo(ings);
+					recipe.Ingredients = null;
 				}
 				RecipeRepository recipes = new RecipeRepository();
 				recipes.InsertOrUpdate(recipe);
@@ -133,9 +136,9 @@ namespace ShoppingNut.Controllers
 
 				IngredientRepository ingredients = new IngredientRepository();
 
-				if (recipe.Ingredients != null && recipe.Ingredients.Any())
+				if (ings != null && ings.Any())
 				{
-					foreach (var v in recipe.Ingredients)
+					foreach (var v in ings)
 					{
 						Ingredient newIng = new Ingredient
 							{
@@ -202,7 +205,7 @@ namespace ShoppingNut.Controllers
 			}
 		}
 
-		public ActionResult Type()
+		public ActionResult Boot()
 		{
 			return View();
 		}
