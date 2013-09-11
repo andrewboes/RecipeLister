@@ -60,12 +60,9 @@
 			</fieldset>
 		</div>
 	</div>
-	<div>
 
-
-	<button ng-click="open = !open" class="btn btn-info">Show misc.</button>
-		</div>
-		<div ng-class="{ showMe: open }" class="collapsable form-group">
+	<accordion>
+		<accordion-group heading="Additional fields">
 			<div class="form-group">
 				<div class="row">
 					<div class="col-lg-4">
@@ -95,4 +92,7 @@
 			<div class="form-group">
 				<textarea class="form-control" ng-model="recipe.Notes" placeholder="Notes" />
 			</div>
+		</accordion-group>
+	</accordion>
+
 </form>

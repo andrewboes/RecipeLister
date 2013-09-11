@@ -101,4 +101,12 @@
 	<script type="text/javascript" ng:autobind src="@Url.Content("~/scripts/app.js")"></script>
 	<script type="text/javascript" ng:autobind src="@Url.Content("~/scripts/controllers.js")"></script>
 	<script type="text/javascript" ng:autobind src="@Url.Content("~/scripts/lib/angular-ui/ui-bootstrap-tpls-0.6.0.min.js")"></script>
+	
+	<script type="text/javascript">
+		$(document).ready(function() {
+			$('.nav a').on('click', function () {
+				$(".btn-navbar").click();
+			});
+		});
+	</script>
 </html>
