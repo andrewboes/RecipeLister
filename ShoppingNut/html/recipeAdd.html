@@ -1,17 +1,18 @@
 ﻿<form class="well" role="form" name="addReceipeForm">
-	<div class="form-group">
+	<div class="controls">
 		<!--Check form dirty. and also make sure user doesn't leave page with pending changes. -->
 		<!--Make sure user doesn't leave page with pending changes. -->
-		<input type="submit" class="btn btn-primary" ng-click="save()" value="Save Recipe">
+		<input type="submit" class="btn btn-primary" ng-click="save()" value="Save Recipe" />
 	</div>
-	<div class="form-group">
-		<input class="form-control" type="text" ng-model="recipe.Name" placeholder="Name" required />
+	<br/>
+	<div class="controls">
+		<input class="span11" type="text" ng-model="recipe.Name" placeholder="Name" required />
 	</div>
-	<div class="form-group">
-		<textarea class="form-control" ng-model="recipe.Description" placeholder="Description" required></textarea>
+	<div class="controls">
+		<textarea class="span11" class="form-control" ng-model="recipe.Description" placeholder="Description" required></textarea>
 	</div>
 	<div class="row">
-		<div class="form-group col-lg-6">
+		<div class="span5">
 			<fieldset>
 				<legend>Ingredients</legend>
 				<ul>
@@ -20,28 +21,20 @@
 					</li>
 				</ul>
 				<ng:form name="ingredientsForm">
-					<div class="control-group">
-						<div class="row">
-							<div class="col-md-4">
-								<input class="form-control" required placeholder="Search..." type="text" ng-model="foodSearch" typeahead-on-select="foodSelected($item)" typeahead="suggestion.Name for suggestion in foods($viewValue)"/>
-							</div>
-							<div class="col-md-4">
-								<select class="form-control" required ng-model="quantityType" ng-options="ingType.Name for ingType in ingredientQuantityTypes" placeholder="quantity type">
+						<div class="row-fluid">
+								<input id="foodSearch" class="span4" required placeholder="Search..." type="text" ng-model="foodSearch" typeahead-on-select="foodSelected($item)" typeahead="suggestion.Name for suggestion in foods($viewValue)"/>
+								<select class="span4" required ng-model="quantityType" ng-options="ingType.Name for ingType in ingredientQuantityTypes" placeholder="quantity type">
 									<option style="color: #ccc" value="" disabled selected>quantity type</option>
 								</select>
-							</div>
-							<div class="col-md-4">
-								<input class="form-control" required type="number" min="0" ng-model="quantity" placeholder="quantity" />
-							</div>
-							<div class="col-md-3">
+								<input class="span4" required type="number" min="0" ng-model="quantity" placeholder="quantity" />
+							<div>
 								<input class="btn btn-primary btn-sm" type="button" ng-click="addIngredient(); " value="add" ng-disabled="ingredientsForm.$invalid" />
 							</div>
 						</div>
-					</div>
 				</ng:form>
 			</fieldset>
 		</div>
-		<div class="col-lg-6">
+		<div class="span5">
 			<fieldset>
 				<legend>Instructions</legend>
 				<ul>
@@ -50,8 +43,8 @@
 					</li>
 				</ul>
 				<ng:form name="instructionsForm">
-					<div class="control-group">
-						<textarea class="form-control" name="instruction" ng-model="newInstruction" placeholder="add new instruction" required ></textarea>
+					<div class="row-fluid">
+						<textarea class="span12" rows="4" name="instruction" ng-model="newInstruction" placeholder="add new instruction" required ></textarea>
 					</div>
 					<div class="control-group">
 						<input class="btn btn-primary btn-sm" type="button" ng-click="addInstruction()" value="add" ng-disabled="instructionsForm.$invalid"/>
@@ -63,36 +56,55 @@
 
 	<accordion>
 		<accordion-group heading="Additional fields">
-			<div class="form-group">
-				<div class="row">
-					<div class="col-lg-4">
-						<input class="form-control" type="number" ng-model="recipe.Servings" placeholder="Servings" />
-					</div>
-					<div class="col-lg-4">
-						<input class="form-control" type="text" ng-model="recipe.ActiveTime" placeholder="ActiveTime" />
-					</div>
-					<div class="col-lg-4">
-						<input class="form-control" type="text" ng-model="recipe.TotalTime" placeholder="TotalTime" />
+			<input class="span3" type="number" ng-model="recipe.Servings" placeholder="Servings" />
+			<input class="span4" type="text" ng-model="recipe.ActiveTime" placeholder="ActiveTime" />
+			<input class="span4" type="text" ng-model="recipe.TotalTime" placeholder="TotalTime" />
+			<div>
+				<input class="span5" type="text" ng-model="recipe.Source" placeholder="Source" />
+				<input class="span6" type="url" ng-model="recipe.Url" placeholder="Url" />
+			</div>
+			<div>
+				<input class="span11" type="text" ng-model="recipe.Categories" placeholder="Categories" />
+			</div>
+			<div>
+				<textarea class="span11" ng-model="recipe.Notes" placeholder="Notes" />
+			</div>
+			<!--	<div class="row">
+			    		<input class="span4" type="number" ng-model="recipe.Servings" placeholder="Servings" />
+			    		<input class="span4" type="text" ng-model="recipe.ActiveTime" placeholder="ActiveTime" />
+			    		<input class="span4" type="text" ng-model="recipe.TotalTime" placeholder="TotalTime" />
+			    	</div>
+				<div class="form-group">
+					<div class="row">
+						<div class="col-md-4">
+							<input class="form-control" type="text" ng-model="recipe.Source" placeholder="Source" />
+						</div>
+						<div class="col-md-8">
+							<input class="form-control" type="url" ng-model="recipe.Url" placeholder="Url" />
+						</div>
 					</div>
 				</div>
-			</div>
-			<div class="form-group">
-				<div class="row">
-					<div class="col-md-4">
-						<input class="form-control" type="text" ng-model="recipe.Source" placeholder="Source" />
-					</div>
-					<div class="col-md-8">
-						<input class="form-control" type="url" ng-model="recipe.Url" placeholder="Url" />
-					</div>
+				<div class="form-group">
+					<input class="form-control" ng-model="recipe.Categories" placeholder="Categories" />
 				</div>
-			</div>
-			<div class="form-group">
-				<input class="form-control" ng-model="recipe.Categories" placeholder="Categories" />
-			</div>
-			<div class="form-group">
-				<textarea class="form-control" ng-model="recipe.Notes" placeholder="Notes" />
-			</div>
+				<div class="form-group">
+					<textarea class="form-control" ng-model="recipe.Notes" placeholder="Notes" />
+				</div>-->
 		</accordion-group>
 	</accordion>
 
 </form>
+
+<script type="text/javascript">
+	angular.element(document).ready(function () {
+		alert('ready!');
+		$("#foodSearch").focus(function () {
+					alert("focused!");
+				});
+	});
+//$(document).ready(function () {
+	//	$("#foodSearch").focus(function () {
+	//		alert("focused!");
+	//	});
+	//});
+</script>

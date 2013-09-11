@@ -32,6 +32,9 @@ function recipeDetailCtrl($scope, $routeParams, $http) {
 }
 
 function recipeAddCtrl($scope, $http, $location, $routeParams) {
+	$("#foodSearch").focus(function () {
+		$('html, body').animate({ scrollTop: $("#foodSearch").offset().top - 50 }, 'slow');
+	});
 	var id = $routeParams.recipeId;
 	if (id) {
 		$http.get('/Home/GetRecipeById?id=' + $routeParams.recipeId).success(function (data) {
