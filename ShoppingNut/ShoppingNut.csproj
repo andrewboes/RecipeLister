@@ -240,6 +240,14 @@
     <Content Include="html\listDetail.html" />
     <Content Include="html\listList.html" />
     <Content Include="html\recipeAdd.html" />
+    <Content Include="img\apple-pie.jpg" />
+    <Content Include="img\berry-pie.jpg" />
+    <Content Include="img\black-bean.jpg" />
+    <Content Include="img\coconut-cream.jpg" />
+    <Content Include="img\fajitas.jpg" />
+    <Content Include="img\glyphicons-halflings-white.png" />
+    <Content Include="img\glyphicons-halflings.png" />
+    <Content Include="img\pumpkin_soup_recipe.jpg" />
     <Content Include="scripts\app.js">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </Content>

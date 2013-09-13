@@ -1,34 +1,55 @@
-﻿<form>
-	<p>
-		<input type="text" ng-model="list.Name" placeholder="List Name" required />
-	</p>
+﻿<form class="well">
+	<div class="controls">
+		<input type="submit" class="btn btn-primary" ng-click="save()" value="Save List">
+	</div>
+	<br/>
+	<div class="controls">
+		<input class="span11" type="text" ng-model="list.Name" placeholder="List Name" />
+	</div>
 
 	<div>
 		<ul>
 			<li ng-repeat="item in list.Items">
-				{{item.Quantity}} <span ng-if="item.QuantityType">{{item.QuantityType}}(s)</span> {{item.Name}}
+				{{item.Quantity}} {{item.QuantityType.Name}} {{item.Name}}
 			</li>
 		</ul>
 	</div>
 
 	<ng:form name="ingredientsForm">
-		<input type="text" ng-model="foodSearch" placeholder="item" required />
-		<input type="number" ng-model="quantity" placeholder="quantity" />
-		<select ng-model="quantityType" ng-options="ingType.Name for ingType in ingredientQuantityTypes" />
-		<input type="button" ng-click="addItem()" value="add" ng-disabled="ingredientsForm.$invalid" />
-		<div>
-			<ul>
-				<li ng-repeat="food in foods" ng-click="foodClicked(food)">
-					{{food.Name}}
-				</li>
-			</ul>
-		</div>
+		<fieldset>
+				<legend>Add item</legend>
+				<input type="text" ng-model="foodSearch" placeholder="item" typeahead-on-select="foodSelected($item)" typeahead="suggestion.Name for suggestion in foods($viewValue)" />
+				<select ng-model="quantityType" ng-options="ingType.Name for ingType in ingredientQuantityTypes" />
+				<input type="number" ng-model="quantity" placeholder="quantity" min="0" />
+				<div class="controls">
+					<button class="btn btn-primary btn-sm"  ng-click="addItem()" ng-disabled="ingredientsForm.$invalid">
+						<i class="icon-plus icon-white"></i>
+					</button>
+				</div>
+			</fieldset>
 	</ng:form>
 
-	<p>Recipes</p>
-	<div>Search my recipes:</div>
-	<input ng-model="query">
-	<ul>
+	<fieldset>
+	<legend>My recipes</legend>
+	<div>Search your recipes:</div>
+		<input ng-model="query" type="text">
+		<accordion>
+			<accordion-group ng-repeat="recipe in recipes | filter:query">
+				<accordion-heading>
+					{{recipe.Name}}
+				</accordion-heading>
+				<input type="button" class="btn btn-primary btn-sm" value="add all" ng-click="addAllIngredients($index)" />
+				<ul class="unstyled">
+					<li ng-repeat="ing in recipe.Ingredients">
+						<button class="btn btn-primary btn-sm" ng-click="addIngredient($parent.$index, $index)">
+						<i class="icon-plus icon-white"></i>							
+						</button>
+						{{ing.Quantity}} {{ing.QuantityType.Name}} {{ing.Food.Name}}
+					</li>
+				</ul>
+			</accordion-group>
+			</accordion>
+	<!--<ul>
 		<li ng-repeat="recipe in recipes| filter:query">{{recipe.Name}}
 			<input type="button" value="show items" ng-click="getIngredientsForRecipe($index, updateRecipe)"  />
 			<input type="button" value="add all items" ng-click="addAllIngredients($index)" />
@@ -39,6 +60,6 @@
 				</li>
 			</ul>
 		</li>
-	</ul>
-	<input type="submit" ng-click="save()" value="Save List">
+	</ul>-->
+		</fieldset>
 </form>

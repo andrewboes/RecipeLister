@@ -39,6 +39,15 @@ namespace ShoppingNut.Controllers
 			return Json(recipe, JsonRequestBehavior.AllowGet);
 		}
 
+		public ActionResult GetAllRecipesWithIngredients()
+		{
+			RecipeRepository recipes = new RecipeRepository();
+			var recipe = recipes.AllIncluding(x => x.Ingredients, x => x.Instructions).ToList();
+			List<object> v = new List<object>();
+			recipe.ForEach(x => v.Add(x.ToJson()));
+			return Json(v, JsonRequestBehavior.AllowGet);
+		}
+
 		public ActionResult GetShoppingLists()
 		{
 			var users = new UserProfileRepository();

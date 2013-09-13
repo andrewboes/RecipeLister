@@ -3,9 +3,27 @@
 function recipeListCtrl($scope, $http) {
 	$http.get('/Home/GetAllRecipes').success(function (data) {
 		$scope.recipes = data;
+		angular.forEach($scope.recipes, function(recipe) {
+			recipe.imgSrc = $scope.getImage();
+		});
 	}).error(function (data, status, headers, config) {
 		alert("error");
 	});
+	
+	var images = ['images/apple-pie.jpg',
+			'img/berry-pie.jpg',
+			'img/black-bean.jpg',
+			'img/coconut-cream.jpg',
+			'img/fajitas.jpg',
+			'img/pumpkin_soup_recipe.jpg'
+		];
+
+	$scope.getImage = function () {
+		var r = Math.random();
+		var to = images.length;
+		var randIndex = Math.floor(r * to);
+		return images[randIndex];
+	};
 }
 
 function shoppingListCtrl($scope, $http) {
@@ -109,24 +127,11 @@ function recipeAddCtrl($scope, $http, $location, $routeParams) {
 function listAddCtrl($scope, $http, $location) {
 	$scope.list = { Name: '', Items: [] };
 	
-	$http.get('/Home/GetAllRecipes').success(function (data) {
+	$http.get('/Home/GetAllRecipesWithIngredients').success(function (data) {
 		$scope.recipes = data;
 	}).error(function (data, status, headers, config) {
 		alert("error");
 	});
-
-	$scope.updateRecipe = function (index, data) {
-		$scope.recipes[index] = data;
-	};
-
-	$scope.getIngredientsForRecipe = function (index, func) {
-		var id = $scope.recipes[index].Id;
-		$http.get('/Home/GetRecipeById?id=' + id).success(function (data) {
-			func(index, data);
-		}).error(function (data, status, headers, config) {
-			alert("error");
-		});
-	};
 
 	$scope.updateRecipeAndAddIngredients = function(index, data) {
 		$scope.recipes[index] = data;
@@ -159,37 +164,13 @@ function listAddCtrl($scope, $http, $location) {
 		if (!updated) {
 			$scope.list.Items.push({
 				Quantity: ingredient.Quantity,
-				QuantityType: ingredient.QuantityType.Name,
+				QuantityType: ingredient.QuantityType,
 				QuantityTypeId: ingredient.QuantityTypeId,
 				Name: ingredient.Food.Name,
 				FoodId: ingredient.FoodId
 			});
 		}
 	};
-
-	$scope.foodClicked = function (food) {
-		$http.get('/Home/GetFoodQuantityTypes?id=' + food.Id).success(function (data) {
-			$scope.ingredientQuantityTypes = data;
-		});
-		$scope.foodSearch = food.Name;
-		$scope.currentSelectedFood = food;
-	};
-
-	$scope.$watch('foodSearch', function () {
-		if ($scope.foodSearch != null) {
-			if ($scope.foodSearch.length > 2) {
-				$http.get('/Home/GetFoods?filter=' + $scope.foodSearch).success(function (data) {
-					if (data.length == 1) {
-						$scope.ingredientType = data;
-					} else {
-						$scope.foods = data;
-					}
-				}).error(function (data, status, headers, config) { alert("error"); });
-			} else {
-				$scope.foods = [];
-			}
-		}
-	});
 
 	$scope.addItem = function () {
 		var item = {
@@ -222,7 +203,23 @@ function listAddCtrl($scope, $http, $location) {
 			var message = "Error: " + data;
 			alert(message);
 		});
-
+	};
+	
+	$scope.foods = function (foodQuery) {
+		if (foodQuery != null && foodQuery.length > 2) {
+			return $http.get('/Home/GetFoods?filter=' + foodQuery).then(function (response) {
+				return response.data;
+			});
+		} else {
+			return [];
+		}
+	};
+	
+	$scope.foodSelected = function ($item) {
+		$http.get('/Home/GetFoodQuantityTypes?id=' + $item.Id).success(function (data) {
+			$scope.ingredientQuantityTypes = data;
+		});
+		$scope.currentSelectedFood = $item;
 	};
 }
 
