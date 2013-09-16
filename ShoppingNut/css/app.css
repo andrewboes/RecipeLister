@@ -77,6 +77,11 @@ textarea {
 	width: 320px;
 	  }
 
+.picked-up-true {
+  text-decoration: line-through;
+  color: grey;
+}
+
 /* Delete this once AngularUI supports bootstrap 3.0*/
 .collapsable {
     display: inline-block;

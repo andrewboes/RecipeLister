@@ -42,7 +42,7 @@ namespace ShoppingNut.Controllers
 		public ActionResult GetAllRecipesWithIngredients()
 		{
 			RecipeRepository recipes = new RecipeRepository();
-			var recipe = recipes.AllIncluding(x => x.Ingredients, x => x.Instructions).ToList();
+			var recipe = recipes.AllIncluding(x => x.Ingredients).ToList();
 			List<object> v = new List<object>();
 			recipe.ForEach(x => v.Add(x.ToJson()));
 			return Json(v, JsonRequestBehavior.AllowGet);
@@ -53,8 +53,10 @@ namespace ShoppingNut.Controllers
 			var users = new UserProfileRepository();
 			var id = users.All.Single(x => x.UserName == User.Identity.Name).UserId;
 			var lists = new ShoppingListRepository();
-			var userLists = lists.All.Where(x => x.UserId == id).Select(x => new { x.Id, x.Name }).ToList();
-			return Json(userLists, JsonRequestBehavior.AllowGet);
+			var userLists = lists.AllIncluding(x=>x.Items).Where(x => x.UserId == id).ToList();
+			List<object> v = new List<object>();
+			userLists.ForEach(x=>v.Add(x.ToJson()));
+			return Json(v, JsonRequestBehavior.AllowGet);
 		}
 
 		public ActionResult GetAllIngredients()
@@ -212,6 +214,16 @@ namespace ShoppingNut.Controllers
 			{
 				return Json(new { Success = false, Message = ex.Message }, JsonRequestBehavior.AllowGet);
 			}
+		}
+
+		public ActionResult ItemPickedUp(int id, bool pickedUp)
+		{
+			ShoppingListItemRepository repo = new ShoppingListItemRepository();
+			var item = repo.Find(id);
+			item.PickedUp = pickedUp;
+			repo.InsertOrUpdate(item);
+			repo.Save();
+			return null;
 		}
 
 		public ActionResult Boot()

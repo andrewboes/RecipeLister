@@ -19,7 +19,7 @@ namespace ShoppingNut.Models
 
 		internal object ToJson()
 		{
-			var Items = this.Items.Select(x => new { x.Id, x.FoodId, Name = x.UserItemName, x.Quantity, QuantityType = x.UserQuantityType });
+			var Items = this.Items.Select(x => new { x.Id, x.FoodId, Name = x.UserItemName, x.Quantity, QuantityType = x.UserQuantityType, x.PickedUp });
 			return new { this.Id, this.Name, Items };
 		}
 	}

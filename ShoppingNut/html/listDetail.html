@@ -1,12 +1,10 @@
-﻿<div class="container-fluid">
-	<div class="row-fluid">
-		{{list.Name}}
-		<div class="span10">
-			<ul>
-				<li ng-repeat="item in list.Items">
-					{{item.Quantity}} {{item.QuantityType}} {{item.Name}}
-				</li>
-			</ul>
-		</div>
-	</div>
+﻿		{{list.Name}}
+<div>
+	<span>{{remaining()}} of {{list.Items.length}} remaining</span>
+	<ul class="unstyled">
+		<li ng-repeat="item in list.Items">
+			<input type="checkbox" ng-model="item.checked" ng-click="pickedUpChanged($index)">
+			<span class="picked-up-{{item.checked}}" >{{item.Quantity}} {{item.QuantityType}} {{item.Name}}</span>
+		</li>
+	</ul>
 </div>

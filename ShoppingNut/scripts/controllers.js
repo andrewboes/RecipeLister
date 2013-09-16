@@ -10,7 +10,7 @@ function recipeListCtrl($scope, $http) {
 		alert("error");
 	});
 	
-	var images = ['images/apple-pie.jpg',
+	var images = [
 			'img/berry-pie.jpg',
 			'img/black-bean.jpg',
 			'img/coconut-cream.jpg',
@@ -29,6 +29,15 @@ function recipeListCtrl($scope, $http) {
 function shoppingListCtrl($scope, $http) {
 	$http.get('/Home/GetShoppingLists').success(function (data) {
 		$scope.lists = data;
+		angular.forEach($scope.lists, function (list) {
+			var pickedUp = 0;
+			angular.forEach(list.Items, function(item) {
+				if (item.PickedUp)
+					pickedUp++;
+			});
+			list.numberPickedUp = pickedUp;
+			list.percentComplete = pickedUp / list.Items.length;
+		});
 	}).error(function (data, status, headers, config) {
 		alert("error");
 	});
@@ -226,7 +235,26 @@ function listAddCtrl($scope, $http, $location) {
 function listDetailCtrl($scope, $http, $routeParams) {
 	$http.get('/Home/GetListById?id=' + $routeParams.listId).success(function (data) {
 		$scope.list = data;
+		angular.forEach($scope.list.Items, function (item) {
+			item.checked = item.PickedUp;
+		});
 	}).error(function (data, status, headers, config) {
 		alert("error");
 	});
+
+	$scope.remaining = function () {
+		var count = 0;
+		angular.forEach($scope.list.Items, function (item) {
+			count += item.checked ? 0 : 1;
+		});
+		return count;
+	};
+
+	$scope.pickedUpChanged = function (index) {
+		$http.post('/Home/ItemPickedUp?id=' + $scope.list.Items[index].Id + '&pickedUp=' + $scope.list.Items[index].checked).success(function (data) { })
+			.error(function (data, status, headers, config) {
+			var message = "Error: " + data;
+			alert(message);
+		});
+	};
 }

@@ -14,8 +14,6 @@ namespace UsdaMigration
 	{
 		private static Food UsdaToShoppingNut(ABBREV data, List<WEIGHT> weights)
 		{
-			string test = "CHICKEN,BROILERS OR FRYERS,BACK,MEAT ONLY,CKD,FRIED";
-
 			string name = CultureInfo.CurrentCulture.TextInfo.ToTitleCase( data.Shrt_Desc.ToLower());
 			Food f = new Food
 			{
