@@ -2,8 +2,24 @@
 
 /* App Module */
 
-angular.module('shoppingNut', ['ui.bootstrap']).
-  config(['$routeProvider', function ($routeProvider) {
+angular.module('shoppingNut', ['ui.bootstrap'])
+	.directive('ngModelOnblur', function () {
+		return {
+			restrict: 'A',
+			require: 'ngModel',
+			link: function (scope, elm, attr, ngModelCtrl) {
+				if (attr.type === 'radio' || attr.type === 'checkbox') return;
+
+				elm.unbind('input').unbind('keydown').unbind('change');
+				elm.bind('blur', function () {
+					scope.$apply(function () {
+						ngModelCtrl.$setViewValue(elm.val());
+					});
+				});
+			}
+		};
+	})
+	.config(['$routeProvider', function ($routeProvider) {
   	$routeProvider.
 				when('/lists', { templateUrl: 'html/listList.html', controller: shoppingListCtrl }).
 				when('/lists/add', { templateUrl: 'html/listAdd.html', controller: listAddCtrl }).

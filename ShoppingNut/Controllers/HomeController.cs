@@ -53,9 +53,9 @@ namespace ShoppingNut.Controllers
 			var users = new UserProfileRepository();
 			var id = users.All.Single(x => x.UserName == User.Identity.Name).UserId;
 			var lists = new ShoppingListRepository();
-			var userLists = lists.AllIncluding(x=>x.Items).Where(x => x.UserId == id).ToList();
+			var userLists = lists.AllIncluding(x => x.Items).Where(x => x.UserId == id).ToList();
 			List<object> v = new List<object>();
-			userLists.ForEach(x=>v.Add(x.ToJson()));
+			userLists.ForEach(x => v.Add(x.ToJson()));
 			return Json(v, JsonRequestBehavior.AllowGet);
 		}
 
@@ -170,6 +170,125 @@ namespace ShoppingNut.Controllers
 			{
 				throw;
 				return Json(ex.Message, JsonRequestBehavior.AllowGet);
+			}
+		}
+
+		public ActionResult InsertOrUpdateRecipe(Recipe recipe)
+		{
+			if (!this.User.Identity.IsAuthenticated)
+				throw new Exception("User not logged in");
+			recipe.Instructions = null;
+			recipe.Ingredients = null;
+			try
+			{
+				UserProfileRepository users = new UserProfileRepository();
+				recipe.UserId = users.All.Single(x => x.UserName == this.User.Identity.Name).UserId;
+				RecipeRepository recipes = new RecipeRepository();
+				recipes.InsertOrUpdate(recipe);
+				recipes.Save();
+				return Json(new { Success = true, RecipeId = recipe.Id }, JsonRequestBehavior.AllowGet);
+			}
+			catch (Exception)
+			{
+				throw;
+			}
+		}
+
+		public ActionResult InsertOrUpdateIngredient(Ingredient ingredient)
+		{
+			if (!this.User.Identity.IsAuthenticated)
+				throw new Exception("User not logged in");
+			try
+			{
+				if (ingredient.RecipeId == default(int))
+				{
+					Recipe recipe = new Recipe();
+					UserProfileRepository users = new UserProfileRepository();
+					recipe.UserId = users.All.Single(x => x.UserName == this.User.Identity.Name).UserId;
+					RecipeRepository recipes = new RecipeRepository();
+					recipes.InsertOrUpdate(recipe);
+					recipes.Save();
+					ingredient.RecipeId = recipe.Id;
+				}
+				IngredientRepository ingredients = new IngredientRepository();
+				Ingredient newIng = new Ingredient
+				{
+					RecipeId = ingredient.RecipeId,
+					Id = ingredient.Id,
+					FoodId = ingredient.FoodId,
+					Quantity = ingredient.Quantity,
+					QuantityTypeId = ingredient.QuantityTypeId
+				};
+				ingredients.InsertOrUpdate(newIng);
+				ingredients.Save();
+				return Json(new { Success = true, RecipeId = ingredient.RecipeId, IngredientId = newIng.Id }, JsonRequestBehavior.AllowGet);
+			}
+			catch (Exception)
+			{
+				throw;
+			}
+		}
+
+		[HttpPost]
+		public ActionResult DeleteIngredient(int id)
+		{
+			if (!this.User.Identity.IsAuthenticated)
+				throw new Exception("User not logged in");
+			try
+			{
+				IngredientRepository ingredients = new IngredientRepository();
+				ingredients.Delete(id);
+				ingredients.Save();
+				return Json(new { Success = true }, JsonRequestBehavior.AllowGet);			
+			}
+			catch (Exception)
+			{
+				throw;
+			}
+		}
+
+		[HttpPost]
+		public ActionResult DeleteInstruction(int id)
+		{
+			if (!this.User.Identity.IsAuthenticated)
+				throw new Exception("User not logged in");
+			try
+			{
+				InstructionRepository repo = new InstructionRepository();
+				repo.Delete(id);
+				repo.Save();
+				return Json(new { Success = true }, JsonRequestBehavior.AllowGet);
+			}
+			catch (Exception)
+			{
+				throw;
+			}
+		}
+
+		public ActionResult InsertOrUpdateInstruction(Instruction instruction)
+		{
+			if (!this.User.Identity.IsAuthenticated)
+				throw new Exception("User not logged in");
+			try
+			{
+				if (instruction.RecipeId == default(int))
+				{
+					Recipe recipe = new Recipe();
+					UserProfileRepository users = new UserProfileRepository();
+					recipe.UserId = users.All.Single(x => x.UserName == this.User.Identity.Name).UserId;
+					RecipeRepository recipes = new RecipeRepository();
+					recipes.InsertOrUpdate(recipe);
+					recipes.Save();
+					instruction.RecipeId = recipe.Id;
+				}
+				InstructionRepository repo = new InstructionRepository();
+				repo.InsertOrUpdate(instruction);
+				repo.Save();
+				return Json(new { Success = true, RecipeId = instruction.RecipeId, InstructionId = instruction.Id }, JsonRequestBehavior.AllowGet);
+			}
+			catch (Exception)
+			{
+				throw;
 			}
 		}
 

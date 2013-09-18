@@ -22,16 +22,6 @@ namespace ShoppingNut.Models
 
 		public object ToJson()
 		{
-			//List<object> ingredients = new List<object>();
-			//foreach (var ingredient in this.Ingredients)
-			//{
-			//	object jsonIngredient = new
-			//		{
-			//			Id = ingredient.Id,
-			//			FoodId = ingredient.FoodId,
-			//			Food = new {Name = ingredient.Food.Name}
-			//		};
-			//}
 			var ing = this.Ingredients.Select(x => new
 			{
 				x.Id,
@@ -40,9 +30,10 @@ namespace ShoppingNut.Models
 				Food = new { Name = x.Food.Name }, 
 				x.Quantity,
 				QuantityType = new { Name = x.QuantityType.Name, Id = x.QuantityType.Id },
-				Calories = ((x.QuantityType.Grams * x.Food.Calories) / 100)
+				Calories = ((x.QuantityType.Grams * x.Food.Calories) / 100),
+				x.RecipeId
 			}).ToList();
-			var Instructions = this.Instructions.Select(x => new {x.Id, Order = x.Order, Text = x.Text});
+			var Instructions = this.Instructions.Select(x => new {x.Id, Order = x.Order, Text = x.Text, x.RecipeId});
 			return new { this.Id, this.Name, this.Servings, this.Description, Ingredients = ing, Instructions };
 		}
 	}

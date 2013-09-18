@@ -1,26 +1,47 @@
-﻿<form class="well" role="form" name="addReceipeForm">
+﻿<ng:form class="well" role="form" name="addReceipeForm">
 	<div class="controls">
 		<!--Check form dirty. and also make sure user doesn't leave page with pending changes. -->
 		<!--Make sure user doesn't leave page with pending changes. -->
-		<input type="submit" class="btn btn-primary" ng-click="save()" value="Save Recipe" />
+		<span ng-hide="saved">saving...</span>
+		<span ng-show="saved">saved</span>
+
+	<!--	<input type="submit" class="btn btn-primary" ng-click="save()" value="Save Recipe" />-->
 	</div>
 	<br/>
 	<div class="controls">
-		<input class="span11" type="text" ng-model="recipe.Name" placeholder="Name" required />
+		<input class="span11" type="text" ng-model="recipe.Name" placeholder="Name" required ng-model-onblur ng-change="insertOrUpdate()" />
 	</div>
 	<div class="controls">
-		<textarea class="span11" class="form-control" ng-model="recipe.Description" placeholder="Description" required></textarea>
+		<textarea class="span11" class="form-control" ng-model="recipe.Description" placeholder="Description" required required ng-model-onblur ng-change="insertOrUpdate()"></textarea>
 	</div>
 	<div class="row">
 		<div class="span5">
 			<fieldset>
 				<legend>Ingredients</legend>
-				<ul>
-					<li ng-repeat="ingredient in recipe.Ingredients">{{ingredient.Quantity}} {{ingredient.QuantityType.Name}} {{ingredient.Food.Name}} 
-						<button class="close" ng-click="deleteIngredient($index)" aria-hidden="true">&times;</button>
+				<ul class="unstyled">
+					<li ng-repeat="ingredient in recipe.Ingredients">
+						<ng:form name="ingredientsEditForm">
+							<div class="row-fluid" ng-show="editing">
+								<input class="span4" disabled required placeholder="Search..." type="text" ng-model="ingredient.Food.Name" typeahead-on-select="foodSelected($item)" typeahead="suggestion.Name for suggestion in foods($viewValue)"/>
+								<select class="span4" required placeholder="quantity type">
+									<option>{{ingredient.QuantityType.Name}}</option>
+								</select>
+								<input class="span4" required type="number" min="0" ng-model="ingredient.Quantity" placeholder="quantity" />
+								<div>
+									<input class="btn btn-primary btn-sm" type="submit" value="save" ng-click="updateIngredient($index); editing = false" />
+								</div>
+							</div>
+						</ng:form>
+						<div ng-hide="editing">
+							<i class="icon-pencil" ng-click="editing = true"></i>
+								{{ingredient.Quantity}} 
+								{{ingredient.QuantityType.Name}} 
+								{{ingredient.Food.Name}} 
+							<button class="close" ng-click="deleteIngredient($index)" aria-hidden="true">&times</button>
+						</div>
 					</li>
 				</ul>
-				<ng:form name="ingredientsForm">
+				<ng:form name="ingredientsAddForm">
 						<div class="row-fluid">
 								<input id="foodSearch" class="span4" required placeholder="Search..." type="text" ng-model="foodSearch" typeahead-on-select="foodSelected($item)" typeahead="suggestion.Name for suggestion in foods($viewValue)"/>
 								<select class="span4" required ng-model="quantityType" ng-options="ingType.Name for ingType in ingredientQuantityTypes" placeholder="quantity type">
@@ -28,7 +49,7 @@
 								</select>
 								<input class="span4" required type="number" min="0" ng-model="quantity" placeholder="quantity" />
 							<div>
-								<input class="btn btn-primary btn-sm" type="button" ng-click="addIngredient(); " value="add" ng-disabled="ingredientsForm.$invalid" />
+								<input class="btn btn-primary btn-sm" type="button" ng-click="addIngredient();" value="add" ng-disabled="ingredientsAddForm.$invalid" />
 							</div>
 						</div>
 				</ng:form>
@@ -37,9 +58,21 @@
 		<div class="span5">
 			<fieldset>
 				<legend>Instructions</legend>
-				<ul>
-					<li ng-repeat="instruction in recipe.Instructions">{{instruction.Text}}
-						<button class="close" ng-click="deleteInstruction($index)" aria-hidden="true">&times;</button>
+				<ul class="unstyled">
+					<li ng-repeat="instruction in recipe.Instructions">
+						<ng:form name="instructionsEditForm" ng-show="editing">
+							<div class="row-fluid">
+								<textarea class="span12" rows="4" name="instruction" ng-model="instruction.Text" required ></textarea>
+							</div>
+							<div class="control-group">
+								<input class="btn btn-primary btn-sm" type="button" ng-click="updateInstruction($index); editing = false" value="save"/>
+							</div>
+						</ng:form>
+						<div ng-hide="editing">
+							<i class="icon-pencil" ng-click="editing = true"></i>
+							{{instruction.Text}}
+							<button class="close" ng-click="deleteInstruction($index)" aria-hidden="true">&times;</button>
+						</div>
 					</li>
 				</ul>
 				<ng:form name="instructionsForm">
@@ -56,44 +89,23 @@
 
 	<accordion>
 		<accordion-group heading="Additional fields">
-			<input class="span3" type="number" ng-model="recipe.Servings" placeholder="Servings" />
+			<input class="span3" ng-model-onblur ng-change="insertOrUpdate()" type="number" ng-model="recipe.Servings" placeholder="Servings" />
 			<input class="span4" type="text" ng-model="recipe.ActiveTime" placeholder="ActiveTime" />
 			<input class="span4" type="text" ng-model="recipe.TotalTime" placeholder="TotalTime" />
 			<div>
-				<input class="span5" type="text" ng-model="recipe.Source" placeholder="Source" />
-				<input class="span6" type="url" ng-model="recipe.Url" placeholder="Url" />
+				<input class="span5" ng-model-onblur ng-change="insertOrUpdate()" type="text" ng-model="recipe.Source" placeholder="Source" />
+				<input class="span6" ng-model-onblur ng-change="insertOrUpdate()" type="url" ng-model="recipe.Url" placeholder="Url" />
 			</div>
 			<div>
-				<input class="span11" type="text" ng-model="recipe.Categories" placeholder="Categories" />
+				<input class="span11" ng-model-onblur ng-change="insertOrUpdate()" type="text" ng-model="recipe.Categories" placeholder="Categories" />
 			</div>
 			<div>
-				<textarea class="span11" ng-model="recipe.Notes" placeholder="Notes" />
+				<textarea class="span11" ng-model-onblur ng-change="insertOrUpdate()" ng-model="recipe.Notes" placeholder="Notes" />
 			</div>
-			<!--	<div class="row">
-			    		<input class="span4" type="number" ng-model="recipe.Servings" placeholder="Servings" />
-			    		<input class="span4" type="text" ng-model="recipe.ActiveTime" placeholder="ActiveTime" />
-			    		<input class="span4" type="text" ng-model="recipe.TotalTime" placeholder="TotalTime" />
-			    	</div>
-				<div class="form-group">
-					<div class="row">
-						<div class="col-md-4">
-							<input class="form-control" type="text" ng-model="recipe.Source" placeholder="Source" />
-						</div>
-						<div class="col-md-8">
-							<input class="form-control" type="url" ng-model="recipe.Url" placeholder="Url" />
-						</div>
-					</div>
-				</div>
-				<div class="form-group">
-					<input class="form-control" ng-model="recipe.Categories" placeholder="Categories" />
-				</div>
-				<div class="form-group">
-					<textarea class="form-control" ng-model="recipe.Notes" placeholder="Notes" />
-				</div>-->
 		</accordion-group>
 	</accordion>
 
-</form>
+</ng:form>
 
 <script type="text/javascript">
 	angular.element(document).ready(function () {

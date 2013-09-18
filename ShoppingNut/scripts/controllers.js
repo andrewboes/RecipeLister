@@ -71,17 +71,22 @@ function recipeAddCtrl($scope, $http, $location, $routeParams) {
 		});
 	}
 	else {
-		$scope.recipe = { Name: '', Description: '', CaloriesPerServing: '', Ingredients: [], Instructions: [] };
+		$scope.recipe = { Name: '', Description: '', CaloriesPerServing: '', Ingredients: [], Instructions: [], Id: 0 };
 	}
-	
-	$scope.save = function () {
-		$http.post('/Home/AddRecipe', $scope.recipe).success(function (data) {
+	$scope.saved = true;
+
+	$scope.insertOrUpdate = function () {
+		$scope.saved = false;
+		$http.post('/Home/InsertOrUpdateRecipe', $scope.recipe).success(function (data) {
+			$scope.saved = true;
 			if (data.Success) {
-				$location.path('/');
+				if ($scope.recipe.Id == 0)
+					$scope.recipe.Id = data.RecipeId;
 			} else {
 				alert(data);
 			}
 		}).error(function (data, status, headers, config) {
+			$scope.saved = true;
 			var message = "Error: " + data;
 			alert(message);
 		});
@@ -93,26 +98,108 @@ function recipeAddCtrl($scope, $http, $location, $routeParams) {
 			Quantity: $scope.quantity,
 			QuantityType: $scope.quantityType,
 			FoodId: $scope.currentSelectedFood.Id,
-			QuantityTypeId: $scope.quantityType.Id
+			QuantityTypeId: $scope.quantityType.Id,
+			RecipeId: $scope.recipe.Id
 		};
-		$scope.recipe.Ingredients.push(ingredient);
+		$http.post('/Home/InsertOrUpdateIngredient', ingredient).success(function (data) {
+			$scope.saved = true;
+			if (data.Success) {
+				if (!$scope.recipe.Id == 0)
+					$scope.recipe.Id = data.RecipeId;
+				ingredient.Id = data.IngredientId;
+				$scope.recipe.Ingredients.push(ingredient);
+			} else {
+				alert(data);
+			}
+		}).error(function (data, status, headers, config) {
+			$scope.saved = true;
+			var message = "Error: " + data;
+			alert(message);
+		});
 		$scope.foodSearch = '';
 		$scope.quantity = '';
 		$scope.ingredientQuantityTypes = '';
 	};
 
+	$scope.updateIngredient = function (index) {
+		$scope.saved = false;
+		$http.post('/Home/InsertOrUpdateIngredient', $scope.recipe.Ingredients[index]).success(function (data) {
+			$scope.saved = true;
+			if (!data.Success) {
+				alert(data);
+			}
+		}).error(function (data, status, headers, config) {
+			$scope.saved = true;
+			var message = "Error: " + data;
+			alert(message);
+		});
+	};
+
 	$scope.addInstruction = function () {
-		var instruction = { Id: 0, Text: $scope.newInstruction };
-		$scope.recipe.Instructions.push(instruction);
+		$scope.saved = false;
+		var instruction = { Id: 0, Text: $scope.newInstruction, RecipeId: $scope.recipe.Id };
+		$http.post('/Home/InsertOrUpdateInstruction', instruction).success(function (data) {
+			$scope.saved = true;
+			if (data.Success) {
+				if (!$scope.recipe.Id == 0)
+					$scope.recipe.Id = data.RecipeId;
+				instruction.Id = data.InstructionId;
+				$scope.recipe.Instructions.push(instruction);
+			} else {
+				alert(data);
+			}
+		}).error(function (data, status, headers, config) {
+			$scope.saved = true;
+			var message = "Error: " + data;
+			alert(message);
+		});
 		$scope.newInstruction = '';
 	};
 
+	$scope.updateInstruction = function (index) {
+		$scope.saved = false;
+		$http.post('/Home/InsertOrUpdateInstruction', $scope.recipe.Instructions[index]).success(function (data) {
+			$scope.saved = true;
+			if (!data.Success) {
+				alert(data);
+			}
+		}).error(function (data, status, headers, config) {
+			$scope.saved = true;
+			var message = "Error: " + data;
+			alert(message);
+		});
+	};
+
 	$scope.deleteIngredient = function (index) {
-		$scope.recipe.Ingredients.splice(index, 1);
+		$scope.saved = false;
+		$http.post('/Home/DeleteIngredient/' + $scope.recipe.Ingredients[index].Id).success(function (data) {
+			$scope.saved = true;
+			if (data.Success) {
+				$scope.recipe.Ingredients.splice(index, 1);
+			} else {
+				alert(data);
+			}
+		}).error(function (data, status, headers, config) {
+			$scope.saved = true;
+			var message = "Error: " + data;
+			alert(message);
+		});
 	};
 
 	$scope.deleteInstruction = function (index) {
-		$scope.recipe.Instructions.splice(index, 1);
+		$scope.saved = false;
+		$http.post('/Home/DeleteInstruction/' + $scope.recipe.Instructions[index].Id).success(function (data) {
+			$scope.saved = true;
+			if (data.Success) {
+				$scope.recipe.Instructions.splice(index, 1);
+			} else {
+				alert(data);
+			}
+		}).error(function (data, status, headers, config) {
+			$scope.saved = true;
+			var message = "Error: " + data;
+			alert(message);
+		});
 	};
 
 	$scope.foodSelected = function($item) {
