@@ -41,6 +41,7 @@ namespace ShoppingNut.Models
 				x.Notes
 			}).ToList();
 			var Instructions = this.Instructions.Select(x => new {x.Id, Order = x.Order, Text = x.Text, x.RecipeId});
+			var Images = this.Images.Select(x => new {x.Id, x.RecipeId, x.UserSubmittedImageId});
 			return new { this.Id, this.Name, this.Servings, this.Description, this.Url, this.ActiveTime, this.TotalTime, this.Created, this.Notes, Ingredients = ing, Instructions, Images };
 		}
 

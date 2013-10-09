@@ -1,6 +1,16 @@
 ﻿@{
 	this.Layout = null;
 }
+
+@functions{
+    public string GetAntiForgeryToken()
+    {
+        string cookieToken, formToken;
+        AntiForgery.GetTokens(null, out cookieToken, out formToken);
+        return cookieToken + ":" + formToken;                
+    }
+}
+
 <!DOCTYPE html>
 <html ng-app="shoppingNut" lang="en">
 	
@@ -12,13 +22,9 @@
 		<meta name="author" content="">
 
 		<!-- Le styles -->
+		<link href="@Url.Content("~/css/app.css")" rel="stylesheet" type="text/css"/>
 		<link href="@Url.Content("~/css/bootstrap.min.css")" rel="stylesheet" type="text/css"/>
-		@*<link href="http://getbootstrap.com/2.3.2/assets/css/bootstrap.css" rel="stylesheet" />*@
-
-		<link href="@Url.Content("~/css/app.css")" rel="stylesheet" type="text/css" />
-		<link href="@Url.Content("~/css//bootstrap-responsive.min.css")" rel="stylesheet" type="text/css"/>
-		@*<link href="http://getbootstrap.com/2.3.2/assets/css/bootstrap-responsive.css" rel="stylesheet" />*@
-
+		<link href="@Url.Content("~/css/bootstrap-responsive.min.css")" rel="stylesheet" type="text/css"/>
 		<!-- HTML5 shim, for IE6-8 support of HTML5 elements -->
 		<!--[if lt IE 9]>
 			<script src="../assets/js/html5shiv.js"></script>
@@ -44,10 +50,13 @@
 						<div class="nav-collapse collapse">
 							<ul class="nav">
 								<li><a href="#">Home</a></li>
-							<li><a href="/#/recipes">Recipes</a></li>
-							<li><a href="/#/recipes/add">Add recipe</a></li>
-							<li><a href="/#/lists">Lists</a></li>
-							<li><a href="/#/lists/add">Add list</a></li>
+								<li><a href="/#/recipes">Recipes</a></li>
+								<li><a href="/#/recipes/add">Add recipe</a></li>
+								<li><a href="/#/lists">Lists</a></li>
+								<li><a href="/#/lists/add">Add list</a></li>
+							</ul>
+							<ul class="nav pull-right">
+								<li><a href="/Account/LogOff"><i class="icon-off"></i> Logout</a></li>
 							</ul>
 						</div><!--/.nav-collapse -->
 					</div>
@@ -89,23 +98,65 @@
 			</div>
 		}
 	</body>
-	<script type="text/javascript" ng:autobind src="@Url.Content("~/scripts/lib/angular/angular.min.js")"></script>
 	<script type="text/javascript" ng:autobind src="@Url.Content("~/scripts/lib/jquery/jquery.min.js")"></script>
+	<script type="text/javascript" ng:autobind src="@Url.Content("~/scripts/lib/angular/angular.js")"></script>
 	<script type="text/javascript" ng:autobind src="@Url.Content("~/scripts/lib/bootstrap/bootstrap.min.js")"></script>
 	<script type="text/javascript" ng:autobind src="@Url.Content("~/scripts/app.js")"></script>
 	<script type="text/javascript" ng:autobind src="@Url.Content("~/scripts/controllers.js")"></script>
 	<script type="text/javascript" ng:autobind src="@Url.Content("~/scripts/lib/angular-ui/ui-bootstrap-tpls-0.6.0.min.js")"></script>
+	<script type="text/javascript" ng:autobind src="@Url.Content("~/scripts/lib/angular-file-upload/angular-file-upload.js")"></script>
+
+		
 	
 	<script type="text/javascript">
-		//var images = ['images/apple-pie.jpg',
-		//	'images/berry-pie.jpg',
-		//	'images/black-bean.jpg',
-		//	'images/coconut-cream.jpg',
-		//	'images/fajitas.jpg',
-		//	'images/pumpkin_soup_recipe.jpg'
-		//];
-
 		$(document).ready(function () {
+			var getValidationSummaryErrors = function ($form) {
+				var errorSummary = $form.find('.validation-summary-errors, .validation-summary-valid');
+				return errorSummary;
+			};
+			
+			var displayErrors = function (form, errors) {
+				var errorSummary = getValidationSummaryErrors(form)
+            .removeClass('validation-summary-valid')
+            .addClass('validation-summary-errors');
+
+				var items = $.map(errors, function (error) {
+					return '<li>' + error + '</li>';
+				}).join('');
+
+				errorSummary.find('ul').empty().append(items);
+			};
+			
+			var formSubmitHandler = function (e) {
+				var $form = $(this);
+
+				// We check if jQuery.validator exists on the form
+				if (!$form.valid || $form.valid()) {
+					$.post($form.attr('action'), $form.serializeArray())
+							.done(function (json) {
+								json = json || {};
+
+								// In case of success, we redirect to the provided URL or the same page.
+								if (json.success) {
+									if(json.redirect)
+										window.location = json.redirect;
+									window.location.reload();
+								} else if (json.errors) {
+									displayErrors($form, json.errors);
+								}
+							})
+							.error(function () {
+								displayErrors($form, ['An unknown error happened.']);
+							});
+				}
+
+				// Prevent the normal behavior since we opened the dialog
+				e.preventDefault();
+			};
+
+			$("#loginForm").submit(formSubmitHandler);
+			$("#registerForm").submit(formSubmitHandler);
+			
 			$('.nav a').on('click', function () {
 				var height = $(".nav-collapse").height();
 				if (height) {
@@ -113,5 +164,6 @@
 				}
 			});
 		});
+
 	</script>
 </html>

@@ -33,7 +33,6 @@ angular.module('shoppingNut', ['ui.bootstrap', 'angularFileUpload'])
 				windowWidth = $(window).width();
 				colCount = Math.floor(windowWidth / (colWidth + margin * 2));
 				spaceLeft = (windowWidth - ((colWidth * colCount) + (margin * (colCount - 1)))) / 2;
-				console.log(spaceLeft);
 				for (var i = 0; i < colCount; i++) {
 					blocks.push(margin);
 				}
@@ -49,9 +48,7 @@ angular.module('shoppingNut', ['ui.bootstrap', 'angularFileUpload'])
 						'left': (leftPos + spaceLeft) + 'px',
 						'top': (min + 140) + 'px'
 					});
-					console.log("min: "+min+ ", index: " + index+", leftPos: " + leftPos);
 					blocks[index] = min + $(this).outerHeight() + margin;
-					console.log("outer Height: " + $(this).outerHeight());
 				});
 				
 			}
@@ -62,15 +59,18 @@ angular.module('shoppingNut', ['ui.bootstrap', 'angularFileUpload'])
 			
 			var w = angular.element($window);
 			w.bind('resize', function () {
-				$scope.setupBlocks();
+				$timeout(function () {
+					$scope.setupBlocks();
+				}, 100);
 			});
 
 			if ($scope.$last) {
 				$timeout(function () {
 					$scope.setupBlocks();
-				}, 200);
+				}, 100);
 			}
 			
+			//This doesn't work!
 			$('#searchRecipeTextBox').keypress(function () {
 				$scope.setupBlocks();
 			});

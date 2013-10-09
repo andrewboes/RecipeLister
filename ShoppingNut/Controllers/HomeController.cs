@@ -28,12 +28,6 @@ namespace ShoppingNut.Controllers
 		//	new Recipe{Id = 7, Name = "Coconut cream pie", Description = "Coconut cream pie with merage and toasted coconuts", CaloriesPerServing = 250},
 		//};
 
-		public HomeController()
-		{
-			//if (!this.User.Identity.IsAuthenticated)
-			//	throw new Exception("User not logged in");
-		}
-
 		public ActionResult Index()
 		{
 			return View();
@@ -226,11 +220,12 @@ namespace ShoppingNut.Controllers
 					Id = ingredient.Id,
 					FoodId = ingredient.FoodId,
 					Quantity = ingredient.Quantity,
-					QuantityTypeId = ingredient.QuantityTypeId
+					QuantityTypeId = ingredient.QuantityTypeId,
+					Notes = ingredient.Notes
 				};
 				ingredients.InsertOrUpdate(newIng);
 				ingredients.Save();
-				return Json(new { Success = true, RecipeId = ingredient.RecipeId, IngredientId = newIng.Id }, JsonRequestBehavior.AllowGet);
+				return Json(new { Success = true, ingredient.RecipeId, IngredientId = newIng.Id }, JsonRequestBehavior.AllowGet);
 			}
 			catch (Exception)
 			{

@@ -104,7 +104,8 @@ function recipeAddCtrl($scope, $http, $location, $routeParams) {
 			QuantityType: $scope.quantityType,
 			FoodId: $scope.currentSelectedFood.Id,
 			QuantityTypeId: $scope.quantityType.Id,
-			RecipeId: $scope.recipe.Id
+			RecipeId: $scope.recipe.Id,
+			Notes: $scope.newIngredientNotes
 		};
 		$http.post('/Home/InsertOrUpdateIngredient', ingredient).success(function (data) {
 			$scope.saved = true;
@@ -124,6 +125,7 @@ function recipeAddCtrl($scope, $http, $location, $routeParams) {
 		$scope.foodSearch = '';
 		$scope.quantity = '';
 		$scope.ingredientQuantityTypes = '';
+		$scope.newIngredientNotes = '';
 	};
 
 	$scope.updateIngredient = function (index) {

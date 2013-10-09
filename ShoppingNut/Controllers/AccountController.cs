@@ -30,8 +30,7 @@ namespace ShoppingNut.Controllers
 				if (WebSecurity.Login(model.UserName, model.Password, persistCookie: model.RememberMe))
 				{
 					FormsAuthentication.SetAuthCookie(model.UserName, model.RememberMe);
-					return RedirectToAction("Index", "Home");
-					//return Json(new { success = true, redirect = returnUrl });
+					return Json(new { success = true, redirect = returnUrl });
 				}
 				else
 				{
@@ -43,11 +42,8 @@ namespace ShoppingNut.Controllers
 			return Json(new { errors = GetErrorsFromModelState() });
 		}
 
-		//
-		// POST: /Account/LogOff
-
-		[HttpPost]
-		[ValidateAntiForgeryToken]
+		//[HttpPost]
+		//[ValidateAntiForgeryToken]
 		public ActionResult LogOff()
 		{
 			WebSecurity.Logout();
@@ -55,8 +51,6 @@ namespace ShoppingNut.Controllers
 			return RedirectToAction("Index", "Home");
 		}
 
-		//
-		// POST: /Account/JsonRegister
 		[HttpPost]
 		[AllowAnonymous]
 		[ValidateAntiForgeryToken]
@@ -84,34 +78,12 @@ namespace ShoppingNut.Controllers
 			// If we got this far, something failed
 			return Json(new { errors = GetErrorsFromModelState() });
 		}
-
-		///// <summary>
-		///// Initiate a new todo list for new user
-		///// </summary>
-		///// <param name="userName"></param>
-		//private static void InitiateDatabaseForNewUser(string userName)
-		//{
-		//	TodoItemContext db = new TodoItemContext();
-		//	TodoList todoList = new TodoList();
-		//	todoList.UserId = userName;
-		//	todoList.Title = "My Todo List #1";
-		//	todoList.Todos = new List<TodoItem>();
-		//	db.TodoLists.Add(todoList);
-		//	db.SaveChanges();
-
-		//	todoList.Todos.Add(new TodoItem() { Title = "Todo item #1", TodoListId = todoList.TodoListId, IsDone = false });
-		//	todoList.Todos.Add(new TodoItem() { Title = "Todo item #2", TodoListId = todoList.TodoListId, IsDone = false });
-		//	db.SaveChanges();
-		//}
-
-		//
-		// POST: /Account/Disassociate
-
+		
 		[HttpPost]
 		[ValidateAntiForgeryToken]
 		public ActionResult Disassociate(string provider, string providerUserId)
 		{
-			
+
 			string ownerAccount = OAuthWebSecurity.GetUserName(provider, providerUserId);
 			ManageMessageId? message = null;
 
@@ -119,7 +91,7 @@ namespace ShoppingNut.Controllers
 			if (ownerAccount == User.Identity.Name)
 			{
 				// Use a transaction to prevent the user from deleting their last login credential
-				using (var scope = new TransactionScope(TransactionScopeOption.Required, new TransactionOptions { IsolationLevel = System.Transactions.IsolationLevel.Serializable}))
+				using (var scope = new TransactionScope(TransactionScopeOption.Required, new TransactionOptions { IsolationLevel = System.Transactions.IsolationLevel.Serializable }))
 				{
 					bool hasLocalAccount = OAuthWebSecurity.HasLocalAccount(WebSecurity.GetUserId(User.Identity.Name));
 					if (hasLocalAccount || OAuthWebSecurity.GetAccountsFromUserName(User.Identity.Name).Count > 1)
@@ -134,9 +106,6 @@ namespace ShoppingNut.Controllers
 			return RedirectToAction("Manage", new { Message = message });
 		}
 
-		//
-		// GET: /Account/Manage
-
 		public ActionResult Manage(ManageMessageId? message)
 		{
 			ViewBag.StatusMessage =
@@ -148,9 +117,6 @@ namespace ShoppingNut.Controllers
 			ViewBag.ReturnUrl = Url.Action("Manage");
 			return View();
 		}
-
-		//
-		// POST: /Account/Manage
 
 		[HttpPost]
 		[ValidateAntiForgeryToken]
@@ -212,9 +178,6 @@ namespace ShoppingNut.Controllers
 			return View(model);
 		}
 
-		//
-		// POST: /Account/ExternalLogin
-
 		[HttpPost]
 		[AllowAnonymous]
 		[ValidateAntiForgeryToken]
@@ -255,9 +218,6 @@ namespace ShoppingNut.Controllers
 				return View("ExternalLoginConfirmation", new RegisterExternalLoginModel { UserName = result.UserName, ExternalLoginData = loginData });
 			}
 		}
-
-		//
-		// POST: /Account/ExternalLoginConfirmation
 
 		[HttpPost]
 		[AllowAnonymous]
@@ -303,9 +263,6 @@ namespace ShoppingNut.Controllers
 			ViewBag.ReturnUrl = returnUrl;
 			return View(model);
 		}
-
-		//
-		// GET: /Account/ExternalLoginFailure
 
 		[AllowAnonymous]
 		public ActionResult ExternalLoginFailure()
