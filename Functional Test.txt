@@ -1,0 +1,8 @@
+Get current datetime: SELECT CURRENT_TIMESTAMP
+Add recipe on web app with two ingredients two instructions.
+Verfiy in database: select * from...
+Add list with new recipe as items
+Verify list in database
+Go to list and check items
+Verify that itmes are "picked up" in database: 
+Delete all items create after time above

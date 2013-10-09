@@ -1,0 +1,4 @@
+c:\Program Files (x86)\Microsoft SQL Server\110\DAC\bin>SqlPackage.exe /a:import
+ /sf:D:\Databases\ShoppingNut-2013-9-20-14-0.bacpac /tdn:ShoppingNutOne /tsn:loc
+alhost
+
