@@ -41,5 +41,9 @@ namespace ShoppingNut.Models
 			public DbSet<ShoppingNut.Models.ShoppingList> ShoppingLists { get; set; }
 
 			public DbSet<ShoppingNut.Models.ShoppingListItem> ShoppingListItems { get; set; }
+
+			public DbSet<ShoppingNut.Models.UserSubmittedImage> UserSubmittedImages { get; set; }
+
+			public DbSet<ShoppingNut.Models.RecipeImage> RecipeImages { get; set; }
 		}
 }

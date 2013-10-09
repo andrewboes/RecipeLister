@@ -99,24 +99,45 @@
 			<div>
 				<input class="span11" ng-model-onblur ng-change="insertOrUpdate()" type="text" ng-model="recipe.Categories" placeholder="Categories" />
 			</div>
+			<textarea class="span11" ng-model-onblur ng-change="insertOrUpdate()" ng-model="recipe.Notes" placeholder="Notes" ></textarea>
+		</accordion-group>
+		<accordion-group heading="Images">
 			<div>
-				<textarea class="span11" ng-model-onblur ng-change="insertOrUpdate()" ng-model="recipe.Notes" placeholder="Notes" />
-			</div>
+			Select files: <input type="file" ng-file-select="onFileSelect($files, 2)" multiple>
+			<span ng-show="selectedFiles != null">
+				<span class="sel-file" ng-repeat="f in selectedFiles">
+					{{f.name}} - size: {{f.size}}B - type: {{f.type}}
+					<span ng-show="$index < selectedFiles.length - 1">,</span>
+				</span>
+			</span>
+				<div class="response" ng-show="uploadResult.length > 0">
+					Server Response:
+					<ul>
+						<li ng-repeat="result in uploadResult" ng-bind-html-unsafe="result"></li>
+					</ul>
+				</div>			</div>
+			
+			<ul class="thumbnails">
+				<li class="span4" ng-repeat="image in images">
+					<div class="thumbnail">
+						<img src="/Home/Image/{{image}}" alt="No image">
+					</div>
+				</li>
+			</ul>
 		</accordion-group>
 	</accordion>
-
+			<!--<div>
+			Select files: <input type="file" ng-file-select="onFileSelect($files, 2)" multiple>
+			<span ng-show="selectedFiles != null">
+				<span class="sel-file" ng-repeat="f in selectedFiles">
+					{{f.name}} - size: {{f.size}}B - type: {{f.type}}
+					<span ng-show="$index < selectedFiles.length - 1">,</span>
+				</span>
+			</span>
+				<div class="response" ng-show="uploadResult.length > 0">
+					Server Response:
+					<ul>
+						<li ng-repeat="result in uploadResult" ng-bind-html-unsafe="result"></li>
+					</ul>
+				</div>			</div>-->
 </ng:form>
-
-<script type="text/javascript">
-	angular.element(document).ready(function () {
-		alert('ready!');
-		$("#foodSearch").focus(function () {
-					alert("focused!");
-				});
-	});
-//$(document).ready(function () {
-	//	$("#foodSearch").focus(function () {
-	//		alert("focused!");
-	//	});
-	//});
-</script>

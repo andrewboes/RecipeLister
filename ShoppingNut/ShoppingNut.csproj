@@ -119,6 +119,7 @@
     <Reference Include="System" />
     <Reference Include="System.Data" />
     <Reference Include="System.Data.Entity" />
+    <Reference Include="System.Data.Linq" />
     <Reference Include="System.Drawing" />
     <Reference Include="System.Transactions" />
     <Reference Include="System.Web.DynamicData" />
@@ -204,6 +205,14 @@
     <Compile Include="Migrations\201307261927242_blah.Designer.cs">
       <DependentUpon>201307261927242_blah.cs</DependentUpon>
     </Compile>
+    <Compile Include="Migrations\201309202248559_AddFieldsToExistingTables.cs" />
+    <Compile Include="Migrations\201309202248559_AddFieldsToExistingTables.Designer.cs">
+      <DependentUpon>201309202248559_AddFieldsToExistingTables.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Migrations\201309262051197_MovedImageToOwnTable.cs" />
+    <Compile Include="Migrations\201309262051197_MovedImageToOwnTable.Designer.cs">
+      <DependentUpon>201309262051197_MovedImageToOwnTable.cs</DependentUpon>
+    </Compile>
     <Compile Include="Migrations\Configuration.cs" />
     <Compile Include="Models\AccountModels.cs" />
     <Compile Include="Models\Food.cs" />
@@ -215,6 +224,8 @@
     <Compile Include="Models\QuantityType.cs" />
     <Compile Include="Models\QuantityTypeRepository.cs" />
     <Compile Include="Models\Recipe.cs" />
+    <Compile Include="Models\RecipeImage.cs" />
+    <Compile Include="Models\RecipeImageRepository.cs" />
     <Compile Include="Models\RecipeRepository.cs" />
     <Compile Include="Models\ShoppingList.cs" />
     <Compile Include="Models\ShoppingListItem.cs" />
@@ -222,6 +233,8 @@
     <Compile Include="Models\ShoppingListRepository.cs" />
     <Compile Include="Models\ShoppingNutContext.cs" />
     <Compile Include="Models\UserProfileRepository.cs" />
+    <Compile Include="Models\UserSubmittedImage.cs" />
+    <Compile Include="Models\UserSubmittedImageRepository.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>
   <ItemGroup>
@@ -569,6 +582,7 @@
     <Content Include="scripts\lib\jquery\jquery.min.js" />
     <Content Include="scripts\lib\angular-ui\ui-bootstrap-0.5.0.js" />
     <Content Include="scripts\lib\angular-ui\ui-bootstrap-0.5.0.min.js" />
+    <Content Include="scripts\lib\angular-file-upload\angular-file-upload.js" />
     <Content Include="Web.config">
       <SubType>Designer</SubType>
     </Content>
@@ -610,6 +624,12 @@
     <EmbeddedResource Include="Migrations\201307261927242_blah.resx">
       <DependentUpon>201307261927242_blah.cs</DependentUpon>
     </EmbeddedResource>
+    <EmbeddedResource Include="Migrations\201309202248559_AddFieldsToExistingTables.resx">
+      <DependentUpon>201309202248559_AddFieldsToExistingTables.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Migrations\201309262051197_MovedImageToOwnTable.resx">
+      <DependentUpon>201309262051197_MovedImageToOwnTable.cs</DependentUpon>
+    </EmbeddedResource>
   </ItemGroup>
   <ItemGroup>
     <None Include="Properties\PublishProfiles\recipelist - FTP.pubxml" />
@@ -617,6 +637,9 @@
     <Content Include="Views\Home\Type.cshtml" />
     <Content Include="Views\Home\Boot.cshtml" />
     <Content Include="Views\Home\Boot2.cshtml" />
+  </ItemGroup>
+  <ItemGroup>
+    <Service Include="{3259AA49-8AA1-44D3-9025-A0B520596A8C}" />
   </ItemGroup>
   <PropertyGroup>
     <VisualStudioVersion Condition="'$(VisualStudioVersion)' == ''">10.0</VisualStudioVersion>

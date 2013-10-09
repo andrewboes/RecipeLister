@@ -10,6 +10,7 @@ namespace ShoppingNut.Models
 	{
 		public int Id { get; set; }
 		public string Name { get; set; }
+		public DateTime Created { get; set; }
 
 		[ForeignKey("User")]
 		public int UserId { get; set; }
@@ -20,7 +21,7 @@ namespace ShoppingNut.Models
 		internal object ToJson()
 		{
 			var Items = this.Items.Select(x => new { x.Id, x.FoodId, Name = x.UserItemName, x.Quantity, QuantityType = x.UserQuantityType, x.PickedUp });
-			return new { this.Id, this.Name, Items };
+			return new { this.Id, this.Name, this.Created, Items };
 		}
 	}
 }

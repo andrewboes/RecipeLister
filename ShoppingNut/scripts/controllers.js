@@ -3,8 +3,12 @@
 function recipeListCtrl($scope, $http) {
 	$http.get('/Home/GetAllRecipes').success(function (data) {
 		$scope.recipes = data;
-		angular.forEach($scope.recipes, function(recipe) {
-			recipe.imgSrc = $scope.getImage();
+		angular.forEach($scope.recipes, function (recipe) {
+			if(recipe.Images.length == 0)
+				recipe.imgSrc = $scope.getImage();
+			else {
+				recipe.imgSrc = '/Home/Image/' + recipe.Images[0];
+			}
 		});
 	}).error(function (data, status, headers, config) {
 		alert("error");
@@ -66,6 +70,7 @@ function recipeAddCtrl($scope, $http, $location, $routeParams) {
 	if (id) {
 		$http.get('/Home/GetRecipeById?id=' + $routeParams.recipeId).success(function (data) {
 			$scope.recipe = data;
+			$scope.getImages();
 		}).error(function (data, status, headers, config) {
 			alert("error");
 		});
@@ -167,6 +172,37 @@ function recipeAddCtrl($scope, $http, $location, $routeParams) {
 			$scope.saved = true;
 			var message = "Error: " + data;
 			alert(message);
+		});
+	};
+
+	$scope.selectedFiles = [];
+
+	$scope.onFileSelect = function($files, index) {
+		$scope.uploadResult = [];
+		$scope.selectedFile = index == 1 ? $files[0] : null;
+		$scope.selectedFiles = index == 1 ? null : $files;
+		for (var i = 0; i < $files.length; i++) {
+			var $file = $files[i];
+			$http.uploadFile({
+				url: '/Home/UploadImages',
+				data: {recipeId: $scope.recipe.Id},
+				file: $file
+			}).success(function(data, status, headers, config) {
+				$scope.uploadResult.push(data.toString());
+				$scope.getImages();
+				// to fix IE not refreshing the model
+				if (!$scope.$$phase) {
+					$scope.$apply();
+				}
+			});
+		}
+	};
+
+	$scope.getImages = function () {
+		$http.get('/Home/GetRecipeImages?recipeId=' + $routeParams.recipeId).success(function (data) {
+			$scope.images = data;
+		}).error(function (data, status, headers, config) {
+			alert("error");
 		});
 	};
 

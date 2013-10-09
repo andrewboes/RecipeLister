@@ -65,7 +65,7 @@ namespace UsdaMigration
 						v.SaveChanges();
 					}
 					v.Database.ExecuteSqlCommand("INSERT INTO dbo.QuantityTypes ( Name, Grams, FoodId ) SELECT N'gram', 1, id FROM dbo.Foods");
-					v.Database.ExecuteSqlCommand("INSERT INTO dbo.QuantityTypes ( Name, Grams, FoodId ) SELECT N'ounce (mass)', 28.3495, id FROM dbo.Foods");
+					v.Database.ExecuteSqlCommand("INSERT INTO dbo.QuantityTypes ( Name, Grams, FoodId ) SELECT N'ounce (weight)', 28.3495, id FROM dbo.Foods");
 					v.Database.ExecuteSqlCommand("INSERT INTO dbo.QuantityTypes ( Name, Grams, FoodId ) SELECT N'pound', 453.592, id FROM dbo.Foods");
 				}
 			}

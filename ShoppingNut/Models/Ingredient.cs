@@ -10,7 +10,7 @@ namespace ShoppingNut.Models
 	{
 		public int Id { get; set; }
 		public double Quantity { get; set; }
-		//public string Notes { get; set; }
+		public string Notes { get; set; }
 
 		[ForeignKey("QuantityType")]
 		public int? QuantityTypeId { get; set; }

@@ -1,14 +1,16 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Drawing;
 using System.Linq;
 using System.Web;
 using System.Web.Mvc;
 using ShoppingNut.Models;
+using System.IO;
 
 namespace ShoppingNut.Controllers
 {
 	/// <summary>
-	/// $entityTypes = "Food", "Ingredient", "Instruction", "InstructionItem", "QuantityType", "Recipe"
+	/// $entityTypes = "Food", "Ingredient", "Instruction", "InstructionItem", "QuantityType", "Recipe", "RecipeImage", "UserSubmittedImage"
 	/// foreach($type in $entityTypes){Scaffold Repository -ModelType $type -Force}
 	/// To update database when you get a message "Model backing the blah blah has changed since the database was created. blah"
 	/// 
@@ -26,6 +28,12 @@ namespace ShoppingNut.Controllers
 		//	new Recipe{Id = 7, Name = "Coconut cream pie", Description = "Coconut cream pie with merage and toasted coconuts", CaloriesPerServing = 250},
 		//};
 
+		public HomeController()
+		{
+			//if (!this.User.Identity.IsAuthenticated)
+			//	throw new Exception("User not logged in");
+		}
+
 		public ActionResult Index()
 		{
 			return View();
@@ -34,9 +42,10 @@ namespace ShoppingNut.Controllers
 		public ActionResult GetAllRecipes()
 		{
 			RecipeRepository recipes = new RecipeRepository();
-			//List<Recipe> recipe = recipes.AllIncluding(x => x.Ingredients, x => x.Instructions).Select(x=>new {x.Id, x.Name, x.Description})
-			var recipe = recipes.All.Select(x => new { x.Id, x.Name, x.Description }).ToList();
-			return Json(recipe, JsonRequestBehavior.AllowGet);
+			var recipe = recipes.AllIncluding(x => x.Images).ToList();
+			List<object> v = new List<object>();
+			recipe.ForEach(x => v.Add(x.ToJsonLite()));
+			return Json(v, JsonRequestBehavior.AllowGet);
 		}
 
 		public ActionResult GetAllRecipesWithIngredients()
@@ -239,7 +248,7 @@ namespace ShoppingNut.Controllers
 				IngredientRepository ingredients = new IngredientRepository();
 				ingredients.Delete(id);
 				ingredients.Save();
-				return Json(new { Success = true }, JsonRequestBehavior.AllowGet);			
+				return Json(new { Success = true }, JsonRequestBehavior.AllowGet);
 			}
 			catch (Exception)
 			{
@@ -337,12 +346,69 @@ namespace ShoppingNut.Controllers
 
 		public ActionResult ItemPickedUp(int id, bool pickedUp)
 		{
+			if (!this.User.Identity.IsAuthenticated)
+				throw new Exception("User not logged in");
 			ShoppingListItemRepository repo = new ShoppingListItemRepository();
 			var item = repo.Find(id);
 			item.PickedUp = pickedUp;
 			repo.InsertOrUpdate(item);
 			repo.Save();
 			return null;
+		}
+
+		[HttpPost]
+		public ActionResult UploadImages(HttpPostedFileBase[] file, RecipeIdWrapper id)
+		{
+			if (!this.User.Identity.IsAuthenticated)
+				throw new Exception("User not logged in");
+			if (file == null || !file.Any())
+				return Json("no files");
+			UserSubmittedImageRepository imageRepo = new UserSubmittedImageRepository();
+			RecipeImageRepository recipeImageRepo = new RecipeImageRepository();
+			foreach (var f in file)
+			{
+				UserSubmittedImage image = new UserSubmittedImage { Image = ModifyImageForDatabase(f) };
+				imageRepo.InsertOrUpdate(image);
+				imageRepo.Save();
+				RecipeImage recipeImage = new RecipeImage { UserSubmittedImageId = image.Id, RecipeId = Convert.ToInt32(id.recipeId) };
+				recipeImageRepo.InsertOrUpdate(recipeImage);
+				recipeImageRepo.Save();
+			}
+
+			return Json("Got it!", JsonRequestBehavior.DenyGet);
+		}
+
+		public ActionResult GetRecipeImages(int recipeId)
+		{
+			RecipeRepository repo = new RecipeRepository();
+			Recipe recipe = repo.Find(recipeId);
+			if (recipe != null && recipe.Images.Any())
+			{
+				int[] imageIds = recipe.Images.Select(x => x.UserSubmittedImageId).ToArray();
+				return Json(imageIds, JsonRequestBehavior.AllowGet);
+			}
+			return Json(null, JsonRequestBehavior.AllowGet);
+		}
+
+		private byte[] ModifyImageForDatabase(HttpPostedFileBase file)
+		{
+			Image image = new Bitmap(file.InputStream);
+			Size newSize = default(Size);
+			newSize.Width = 320;
+			newSize.Height = (int)((decimal)image.Size.Height / (decimal)((decimal)image.Size.Width / (decimal)newSize.Width));
+			Image newImage = new Bitmap(image, newSize);
+			MemoryStream ms = new MemoryStream();
+			newImage.Save(ms, System.Drawing.Imaging.ImageFormat.Jpeg);
+			return ms.ToArray();
+		}
+
+		public ActionResult Image(int id)
+		{
+			UserSubmittedImageRepository repo = new UserSubmittedImageRepository();
+			var image = repo.Find(id);
+			if (image != null)
+				return File(image.Image, "image/jpeg");
+			return Json(null, JsonRequestBehavior.AllowGet);
 		}
 
 		public ActionResult Boot()
@@ -354,5 +420,12 @@ namespace ShoppingNut.Controllers
 		{
 			return View();
 		}
+
+		#region NestedTypes
+		public class RecipeIdWrapper
+		{
+			public string recipeId { get; set; }
+		}
+		#endregion
 	}
 }
