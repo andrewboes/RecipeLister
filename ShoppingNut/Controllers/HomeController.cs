@@ -10,7 +10,7 @@ using System.IO;
 namespace ShoppingNut.Controllers
 {
 	/// <summary>
-	/// $entityTypes = "Food", "Ingredient", "Instruction", "InstructionItem", "QuantityType", "Recipe", "RecipeImage", "UserSubmittedImage"
+	/// $entityTypes = "Food", "Ingredient", "Instruction", "InstructionItem", "QuantityType", "Recipe", "RecipeImage", "UserSubmittedImage", "FoodGroup"
 	/// foreach($type in $entityTypes){Scaffold Repository -ModelType $type -Force}
 	/// To update database when you get a message "Model backing the blah blah has changed since the database was created. blah"
 	/// 
@@ -182,19 +182,12 @@ namespace ShoppingNut.Controllers
 				throw new Exception("User not logged in");
 			recipe.Instructions = null;
 			recipe.Ingredients = null;
-			try
-			{
-				UserProfileRepository users = new UserProfileRepository();
-				recipe.UserId = users.All.Single(x => x.UserName == this.User.Identity.Name).UserId;
-				RecipeRepository recipes = new RecipeRepository();
-				recipes.InsertOrUpdate(recipe);
-				recipes.Save();
-				return Json(new { Success = true, RecipeId = recipe.Id }, JsonRequestBehavior.AllowGet);
-			}
-			catch (Exception)
-			{
-				throw;
-			}
+			UserProfileRepository users = new UserProfileRepository();
+			recipe.UserId = users.All.Single(x => x.UserName == this.User.Identity.Name).UserId;
+			RecipeRepository recipes = new RecipeRepository();
+			recipes.InsertOrUpdate(recipe);
+			recipes.Save();
+			return Json(new { Success = true, RecipeId = recipe.Id }, JsonRequestBehavior.AllowGet);
 		}
 
 		public ActionResult InsertOrUpdateIngredient(Ingredient ingredient)

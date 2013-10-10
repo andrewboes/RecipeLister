@@ -67,4 +67,28 @@
       <Column Name="Num_Data_Pts" Type="System.Int16" DbType="SmallInt" CanBeNull="true" />
     </Type>
   </Table>
+  <Table Name="dbo.FOOD_DES" Member="FOOD_DEs">
+    <Type Name="FOOD_DE">
+      <Column Name="NDB_No" Type="System.String" DbType="NVarChar(5)" CanBeNull="true" />
+      <Column Name="FdGrp_Cd" Type="System.String" DbType="NVarChar(4)" CanBeNull="true" />
+      <Column Name="Long_Desc" Type="System.String" DbType="NVarChar(200)" CanBeNull="true" />
+      <Column Name="Shrt_Desc" Type="System.String" DbType="NVarChar(60)" CanBeNull="true" />
+      <Column Name="ComName" Type="System.String" DbType="NVarChar(100)" CanBeNull="true" />
+      <Column Name="ManufacName" Type="System.String" DbType="NVarChar(65)" CanBeNull="true" />
+      <Column Name="Survey" Type="System.String" DbType="NVarChar(1)" CanBeNull="true" />
+      <Column Name="Ref_Desc" Type="System.String" DbType="NVarChar(135)" CanBeNull="true" />
+      <Column Name="Refuse" Type="System.Int16" DbType="SmallInt" CanBeNull="true" />
+      <Column Name="SciName" Type="System.String" DbType="NVarChar(65)" CanBeNull="true" />
+      <Column Name="N_Factor" Type="System.Single" DbType="Real" CanBeNull="true" />
+      <Column Name="Pro_Factor" Type="System.Single" DbType="Real" CanBeNull="true" />
+      <Column Name="Fat_Factor" Type="System.Single" DbType="Real" CanBeNull="true" />
+      <Column Name="CHO_Factor" Type="System.Single" DbType="Real" CanBeNull="true" />
+    </Type>
+  </Table>
+  <Table Name="dbo.FD_GROUP" Member="FD_GROUPs">
+    <Type Name="FD_GROUP">
+      <Column Name="FdGrp_CD" Type="System.String" DbType="NVarChar(5)" CanBeNull="true" />
+      <Column Name="FdGrp_Desc" Type="System.String" DbType="NVarChar(60)" CanBeNull="true" />
+    </Type>
+  </Table>
 </Database>

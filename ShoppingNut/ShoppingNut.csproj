@@ -213,9 +213,15 @@
     <Compile Include="Migrations\201309262051197_MovedImageToOwnTable.Designer.cs">
       <DependentUpon>201309262051197_MovedImageToOwnTable.cs</DependentUpon>
     </Compile>
+    <Compile Include="Migrations\201310092330584_MoreFoodInfo.cs" />
+    <Compile Include="Migrations\201310092330584_MoreFoodInfo.Designer.cs">
+      <DependentUpon>201310092330584_MoreFoodInfo.cs</DependentUpon>
+    </Compile>
     <Compile Include="Migrations\Configuration.cs" />
     <Compile Include="Models\AccountModels.cs" />
     <Compile Include="Models\Food.cs" />
+    <Compile Include="Models\FoodGroup.cs" />
+    <Compile Include="Models\FoodGroupRepository.cs" />
     <Compile Include="Models\FoodRepository.cs" />
     <Compile Include="Models\Ingredient.cs" />
     <Compile Include="Models\IngredientRepository.cs" />
@@ -629,6 +635,9 @@
     </EmbeddedResource>
     <EmbeddedResource Include="Migrations\201309262051197_MovedImageToOwnTable.resx">
       <DependentUpon>201309262051197_MovedImageToOwnTable.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Migrations\201310092330584_MoreFoodInfo.resx">
+      <DependentUpon>201310092330584_MoreFoodInfo.cs</DependentUpon>
     </EmbeddedResource>
   </ItemGroup>
   <ItemGroup>

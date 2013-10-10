@@ -12,12 +12,15 @@ namespace UsdaMigration
 {
 	class Program
 	{
-		private static Food UsdaToShoppingNut(ABBREV data, List<WEIGHT> weights)
+		private static Food UsdaToShoppingNut(ABBREV data, List<WEIGHT> weights, FOOD_DE desc, int foodGroupId)
 		{
-			string name = CultureInfo.CurrentCulture.TextInfo.ToTitleCase( data.Shrt_Desc.ToLower());
+			//string name = CultureInfo.CurrentCulture.TextInfo.ToTitleCase( data.Shrt_Desc.ToLower());
+
 			Food f = new Food
 			{
-				Name = name,
+				Name = desc.Long_Desc,
+				CommonName = desc.ComName,
+				Ndb_No = data.NDB_No,
 				Calories = data.Energ_Kcal.GetValueOrDefault(0),
 				Water = data.Water__g_.GetValueOrDefault(0),
 				Protein = data.Protein__g_.GetValueOrDefault(0),
@@ -35,7 +38,8 @@ namespace UsdaMigration
 				CholesteralMg = data.Cholestrl__mg_.GetValueOrDefault(0),
 				VitaminCMg = data.Vit_C__mg_.GetValueOrDefault(0),
 				DefaultGrams = data.GmWt_1.GetValueOrDefault(0),
-				QuantityTypes = weights.Select(UsdaWeightToQuanityType).ToList()
+				QuantityTypes = weights.Select(UsdaWeightToQuanityType).ToList(),
+				FoodGroupId = foodGroupId
 			};
 			return f;
 		}
@@ -44,6 +48,11 @@ namespace UsdaMigration
 		{
 			QuantityType qt = new QuantityType {Grams = x.Gm_Wgt.GetValueOrDefault(0), Name = x.Msre_Desc};
 			return qt;
+		}
+
+		private static FoodGroup UsdaFoodGroupToFoodGroup(FD_GROUP group)
+		{
+			return new FoodGroup { Description = group.FdGrp_Desc };
 		}
 
 		static void Main(string[] args)
@@ -57,7 +66,10 @@ namespace UsdaMigration
 					foreach (var s in usdaFoods)
 					{
 						var weights = context.WEIGHTs.Where(x => x.NDB_No == s.NDB_No).ToList();
-						Food f = UsdaToShoppingNut(s, weights);
+						var desc = context.FOOD_DEs.Single(x => x.NDB_No == s.NDB_No);
+						var groups = context.FD_GROUPs.Single(x => x.FdGrp_CD == desc.FdGrp_Cd);
+						int foodGroupId = GetFoodGroupId(v, groups);
+						Food f = UsdaToShoppingNut(s, weights, desc, foodGroupId);
 						v.Foods.Add(f);
 						if (count % 500 == 0)
 							Console.WriteLine(count);
@@ -68,6 +80,20 @@ namespace UsdaMigration
 					v.Database.ExecuteSqlCommand("INSERT INTO dbo.QuantityTypes ( Name, Grams, FoodId ) SELECT N'ounce (weight)', 28.3495, id FROM dbo.Foods");
 					v.Database.ExecuteSqlCommand("INSERT INTO dbo.QuantityTypes ( Name, Grams, FoodId ) SELECT N'pound', 453.592, id FROM dbo.Foods");
 				}
+			}
+		}
+
+		private static int GetFoodGroupId(ShoppingNutContext ctx, FD_GROUP usdaGroup)
+		{
+			var groups = ctx.FoodGroups.Where(x => x.Description == usdaGroup.FdGrp_Desc);
+			if (groups.Any())
+				return groups.Single().Id;
+			else
+			{
+				FoodGroup group = new FoodGroup {Description = usdaGroup.FdGrp_Desc};
+				ctx.FoodGroups.Add(group);
+				ctx.SaveChanges();
+				return group.Id;
 			}
 		}
 	}

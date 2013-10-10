@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.ComponentModel.DataAnnotations.Schema;
 using System.Linq;
 using System.Text;
 
@@ -8,7 +9,12 @@ namespace ShoppingNut.Models
 	public class Food
 	{
 		public int Id { get; set; }
+		/// <summary>
+		/// This is the database id from the USDA
+		/// </summary>
+		public string Ndb_No { get; set; }
 		public string Name { get; set; }
+		public string CommonName { get; set; }
 		public double Calories { get; set; }
 		public double Protein { get; set; }
 		public double Water { get; set; }
@@ -28,5 +34,9 @@ namespace ShoppingNut.Models
 		public double DefaultGrams { get; set; }
 
 		public virtual List<QuantityType> QuantityTypes { get; set; }
+		
+		[ForeignKey("FoodGroup")]
+		public int FoodGroupId { get; set; }
+		public virtual FoodGroup FoodGroup { get; set; }
 	}
 }

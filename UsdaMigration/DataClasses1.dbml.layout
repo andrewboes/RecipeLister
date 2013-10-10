@@ -14,5 +14,17 @@
         <elementListCompartment Id="58a5c414-2402-43e3-a99d-769da62c569e" absoluteBounds="4.64, 2.335, 1.9700000000000002, 1.4031982421875" name="DataPropertiesCompartment" titleTextColor="Black" itemTextColor="Black" />
       </nestedChildShapes>
     </classShape>
+    <classShape Id="e2721bf2-1348-4531-b761-06a8bfe00049" absoluteBounds="4.625, 4.375, 2, 3.5016097005208326">
+      <DataClassMoniker Name="/DataClasses1DataContext/FOOD_DE" />
+      <nestedChildShapes>
+        <elementListCompartment Id="fd9ed0cb-822c-41ca-a6b2-8305152ca7c0" absoluteBounds="4.64, 4.835, 1.9700000000000002, 2.941609700520833" name="DataPropertiesCompartment" titleTextColor="Black" itemTextColor="Black" />
+      </nestedChildShapes>
+    </classShape>
+    <classShape Id="b9319267-d282-44e0-a4d4-07c6bb3b47c9" absoluteBounds="4.625, 0.5, 2, 1.1939925130208333">
+      <DataClassMoniker Name="/DataClasses1DataContext/FD_GROUP" />
+      <nestedChildShapes>
+        <elementListCompartment Id="690111c9-86bd-4620-95f3-8870f6210d39" absoluteBounds="4.64, 0.96, 1.9700000000000002, 0.63399251302083326" name="DataPropertiesCompartment" titleTextColor="Black" itemTextColor="Black" />
+      </nestedChildShapes>
+    </classShape>
   </nestedChildShapes>
 </ordesignerObjectsDiagram>
