@@ -2,8 +2,11 @@
 using System.Collections.Generic;
 using System.Drawing;
 using System.Linq;
+using System.Security.Authentication;
 using System.Web;
 using System.Web.Mvc;
+using CsQuery;
+using HtmlAgilityPack;
 using ShoppingNut.Models;
 using System.IO;
 
@@ -36,7 +39,18 @@ namespace ShoppingNut.Controllers
 		public ActionResult GetAllRecipes()
 		{
 			RecipeRepository recipes = new RecipeRepository();
-			var recipe = recipes.AllIncluding(x => x.Images).ToList();
+			int id = this.GetUserId();
+			var recipe = recipes.All.ToList();
+			List<object> v = new List<object>();
+			recipe.ForEach(x => v.Add(x.ToJsonLite()));
+			return Json(v, JsonRequestBehavior.AllowGet);
+		}
+
+		public ActionResult GetUserRecipes()
+		{
+			RecipeRepository recipes = new RecipeRepository();
+			int id = this.GetUserId();
+			var recipe = recipes.AllIncluding(x => x.Images).Where(x => x.UserId == id).ToList();
 			List<object> v = new List<object>();
 			recipe.ForEach(x => v.Add(x.ToJsonLite()));
 			return Json(v, JsonRequestBehavior.AllowGet);
@@ -45,7 +59,8 @@ namespace ShoppingNut.Controllers
 		public ActionResult GetAllRecipesWithIngredients()
 		{
 			RecipeRepository recipes = new RecipeRepository();
-			var recipe = recipes.AllIncluding(x => x.Ingredients).ToList();
+			int id = this.GetUserId();
+			var recipe = recipes.AllIncluding(x => x.Ingredients).Where(x => x.UserId == id).ToList();
 			List<object> v = new List<object>();
 			recipe.ForEach(x => v.Add(x.ToJson()));
 			return Json(v, JsonRequestBehavior.AllowGet);
@@ -53,9 +68,8 @@ namespace ShoppingNut.Controllers
 
 		public ActionResult GetShoppingLists()
 		{
-			var users = new UserProfileRepository();
-			var id = users.All.Single(x => x.UserName == User.Identity.Name).UserId;
 			var lists = new ShoppingListRepository();
+			int id = this.GetUserId();
 			var userLists = lists.AllIncluding(x => x.Items).Where(x => x.UserId == id).ToList();
 			List<object> v = new List<object>();
 			userLists.ForEach(x => v.Add(x.ToJson()));
@@ -77,7 +91,7 @@ namespace ShoppingNut.Controllers
 			string[] filters = filter.Split(' ');
 			if (filters.Count() == 1)
 				foodsJson.AddRange(this.FoodsSearchStartsWith(filters, foods));
-			foodsJson.AddRange(this.FoodsSearchOne(filters, foods));
+			foodsJson.AddRange(this.FoodsSearch(filters, foods));
 			return Json(foodsJson.Distinct().Select(x => new { x.Id, x.Name, x.Calories }).ToList(), JsonRequestBehavior.AllowGet);
 		}
 
@@ -93,12 +107,12 @@ namespace ShoppingNut.Controllers
 			return foodSearchResults.Take(20).ToList();
 		}
 
-		private List<Food> FoodsSearchOne(string[] filters, FoodRepository foods)
+		private List<Food> FoodsSearch(string[] filters, FoodRepository foods)
 		{
 			var foodSearchOne = foods.All;
 			foreach (var s in filters)
 			{
-				foodSearchOne = foodSearchOne.Where(x => x.Name.Contains(s));
+				foodSearchOne = foodSearchOne.Where(x => x.Name.Contains(s) || x.CommonName.Contains(s));
 			}
 			return foodSearchOne.Take(20).ToList();
 		}
@@ -362,7 +376,6 @@ namespace ShoppingNut.Controllers
 				recipeImageRepo.InsertOrUpdate(recipeImage);
 				recipeImageRepo.Save();
 			}
-
 			return Json("Got it!", JsonRequestBehavior.DenyGet);
 		}
 
@@ -399,15 +412,64 @@ namespace ShoppingNut.Controllers
 			return Json(null, JsonRequestBehavior.AllowGet);
 		}
 
-		public ActionResult Boot()
+		public ActionResult GetFoodAllGroups()
 		{
-			return View();
+			FoodGroupRepository repo = new FoodGroupRepository();
+			var groups = repo.All.OrderBy(x => x.Description).Select(x => new { x.Id, x.Description }).ToList();
+			return Json(groups, JsonRequestBehavior.AllowGet);
 		}
 
-		public ActionResult Boot2()
+		[HttpPost]
+		public ActionResult InsertFood(Food food)
 		{
-			return View();
+			food.FoodGroupId = food.FoodGroup.Id;
+			food.FoodGroup = null;
+			food.SourceId = this.GetUserEnteredFoodSourceId();
+			FoodRepository repo = new FoodRepository();
+			if (repo.All.Any(x => x.Name.Contains(food.Name)))
+				return Json(new {Success = false, Message = string.Format("Food with name '{0}' already exists", food.Name)}, JsonRequestBehavior.AllowGet);
+			repo.InsertOrUpdate(food);
+			repo.Save();
+			return Json(new {Success = true, @object = food.ToJson()}, JsonRequestBehavior.DenyGet);
 		}
+
+		public ActionResult Scrape(string url)
+		{
+			if(string.IsNullOrEmpty(url))
+			 url = "http://thepioneerwoman.com/cooking/2013/10/carb-buster-breakfast/";
+			HtmlWeb web = new HtmlWeb();
+			HtmlDocument doc = web.Load(url);
+			CQ cqDoc = doc.DocumentNode.OuterHtml;
+			var Name = cqDoc[".recipe-title"].Text();
+			var Servings = cqDoc["[itemprop='yield']"].Text();
+			var ingredients = cqDoc["[itemprop='ingredient']"].ToList();
+			List<Tuple<string, string>> Ingredients = new List<Tuple<string, string>>();
+			foreach (var ingredient in ingredients)
+			{
+				CQ ing = CQ.Create(ingredient);
+				var amount = ing["[itemprop='amount']"].Text();
+				var name = ing["[itemprop='name']"].Text();
+				Ingredients.Add(new Tuple<string, string>(amount, name));
+			}
+			var instructionDiv = cqDoc["div [itemprop='instructions']"].ToList();
+			var instructionPs = CQ.Create(instructionDiv)["p"];
+			List<string> Instructions = instructionPs.Select(instruction => instruction.InnerText).ToList();
+			return Json(new { Name, Servings, Url = url, Ingredients, Instructions }, JsonRequestBehavior.AllowGet);
+		}
+
+		private int GetUserEnteredFoodSourceId()
+		{
+			return 2;
+		}
+
+		#region Private Methods
+		private int GetUserId()
+		{
+			var users = new UserProfileRepository();
+			var id = users.All.Single(x => x.UserName == User.Identity.Name).UserId;
+			return id;
+		}
+		#endregion
 
 		#region NestedTypes
 		public class RecipeIdWrapper

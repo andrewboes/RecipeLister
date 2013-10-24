@@ -1,0 +1,29 @@
+﻿<div class="modal-header">
+	<h3>Add food</h3>
+</div>
+<ng:form class="modal-body">
+	<div class="row-fluid">
+		<input class="span12" type="text" ng-model="food.Name" placeholder="Name" required />
+	</div>
+	<div class="row-fluid">
+		<select class="span12" required ng-model="food.FoodGroup" ng-options="ingType.Description for ingType in foodGroups" required>
+		</select>
+	</div>
+	<fieldset>
+		<legend>Quantity types</legend>
+		<ul class="unstyled">
+			<li ng-repeat="qt in food.QuantityTypes">{{qt.Name}}</li>
+		</ul>
+	</fieldset>
+	<div class="row-fluid">
+		<input class="span6" type="text" ng-model="newQuantityName"  size="30" placeholder="quantity type (cup, tsp, ml, etc)" />
+		<input class="span6" type="number" ng-model="newQuantityGrams"  size="30" placeholder="grams (optional)" />
+	</div>
+		<input class="btn" type="button" ng-click="addQuantity(newQuantityName, newQuantityGrams)" value="add">
+</ng:form>
+
+
+<div class="modal-footer">
+	<button class="btn btn-primary" ng-click="ok()">OK</button>
+	<button class="btn" ng-click="cancel()">Cancel</button>
+</div>

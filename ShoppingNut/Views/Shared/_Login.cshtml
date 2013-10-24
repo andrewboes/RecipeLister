@@ -10,7 +10,7 @@
 	@Html.PasswordFor(m => m.Password, new { placeholder = "Password", @class = "form-control" })
 	@Html.ValidationMessageFor(m => m.Password)
 	<label class="checkbox">
-		@Html.CheckBoxFor(m => m.RememberMe, new { @class = "checkbox", value="Remember me" })
+		@Html.CheckBoxFor(m => m.RememberMe, new { @class = "checkbox" })
 		Remember Me
 	</label>
 	<input class="btn btn-lg btn-primary" type="submit" value="Log in" />

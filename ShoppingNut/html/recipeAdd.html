@@ -12,7 +12,7 @@
 		<input class="span12" type="text" ng-model="recipe.Name" placeholder="Name" required ng-model-onblur ng-change="insertOrUpdate()" />
 	</div>
 	<div class="row-fluid">
-		<textarea class="span12" class="form-control" ng-model="recipe.Description" placeholder="Description" required required ng-model-onblur ng-change="insertOrUpdate()"></textarea>
+		<textarea class="span12" rows="4" class="form-control" ng-model="recipe.Description" placeholder="Description" required required ng-model-onblur ng-change="insertOrUpdate()"></textarea>
 	</div>
 	<div class="row">
 		<div class="span6">
@@ -32,12 +32,9 @@
 										<input class="span12" type="text" ng-model="ingredient.Notes" placeholder="notes" />
 									</div>
 									<div>
-										<input class="btn btn-primary btn-sm" type="submit" value="save" ng-click="updateIngredient($index); editing = false" />
+										<input class="btn btn-primary btn-sm" type="submit" value="done" ng-click="updateIngredient($index); editing = false" />
 									</div>
 								</div>
-								<!--<div class="row-fluid">
-									<input class="span4" type="text" ng-model="ingredient.Notes" placeholder="notes" />
-								</div>-->
 							</div>
 						</ng:form>
 						<div class="row-fluid" ng-hide="editing">
@@ -61,6 +58,8 @@
 								</div>
 							<div>
 								<input class="btn btn-primary btn-sm" type="button" ng-click="addIngredient();" value="add" ng-disabled="ingredientsAddForm.$invalid" />
+								<input class="btn btn-sm" type="button" ng-click="open();" value="new" />
+
 							</div>
 						</div>
 				</ng:form>
@@ -100,17 +99,21 @@
 
 	<accordion>
 		<accordion-group heading="Additional fields">
-			<input class="span3" ng-model-onblur ng-change="insertOrUpdate()" type="number" ng-model="recipe.Servings" placeholder="Servings" />
-			<input class="span4" type="text" ng-model="recipe.ActiveTime" placeholder="ActiveTime" />
-			<input class="span4" type="text" ng-model="recipe.TotalTime" placeholder="TotalTime" />
-			<div>
-				<input class="span5" ng-model-onblur ng-change="insertOrUpdate()" type="text" ng-model="recipe.Source" placeholder="Source" />
+			<div class="row-fluid">
+			<input class="span2" ng-model-onblur ng-change="insertOrUpdate()" type="number" ng-model="recipe.Servings" placeholder="Servings" />
+			<input class="span5" type="text" ng-model="recipe.ActiveTime" placeholder="ActiveTime" />
+			<input class="span5" type="text" ng-model="recipe.TotalTime" placeholder="TotalTime" />
+				</div>
+			<div class="row-fluid">
+				<input class="span6" ng-model-onblur ng-change="insertOrUpdate()" type="text" ng-model="recipe.Source" placeholder="Source" />
 				<input class="span6" ng-model-onblur ng-change="insertOrUpdate()" type="url" ng-model="recipe.Url" placeholder="Url" />
 			</div>
-			<div>
-				<input class="span11" ng-model-onblur ng-change="insertOrUpdate()" type="text" ng-model="recipe.Categories" placeholder="Categories" />
+			<div class="row-fluid">
+				<input class="span12" ng-model-onblur ng-change="insertOrUpdate()" type="text" ng-model="recipe.Categories" placeholder="Categories" />
 			</div>
-			<textarea class="span11" ng-model-onblur ng-change="insertOrUpdate()" ng-model="recipe.Notes" placeholder="Notes" ></textarea>
+			<div class="row-fluid">
+				<textarea class="span12" rows="3" ng-model-onblur ng-change="insertOrUpdate()" ng-model="recipe.Notes" placeholder="Notes" ></textarea>
+			</div>
 		</accordion-group>
 		<accordion-group heading="Images">
 			<div>
@@ -137,18 +140,4 @@
 			</ul>
 		</accordion-group>
 	</accordion>
-			<!--<div>
-			Select files: <input type="file" ng-file-select="onFileSelect($files, 2)" multiple>
-			<span ng-show="selectedFiles != null">
-				<span class="sel-file" ng-repeat="f in selectedFiles">
-					{{f.name}} - size: {{f.size}}B - type: {{f.type}}
-					<span ng-show="$index < selectedFiles.length - 1">,</span>
-				</span>
-			</span>
-				<div class="response" ng-show="uploadResult.length > 0">
-					Server Response:
-					<ul>
-						<li ng-repeat="result in uploadResult" ng-bind-html-unsafe="result"></li>
-					</ul>
-				</div>			</div>-->
 </ng:form>

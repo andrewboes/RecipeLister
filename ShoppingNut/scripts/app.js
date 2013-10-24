@@ -82,8 +82,9 @@ angular.module('shoppingNut', ['ui.bootstrap', 'angularFileUpload'])
 				when('/lists/add', { templateUrl: 'html/listAdd.html', controller: listAddCtrl }).
 				when('/lists/:listId', { templateUrl: 'html/listDetail.html', controller: listDetailCtrl }).
 				when('/recipes', { templateUrl: 'html/recipeList.html', controller: recipeListCtrl }).
+				when('/recipes/all/:all', { templateUrl: 'html/recipeList.html', controller: recipeListCtrl }).
 				when('/recipes/add', { templateUrl: 'html/recipeAdd.html', controller: recipeAddCtrl }).
 				when('/recipes/edit/:recipeId', { templateUrl: 'html/recipeAdd.html', controller: recipeAddCtrl }).
-				when('/recipes/:recipeId', { templateUrl: 'html/recipeDetail.html', controller: recipeDetailCtrl }).
+				when('/recipes/copy', { templateUrl: 'html/recipeCopy.html', controller: recipeCopyCtrl }).
 				otherwise({ redirectTo: '/recipes' });
   }]);

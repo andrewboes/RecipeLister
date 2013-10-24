@@ -1,0 +1,27 @@
+﻿<div class="well">
+	<div class="row-fluid">
+		<input class="span10" type="text" ng-model="url" placeholder="Url"/>
+		<input class="btn-primary" type="button" value="Go" ng-click="scrapePage()"/>
+	</div>
+	<div class="row-fluid">
+		<input class="span12" type="text" ng-model="recipe.Name" /></div>
+	<div class="row-fluid">
+		<input class="span12" type="text" ng-model="recipe.Servings" /></div>
+	<fieldset>
+		<legend>Ingredients</legend>
+		<ul class="unstyled">
+			<li class="row-fluid" ng-repeat="ingredient in recipe.Ingredients">
+				<input class="span3" type="text" ng-model="ingredient.Item1" />
+				<input class="span9" type="text" ng-model="ingredient.Item2" />
+			</li>
+		</ul>
+	</fieldset>
+	<fieldset>
+		<legend>Instructions</legend>
+		<ul class="unstyled">
+			<li class="row-fluid" ng-repeat="instruction in recipe.Instructions">
+				<textarea rows="3" class="span12" ng-model="instruction" />
+			</li>
+		</ul>
+	</fieldset>
+</div>

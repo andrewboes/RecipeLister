@@ -10,7 +10,7 @@ namespace ShoppingNut.Models
 	{
 		public int Id { get; set; }
 		public string Name { get; set; }
-		public double Grams { get; set; }
+		public double? Grams { get; set; }
 
 		[ForeignKey("Food")]
 		public int FoodId { get; set; }
