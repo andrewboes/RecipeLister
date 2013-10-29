@@ -343,7 +343,7 @@ function newFoodCtrl($scope, $modalInstance, $http) {
 	};
 };
 
-function listAddCtrl($scope, $http, $location) {
+function listAddCtrl($scope, $http) {
 	$scope.saved = true;
 	$scope.list = { Name: '', Items: [], Id: 0 };
 
@@ -463,6 +463,22 @@ function listAddCtrl($scope, $http, $location) {
 			$scope.ingredientQuantityTypes = data;
 		});
 		$scope.currentSelectedFood = $item;
+	};
+
+	$scope.deleteItem = function(index) {
+		$scope.saved = false;
+		$http.post('/Home/DeleteShoppingListItem/' + $scope.list.Items[index].Id).success(function (data) {
+			$scope.saved = true;
+			if (data.Success) {
+				$scope.list.Items.splice(index, 1);
+			} else {
+				alert(data);
+			}
+		}).error(function(data, status, headers, config) {
+			$scope.saved = true;
+			var message = "Error: " + data;
+			alert(message);
+		});
 	};
 }
 

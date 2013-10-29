@@ -244,9 +244,9 @@ namespace ShoppingNut.Controllers
 				ingredients.Save();
 				return Json(new { Success = true }, JsonRequestBehavior.AllowGet);
 			}
-			catch (Exception)
+			catch (Exception ex)
 			{
-				throw;
+				return Json(new { Success = false, ex.Message }, JsonRequestBehavior.AllowGet);
 			}
 		}
 
@@ -333,6 +333,23 @@ namespace ShoppingNut.Controllers
 				repo.Save();
 				return Json(new { Success = true, item.ShoppingListId, ShoppingListItemId = item.Id }, JsonRequestBehavior.AllowGet); 
 
+			}
+			catch (Exception ex)
+			{
+				return Json(new { Success = false, ex.Message }, JsonRequestBehavior.AllowGet);
+			}
+		}
+
+		public ActionResult DeleteShoppingListItem(int id)
+		{
+			if (!this.User.Identity.IsAuthenticated)
+				throw new Exception("User not logged in");
+			try
+			{
+				ShoppingListItemRepository repository = new ShoppingListItemRepository();
+				repository.Delete(id);
+				repository.Save();
+				return Json(new { Success = true }, JsonRequestBehavior.AllowGet);
 			}
 			catch (Exception ex)
 			{

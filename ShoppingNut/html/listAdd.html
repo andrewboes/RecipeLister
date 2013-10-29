@@ -2,20 +2,25 @@
 	<!--<div class="controls">
 		    <input type="submit" class="btn btn-primary" ng-click="save()" value="Save List">
 	    </div>-->
-	<h3>New List</h3>
+	<h4>New List</h4>
 	<span ng-hide="saved">saving...</span>
 	<span ng-show="saved">saved</span>
 	<br />
 	<div class="row-fluid">
 		<input class="span12" type="text" ng-model="list.Name" placeholder="list name" ng-model-onblur ng-change="insertOrUpdateList()" />
 	</div>
+	<fieldset>
+		<legend>Items</legend>
+		<div>
+			<ul class="unstyled">
+				<li ng-repeat="item in list.Items" class='row-fluid'>
+					{{item.Quantity}} {{item.QuantityType.Name}} {{item.Name}}
+					<button class="close" ng-click="deleteItem($index)" aria-hidden="true">&times</button>
 
-	<div>
-		<ul>
-			<li ng-repeat="item in list.Items" class='row-fluid'>{{item.Quantity}} {{item.QuantityType.Name}} {{item.Name}}
-			</li>
-		</ul>
-	</div>
+				</li>
+			</ul>
+		</div>
+	</fieldset>
 
 	<ng:form name="ingredientsForm">
 		<fieldset >
@@ -37,8 +42,8 @@
 		<legend>My recipes</legend>
 		<div>Search your recipes:</div>
 		<div class="row-fluid">
-		<input class="span4" ng-model="query" type="text">
-			</div>
+			<input class="span4" ng-model="query" type="text">
+		</div>
 		<accordion>
 			<accordion-group ng-repeat="recipe in recipes | filter:query">
 				<accordion-heading>
