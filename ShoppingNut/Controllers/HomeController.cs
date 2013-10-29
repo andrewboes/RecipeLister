@@ -5,6 +5,7 @@ using System.Linq;
 using System.Security.Authentication;
 using System.Web;
 using System.Web.Mvc;
+using System.Web.UI;
 using CsQuery;
 using HtmlAgilityPack;
 using ShoppingNut.Models;
@@ -18,18 +19,9 @@ namespace ShoppingNut.Controllers
 	/// To update database when you get a message "Model backing the blah blah has changed since the database was created. blah"
 	/// 
 	/// </summary>
+	[OutputCache(Location = OutputCacheLocation.None)]
 	public class HomeController : Controller
 	{
-		//private List<Recipe> Recipes = new List<Recipe>
-		//{
-		//	new Recipe{Id = 1, Name = "Black bean salad", Description = "Black beans, corn, avacado, cilantro, etc", CaloriesPerServing = 100},
-		//	new Recipe{Id = 2, Name = "Quinoa salad", Description = "Quinoa, avacado, garbonzo beans, etc", CaloriesPerServing = 90},
-		//	new Recipe{Id = 3, Name = "Snickers pie", Description = "Creamy pie with snickers candy bars in them.", CaloriesPerServing = 300},
-		//	new Recipe{Id = 4, Name = "Fried halibut", Description = "Halibut fried with saltine crackers", CaloriesPerServing = 250},
-		//	new Recipe{Id = 5, Name = "Sweet potato burgers", Description = "Mashed up sweet potatoes fried on the stove top", CaloriesPerServing = 190},
-		//	new Recipe{Id = 6, Name = "Waffles", Description = "Delicious!", CaloriesPerServing = 150},
-		//	new Recipe{Id = 7, Name = "Coconut cream pie", Description = "Coconut cream pie with merage and toasted coconuts", CaloriesPerServing = 250},
-		//};
 
 		public ActionResult Index()
 		{
@@ -309,40 +301,42 @@ namespace ShoppingNut.Controllers
 				throw new Exception("User not logged in");
 			try
 			{
-				UserProfileRepository users = new UserProfileRepository();
-
-				list.UserId = users.All.Single(x => x.UserName == this.User.Identity.Name).UserId;
-				foreach (var v in list.Items)
-				{
-					v.Food = null;
-					v.QuantityType = null;
-				}
+				list.UserId = this.GetUserId();
 				ShoppingListRepository lists = new ShoppingListRepository();
 				lists.InsertOrUpdate(list);
 				lists.Save();
-
-				ShoppingListItemRepository items = new ShoppingListItemRepository();
-
-				foreach (var v in list.Items)
-				{
-					ShoppingListItem item = new ShoppingListItem
-					{
-						FoodId = v.FoodId,
-						ShoppingListId = v.ShoppingListId,
-						UserItemName = v.Name,
-						Id = v.Id,
-						Quantity = v.Quantity,
-						QuantityTypeId = v.QuantityTypeId
-					};
-					items.InsertOrUpdate(item);
-				}
-				items.Save();
-
-				return Json(new { Success = true }, JsonRequestBehavior.AllowGet);
+				return Json(new { Success = true, ShoppingListId = list.Id }, JsonRequestBehavior.AllowGet); 
 			}
 			catch (Exception ex)
 			{
-				return Json(new { Success = false, Message = ex.Message }, JsonRequestBehavior.AllowGet);
+				return Json(new { Success = false, ex.Message }, JsonRequestBehavior.AllowGet);
+			}
+		}
+
+		public ActionResult InsertOrUpdateShoppingListItem(ShoppingListItem item)
+		{
+			if (!this.User.Identity.IsAuthenticated)
+				throw new Exception("User not logged in");
+			try
+			{
+				if (item.ShoppingListId == default(int))
+				{
+					ShoppingList list = new ShoppingList();
+					list.UserId = this.GetUserId();
+					ShoppingListRepository lists = new ShoppingListRepository();
+					lists.InsertOrUpdate(list);
+					lists.Save();
+					item.ShoppingListId = list.Id;
+				}
+				ShoppingListItemRepository repo = new ShoppingListItemRepository();
+				repo.InsertOrUpdate(item);
+				repo.Save();
+				return Json(new { Success = true, item.ShoppingListId, ShoppingListItemId = item.Id }, JsonRequestBehavior.AllowGet); 
+
+			}
+			catch (Exception ex)
+			{
+				return Json(new { Success = false, ex.Message }, JsonRequestBehavior.AllowGet);
 			}
 		}
 
@@ -440,26 +434,26 @@ namespace ShoppingNut.Controllers
 			HtmlWeb web = new HtmlWeb();
 			HtmlDocument doc = web.Load(url);
 			CQ cqDoc = doc.DocumentNode.OuterHtml;
-			var Name = cqDoc[".recipe-title"].Text();
-			var Servings = cqDoc["[itemprop='yield']"].Text();
-			var ingredients = cqDoc["[itemprop='ingredient']"].ToList();
+			var Name = this.GetName(cqDoc);
+			var Servings = this.GetServings(cqDoc);
+			var ingredients = this.GetIngredients(cqDoc);
 			List<Tuple<string, string>> Ingredients = new List<Tuple<string, string>>();
 			foreach (var ingredient in ingredients)
 			{
 				CQ ing = CQ.Create(ingredient);
-				var amount = ing["[itemprop='amount']"].Text();
-				var name = ing["[itemprop='name']"].Text();
+				var amount = this.GetIngredientAmount(ing);
+				var name = this.GetIngredientName(ing);
 				Ingredients.Add(new Tuple<string, string>(amount, name));
 			}
-			var instructionDiv = cqDoc["div [itemprop='instructions']"].ToList();
-			var instructionPs = CQ.Create(instructionDiv)["p"];
+			var instructionDiv = this.GetInstuctionBlock(cqDoc);
+			var instructionPs = this.GetInstructions(instructionDiv);
 			List<string> Instructions = instructionPs.Select(instruction => instruction.InnerText).ToList();
 			return Json(new { Name, Servings, Url = url, Ingredients, Instructions }, JsonRequestBehavior.AllowGet);
 		}
 
-		private int GetUserEnteredFoodSourceId()
+		public ActionResult TouchTest()
 		{
-			return 2;
+			return View();
 		}
 
 		#region Private Methods
@@ -468,6 +462,67 @@ namespace ShoppingNut.Controllers
 			var users = new UserProfileRepository();
 			var id = users.All.Single(x => x.UserName == User.Identity.Name).UserId;
 			return id;
+		}
+
+		private List<IDomObject> GetInstuctionBlock(CQ cqDoc)
+		{
+			var instructions = cqDoc["div [itemprop='instructions']"].ToList();
+			if (!instructions.Any())
+				instructions = cqDoc[".directions"].ToList();
+			return instructions;
+		}
+
+		private CQ GetInstructions(List<IDomObject> instructionDiv)
+		{
+			var instructions = CQ.Create(instructionDiv)["p"];
+			if (!instructions.Any())
+				instructions = CQ.Create(instructionDiv)["li span"];
+			return instructions;
+		}
+
+		private string GetIngredientName(CQ ing)
+		{
+			string name = ing["[itemprop='name']"].Text();
+			if (string.IsNullOrEmpty(name))
+				name = ing[".ingredient-name"].Text();
+			return name;
+		}
+
+		private string GetIngredientAmount(CQ ing)
+		{
+			string amount = ing["[itemprop='amount']"].Text();
+			if (string.IsNullOrEmpty(amount))
+				amount = ing[".ingredient-amount"].Text();
+			return amount;
+		}
+
+		private List<IDomObject> GetIngredients(CQ cqDoc)
+		{
+			var ingredients = cqDoc["[itemprop='ingredient']"].ToList();
+			if (!ingredients.Any())
+				ingredients = cqDoc["[itemprop='ingredients']"].ToList();
+			return ingredients;
+		}
+
+		private string GetServings(CQ cqDoc)
+		{
+			string servings = cqDoc["[itemprop='yield']"].Text();
+			if (string.IsNullOrEmpty(servings))
+				servings = cqDoc["[itemprop='recipeYield']"].Text();
+			return servings;
+		}
+
+		private string GetName(CQ cqDoc)
+		{
+			string name = cqDoc[".recipe-title"].Text();
+			if (string.IsNullOrEmpty(name))
+				name = cqDoc["[itemprop='name']"].Text();
+			return name;
+		}
+
+		private int GetUserEnteredFoodSourceId()
+		{
+			return 2;
 		}
 		#endregion
 

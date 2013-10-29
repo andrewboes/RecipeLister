@@ -128,13 +128,19 @@ function recipeAddCtrl($scope, $http, $location, $routeParams, $modal, $log) {
 		$scope.foodSearch = '';
 		$scope.quantity = '';
 		$scope.ingredientQuantityTypes = '';
-		$scope.newIngredientNotes = '';
+		$scope.newIngredientNotes = ''
+		$scope.currentSelectedFood = '';
 	};
 
 	$scope.updateIngredient = function (index) {
 		$scope.saved = false;
 		$http.post('/Home/InsertOrUpdateIngredient', $scope.recipe.Ingredients[index]).success(function (data) {
 			$scope.saved = true;
+			var quantityTypes = $scope.recipe.Ingredients[index].Food.QuantityTypes;
+			for (var i = 0; i < quantityTypes.length; i++) {
+				if (quantityTypes[i].Id === $scope.recipe.Ingredients[index].QuantityTypeId)
+					$scope.recipe.Ingredients[index].QuantityType = quantityTypes[i];
+			}
 			if (!data.Success) {
 				alert(data);
 			}
@@ -246,10 +252,12 @@ function recipeAddCtrl($scope, $http, $location, $routeParams, $modal, $log) {
 	};
 
 	$scope.foodSelected = function ($item) {
-		$http.get('/Home/GetFoodQuantityTypes?id=' + $item.Id).success(function (data) {
-			$scope.ingredientQuantityTypes = data;
-		});
 		$scope.currentSelectedFood = $item;
+		$http.get('/Home/GetFoodQuantityTypes?id=' + $item.Id).success(function (data) {
+			$scope.currentSelectedFood.QuantityTypes = data;
+			$scope.quantityType = $scope.currentSelectedFood.QuantityTypes[0];
+		});
+		
 	};
 
 	$scope.foods = function (foodQuery) {
@@ -336,7 +344,8 @@ function newFoodCtrl($scope, $modalInstance, $http) {
 };
 
 function listAddCtrl($scope, $http, $location) {
-	$scope.list = { Name: '', Items: [] };
+	$scope.saved = true;
+	$scope.list = { Name: '', Items: [], Id: 0 };
 
 	$http.get('/Home/GetAllRecipesWithIngredients').success(function (data) {
 		$scope.recipes = data;
@@ -384,36 +393,59 @@ function listAddCtrl($scope, $http, $location) {
 	};
 
 	$scope.addItem = function () {
+		$scope.saved = false;
 		var item = {
 			Name: $scope.foodSearch,
 			Quantity: $scope.quantity,
-			QuantityType: $scope.quantityType
+			QuantityType: $scope.quantityType,
+			ShoppingListId: $scope.list.Id
 		};
 		if ($scope.currentSelectedFood)
 			item.FoodId = $scope.currentSelectedFood.Id;
 		if ($scope.quantityType) {
 			item.QuantityTypeId = $scope.quantityType.Id;
 		}
-		$scope.list.Items.push(item);
-		$scope.foodSearch = '';
-		$scope.quantity = '';
-		$scope.ingredientQuantityTypes = '';
-		$scope.quantityType = '';
-		$scope.currentSelectedFood = '';
-
-	};
-
-	$scope.save = function () {
-		$http.post('/Home/InsertOrUpdateShoppingList', $scope.list).success(function (data) {
+		$http.post('/Home/InsertOrUpdateShoppingListItem', item).success(function (data) {
 			if (data.Success) {
-				$location.path('/');
-			} else {
-				alert(data);
+				$scope.foodSearch = '';
+				$scope.quantity = '';
+				$scope.ingredientQuantityTypes = '';
+				$scope.quantityType = '';
+				$scope.currentSelectedFood = '';
+				$scope.list.Id = data.ShoppingListId;
+				item.Id = data.ShoppingListItemId;
+				$scope.list.Items.push(item);
 			}
+			else {
+				alert(data.Message);
+			}
+			$scope.saved = true;
 		}).error(function (data, status, headers, config) {
 			var message = "Error: " + data;
 			alert(message);
+			$scope.saved = true;
 		});
+	};
+
+	$scope.insertOrUpdateList = function () {
+		$scope.saved = false;
+		var list = { Name: $scope.list.Name, Id: $scope.list.Id };
+		$http.post('/Home/InsertOrUpdateShoppingList', list).success(function (data) {
+			if (data.Success)
+				$scope.list.Id = data.ShoppingListId;
+			else {
+				alert(data.Message);
+			}
+			$scope.saved = true;
+		}).error(function (data, status, headers, config) {
+			var message = "Error: " + data;
+			alert(message);
+			$scope.saved = true;
+		});
+	};
+
+	$scope.insertOrUpdateItem = function () {
+
 	};
 
 	$scope.foods = function (foodQuery) {

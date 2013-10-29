@@ -19,7 +19,7 @@
 	<fieldset>
 		<legend>Instructions</legend>
 		<ul class="unstyled">
-			<li class="row-fluid" ng-repeat="instruction in recipe.Instructions">
+			<li class="row-fluid" ng-repeat="instruction in recipe.Instructions track by $index">
 				<textarea rows="3" class="span12" ng-model="instruction" />
 			</li>
 		</ul>

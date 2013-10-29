@@ -1,0 +1,121 @@
+﻿@{
+	ViewBag.Title = "TouchTest";
+	Layout = null;
+}
+
+<html>
+	<head>
+		<title></title>
+		<meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no">
+	</head>
+	<body>
+		<div id="myTouchDiv" style="background-color: cyan; width: 200px; height: 300px; position: absolute">
+			x: <span id="ex"></span>; y:<span id="why"></span>; <span id="dragObj"></span>;
+		</div>
+		<div id="myEventViewer">
+		</div>
+	</body>
+</html>
+
+<!-- Latest compiled and minified CSS -->
+<link rel="stylesheet" href="//netdna.bootstrapcdn.com/bootstrap/3.0.0/css/bootstrap.min.css">
+
+<!-- Optional theme -->
+<link rel="stylesheet" href="//netdna.bootstrapcdn.com/bootstrap/3.0.0/css/bootstrap-theme.min.css">
+
+<!-- Latest compiled and minified JavaScript -->
+<script src="//netdna.bootstrapcdn.com/bootstrap/3.0.0/js/bootstrap.min.js"></script>
+<script src="http://code.jquery.com/jquery-2.0.3.min.js"></script>
+
+<script>
+	var dragObj = null;
+	$(document).ready(function () {
+		$("#myTouchDiv").on('click', function (event) {
+			showalert("Click", "alert-warning");
+			console.log(event);
+		});
+		
+		$("#myTouchDiv").on('mousedown', function (event) {
+			showalert("mouse down", "alert-info");
+			dragObj = this;
+		});
+		
+		$("#myTouchDiv").on('mouseup', function (event) {
+			showalert("mouse up", "alert-info");
+			dragObj = null;
+		});
+
+		//$(document).on("mousemove", function (event) {
+		//	moveIt(event);
+		//});
+
+		//$("#myTouchDiv").on('touchmove', function (event) {
+		//	//event.preventDefault();
+		//	moveIt(event);
+		//});
+		
+		//$("#myTouchDiv").on('touchstart', function (event) {
+		//	showalert("touchstart " + event.targetTouches.length, "alert-info");
+		//	dragObj = this;
+		//});
+		
+		//$("#myTouchDiv").on('touchend', function (event) {
+		//	showalert("touchend " + event.targetTouches.length, "alert-danger");
+		//	dragObj = null;
+		//});
+
+		var obj = document.getElementById('myTouchDiv');
+		obj.addEventListener('touchmove', function (event) {
+			event.preventDefault();
+			showalert("touchmove " + event.targetTouches.length, "alert-error");
+			//moveIt(event);
+		}, false);
+
+		document.ontouchmove = function (event) {
+			showalert("document tm " + event.targetTouches.length, "alert-danger");
+			showalert('x, y ' + event.targetTouches[0].pageX + "," + event.targetTouches[0].pageY, "alert-info");
+			showalert('x, y ' + event.touches[0].clientX + "," + event.touches[0].clientY, "alert-info");
+			showalert('x, y ' + event.originalEvent.touches[0].clientX + ", " + event.originalEvent.touches[0].clientY, "alert-info");
+
+			//moveIt(event);
+		};
+
+		obj.addEventListener('touchstart', function (event) {
+			showalert("touchstart " + event.targetTouches.length, "alert-error");
+			dragObj = this;
+		}, false);
+		
+		obj.addEventListener('touchend', function (event) {
+			showalert("touchend " + event.targetTouches.length, "alert-dismissable");
+			dragObj = null;
+		}, false);
+	});
+
+	function showalert(message, alerttype) {
+		$('#myEventViewer').append('<div id="alertdiv" class="alert ' +  alerttype + ' fade in"><a class="close" data-dismiss="alert">×</a><span>'+message+'</span></div>')
+		setTimeout(function() { $("#alertdiv").remove();}, 5000);
+	}
+	
+	function moveIt(event) {
+		showalert('intouch move', "alert-info");
+		showalert('x, y' + event.pageX + "," + event.pageY, "alert-info");
+		showalert('x, y' + event.clientX + "," + event.clientY, "alert-info");
+		showalert('x, y' + event.screenX + "," + event.screenY, "alert-info");
+		var x = event.pageX;
+		var y = event.pageY;
+		$('#ex').empty().append(x);
+		$('#why').empty().append(y);
+
+		if (dragObj == null) {
+			$('#dragObj').empty().append('null');
+			return;
+		}
+		else {
+			$('#dragObj').empty().append('not null');
+
+		}
+		dragObj.style.left = x + "px";
+		dragObj.style.top = y + "px";
+	}
+</script>
+

@@ -32,17 +32,20 @@ namespace ShoppingNut.Models
 			{
 				x.Id,
 				x.FoodId,
-				x.QuantityTypeId, 
-				Food = new { Name = x.Food.Name }, 
+				x.QuantityTypeId,
+				Food = new { Name = x.Food.Name, QuantityTypes = x.Food.QuantityTypes.Select(y => new { y.Name, y.Id }) },
 				x.Quantity,
 				QuantityType = new { Name = x.QuantityType.Name, Id = x.QuantityType.Id },
 				Calories = ((x.QuantityType.Grams * x.Food.Calories) / 100),
 				x.RecipeId,
 				x.Notes
 			}).ToList();
-			var Instructions = this.Instructions.Select(x => new {x.Id, Order = x.Order, Text = x.Text, x.RecipeId});
-			var Images = this.Images.Select(x => new {x.Id, x.RecipeId, x.UserSubmittedImageId});
-			return new { this.Id, this.Name, this.Servings, this.Description, this.Url, this.ActiveTime, this.TotalTime, this.Created, this.Notes, Ingredients = ing, Instructions, Images };
+			var Instructions = this.Instructions.Select(x => new { x.Id, Order = x.Order, Text = x.Text, x.RecipeId });
+			var Images = this.Images.Select(x => new { x.Id, x.RecipeId, x.UserSubmittedImageId });
+			string name = this.Name;
+			if (string.IsNullOrWhiteSpace(name))
+				name = this.Created.ToShortDateString();
+			return new { this.Id, Name = name, this.Servings, this.Description, this.Url, this.ActiveTime, this.TotalTime, this.Created, this.Notes, Ingredients = ing, Instructions, Images };
 		}
 
 		public object ToJsonLite()

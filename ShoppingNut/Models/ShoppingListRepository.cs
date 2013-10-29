@@ -33,9 +33,10 @@ namespace ShoppingNut.Models
 
         public void InsertOrUpdate(ShoppingList shoppinglist)
         {
-            if (shoppinglist.Id == default(int)) {
-                // New entity
-                context.ShoppingLists.Add(shoppinglist);
+            if (shoppinglist.Id == default(int))
+            {
+	            shoppinglist.Created = DateTime.Now;
+              context.ShoppingLists.Add(shoppinglist);
             } else {
                 // Existing entity
                 context.Entry(shoppinglist).State = EntityState.Modified;

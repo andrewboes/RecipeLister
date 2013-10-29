@@ -24,9 +24,7 @@
 							<div ng-show="editing">
 								<div class="row-fluid">
 									<input class="span4" disabled required placeholder="Search..." type="text" ng-model="ingredient.Food.Name" typeahead-on-select="foodSelected($item)" typeahead="suggestion.Name for suggestion in foods($viewValue)"/>
-									<select class="span4" required placeholder="quantity type">
-										<option>{{ingredient.QuantityType.Name}}</option>
-									</select>
+									<select class="span4" ng-model="ingredient.QuantityTypeId" ng-options="ingType.Id as ingType.Name for ingType in ingredient.Food.QuantityTypes"></select>
 									<input class="span4" required type="number" min="0" ng-model="ingredient.Quantity" placeholder="quantity" />
 									<div class="row-fluid">
 										<input class="span12" type="text" ng-model="ingredient.Notes" placeholder="notes" />
@@ -41,7 +39,8 @@
 							<i class="icon-pencil" ng-click="editing = true"></i>
 							{{ingredient.Quantity}} 
 							{{ingredient.QuantityType.Name}} 
-							{{ingredient.Food.Name}} 
+							{{ingredient.Food.Name}}
+							<span ng-show="ingredient.Notes">, {{ingredient.Notes}}</span> 
 								<button class="close" ng-click="deleteIngredient($index)" aria-hidden="true">&times</button>
 						</div>
 					</li>
@@ -49,8 +48,8 @@
 				<ng:form name="ingredientsAddForm">
 						<div class="row-fluid">
 								<input id="foodSearch" class="span4" required placeholder="Search..." type="text" ng-model="foodSearch" typeahead-on-select="foodSelected($item)" typeahead="suggestion.Name for suggestion in foods($viewValue)"/>
-								<select class="span4" required ng-model="quantityType" ng-options="ingType.Name for ingType in ingredientQuantityTypes" placeholder="quantity type">
-									<option style="color: #ccc" value="" disabled selected>quantity type</option>
+								<select class="span4" required ng-model="quantityType" ng-options="ingType.Name for ingType in currentSelectedFood.QuantityTypes" placeholder="quantity type">
+									<!--<option style="color: #ccc" value="" disabled selected>quantity type</option>-->
 								</select>
 							<input class="span4" required type="number" min="0" ng-model="quantity" placeholder="quantity" />
 								<div>

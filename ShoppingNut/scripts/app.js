@@ -22,7 +22,7 @@ angular.module('shoppingNut', ['ui.bootstrap', 'angularFileUpload'])
 	.directive('pin', function ($window, $timeout) {
 		return function ($scope) {
 			var colCount = 0;
-			var colWidth = 340;
+			var colWidth = 270;
 			var margin = 10;
 			var spaceLeft = 0;
 			var blocks = [];
@@ -61,7 +61,7 @@ angular.module('shoppingNut', ['ui.bootstrap', 'angularFileUpload'])
 			w.bind('resize', function () {
 				$timeout(function () {
 					$scope.setupBlocks();
-				}, 100);
+				}, 200);
 			});
 
 			if ($scope.$last) {

@@ -1,26 +1,30 @@
 ﻿<form class="well">
-	<div class="controls">
-		<input type="submit" class="btn btn-primary" ng-click="save()" value="Save List">
-	</div>
-	<br/>
-	<div class="controls">
-		<input class="span11" type="text" ng-model="list.Name" placeholder="List Name" />
+	<!--<div class="controls">
+		    <input type="submit" class="btn btn-primary" ng-click="save()" value="Save List">
+	    </div>-->
+	<h3>New List</h3>
+	<span ng-hide="saved">saving...</span>
+	<span ng-show="saved">saved</span>
+	<br />
+	<div class="row-fluid">
+		<input class="span12" type="text" ng-model="list.Name" placeholder="list name" ng-model-onblur ng-change="insertOrUpdateList()" />
 	</div>
 
 	<div>
 		<ul>
-			<li ng-repeat="item in list.Items">
-				{{item.Quantity}} {{item.QuantityType.Name}} {{item.Name}}
+			<li ng-repeat="item in list.Items" class='row-fluid'>{{item.Quantity}} {{item.QuantityType.Name}} {{item.Name}}
 			</li>
 		</ul>
 	</div>
 
 	<ng:form name="ingredientsForm">
-		<fieldset>
-				<legend>Add item</legend>
-				<input type="text" ng-model="foodSearch" placeholder="item" typeahead-on-select="foodSelected($item)" typeahead="suggestion.Name for suggestion in foods($viewValue)" />
-				<select ng-model="quantityType" ng-options="ingType.Name for ingType in ingredientQuantityTypes" />
-				<input type="number" ng-model="quantity" placeholder="quantity" min="0" />
+		<fieldset >
+			<legend>Add item</legend>
+			<div class="row-fluid">
+				<input class="span4" type="text" ng-model="foodSearch" placeholder="item" typeahead-on-select="foodSelected($item)" typeahead="suggestion.Name for suggestion in foods($viewValue)" />
+				<select  class="span4" ng-model="quantityType" ng-options="ingType.Name for ingType in ingredientQuantityTypes" />
+				<input  class="span4" type="number" ng-model="quantity" placeholder="quantity" min="0" />
+			</div>
 				<div class="controls">
 					<button class="btn btn-primary btn-sm"  ng-click="addItem()" ng-disabled="ingredientsForm.$invalid">
 						<i class="icon-plus icon-white"></i>
@@ -30,9 +34,11 @@
 	</ng:form>
 
 	<fieldset>
-	<legend>My recipes</legend>
-	<div>Search your recipes:</div>
-		<input ng-model="query" type="text">
+		<legend>My recipes</legend>
+		<div>Search your recipes:</div>
+		<div class="row-fluid">
+		<input class="span4" ng-model="query" type="text">
+			</div>
 		<accordion>
 			<accordion-group ng-repeat="recipe in recipes | filter:query">
 				<accordion-heading>
@@ -49,7 +55,7 @@
 				</ul>
 			</accordion-group>
 			</accordion>
-	<!--<ul>
+		<!--<ul>
 		<li ng-repeat="recipe in recipes| filter:query">{{recipe.Name}}
 			<input type="button" value="show items" ng-click="getIngredientsForRecipe($index, updateRecipe)"  />
 			<input type="button" value="add all items" ng-click="addAllIngredients($index)" />
@@ -61,5 +67,5 @@
 			</ul>
 		</li>
 	</ul>-->
-		</fieldset>
+	</fieldset>
 </form>

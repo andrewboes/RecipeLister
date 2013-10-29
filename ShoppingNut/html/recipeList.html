@@ -4,7 +4,7 @@
 <div ng-repeat="recipe in recipes| filter:query" pin>
 	<div class="block">
 		<a href="#/recipes/edit/{{recipe.Id}}">
-			<img src="{{recipe.imgSrc}}" alt="No image" />
+			<img src="{{recipe.imgSrc}}" width="260px" height="100%" alt="No image" />
 			<h3>{{recipe.Name}}</h3>
 			<h6>{{recipe.Description}}&nbsp;</h6>
 		</a>
