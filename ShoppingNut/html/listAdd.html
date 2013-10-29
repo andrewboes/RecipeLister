@@ -1,8 +1,4 @@
 ﻿<form class="well">
-	<!--<div class="controls">
-		    <input type="submit" class="btn btn-primary" ng-click="save()" value="Save List">
-	    </div>-->
-	<h4>New List</h4>
 	<span ng-hide="saved">saving...</span>
 	<span ng-show="saved">saved</span>
 	<br />
@@ -14,7 +10,7 @@
 		<div>
 			<ul class="unstyled">
 				<li ng-repeat="item in list.Items" class='row-fluid'>
-					{{item.Quantity}} {{item.QuantityType.Name}} {{item.Name}}
+					<span ng-show="item.Quantity != 0">{{item.Quantity}}</span> {{item.QuantityType.Name}} {{item.Name}}
 					<button class="close" ng-click="deleteItem($index)" aria-hidden="true">&times</button>
 
 				</li>
@@ -49,7 +45,7 @@
 				<accordion-heading>
 					{{recipe.Name}}
 				</accordion-heading>
-				<input type="button" class="btn btn-primary btn-sm" value="add all" ng-click="addAllIngredients($index)" />
+				<input type="button" class="btn btn-primary btn-sm" value="add all" ng-click="addIngredientsForRecipe($index)" />
 				<ul class="unstyled">
 					<li ng-repeat="ing in recipe.Ingredients">
 						<button class="btn btn-primary btn-sm" ng-click="addIngredient($parent.$index, $index)">

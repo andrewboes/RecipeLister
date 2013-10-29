@@ -129,6 +129,24 @@ namespace ShoppingNut.Controllers
 			return Json(list.ToJson(), JsonRequestBehavior.AllowGet);
 		}
 
+		[HttpPost]
+		public ActionResult DeleteList(int id)
+		{
+			if (!this.User.Identity.IsAuthenticated)
+				throw new Exception("User not logged in");
+			try
+			{
+				ShoppingListRepository repository = new ShoppingListRepository();
+				repository.Delete(id);
+				repository.Save();
+				return Json(new { Success = true }, JsonRequestBehavior.DenyGet);
+			}
+			catch (Exception ex)
+			{
+				return Json(new { Success = false, ex.Message }, JsonRequestBehavior.DenyGet);
+			}
+		}
+
 		public ActionResult AddRecipe(Recipe recipe)
 		{
 			if (!this.User.Identity.IsAuthenticated)
@@ -328,6 +346,9 @@ namespace ShoppingNut.Controllers
 					lists.Save();
 					item.ShoppingListId = list.Id;
 				}
+				item.Food = null;
+				item.QuantityType = null;
+				item.DatabaseQuantityType = null;
 				ShoppingListItemRepository repo = new ShoppingListItemRepository();
 				repo.InsertOrUpdate(item);
 				repo.Save();

@@ -343,9 +343,19 @@ function newFoodCtrl($scope, $modalInstance, $http) {
 	};
 };
 
-function listAddCtrl($scope, $http) {
+function listAddCtrl($scope, $http, $routeParams) {
+	var id = $routeParams.listId;
+	if (id) {
+		$http.get('/Home/GetListById?id=' + id).success(function (data) {
+			$scope.list = data;
+		}).error(function (data, status, headers, config) {
+			alert("Error couldn't get list with Id" + id);
+		});
+	}
+	else {
+		$scope.list = { Name: '', Items: [], Id: 0 };
+	}
 	$scope.saved = true;
-	$scope.list = { Name: '', Items: [], Id: 0 };
 
 	$http.get('/Home/GetAllRecipesWithIngredients').success(function (data) {
 		$scope.recipes = data;
@@ -353,43 +363,89 @@ function listAddCtrl($scope, $http) {
 		alert("error");
 	});
 
-	$scope.updateRecipeAndAddIngredients = function (index, data) {
-		$scope.recipes[index] = data;
-		$scope.addIngredientsForRecipe(index, data);
-	};
-
-	$scope.addIngredientsForRecipe = function (index, data) {
-		for (var i = 0; i < data.Ingredients.length; i++) {
+	$scope.addIngredientsForRecipe = function (index) {
+		var recipeIngredients = $scope.recipes[index];
+		for (var i = 0; i < recipeIngredients.Ingredients.length; i++) {
 			$scope.addIngredient(index, i);
-		}
-	};
-
-	$scope.addAllIngredients = function (index) {
-		if (!$scope.recipes[index].Ingredients) {
-			$scope.getIngredientsForRecipe(index, $scope.updateRecipeAndAddIngredients);
-		} else {
-			$scope.addIngredientsForRecipe(index, $scope.recipes[index]);
 		}
 	};
 
 	$scope.addIngredient = function (recipeIndex, itemIndex) {
 		var ingredient = $scope.recipes[recipeIndex].Ingredients[itemIndex];
-		var updated = false;
-		for (var i = 0; i < $scope.list.Items.length; i++) {
-			if ($scope.list.Items[i].FoodId == ingredient.FoodId && $scope.list.Items[i].QuantityTypeId == ingredient.QuantityTypeId) {
-				$scope.list.Items[i].Quantity += ingredient.Quantity;
-				updated = true;
-			}
-		}
+		var updated = $scope.updateExisting(ingredient);
+		//for (var i = 0; i < $scope.list.Items.length; i++) {
+		//	var itemToCheck = $scope.list.Items[i];
+		//	if (itemToCheck.FoodId == ingredient.FoodId && itemToCheck.QuantityTypeId == ingredient.QuantityTypeId) {
+		//		updated = true;
+		//		$scope.saved = false;
+		//		itemToCheck.ShoppingListId = $scope.list.Id;
+		//		itemToCheck.Quantity += ingredient.Quantity;
+		//		$http.post('/Home/InsertOrUpdateShoppingListItem', itemToCheck).success(function (data) {
+		//			if (!data.Success) {
+		//				itemToCheck.Quantity -= ingredient.Quantity;
+		//				alert(data.Message);
+		//			}
+		//			$scope.saved = true;
+		//		}).error(function (data, status, headers, config) {
+		//			var message = "Error: " + data;
+		//			alert(message);
+		//			$scope.saved = true;
+		//		});
+		//	}
+		//}
 		if (!updated) {
-			$scope.list.Items.push({
-				Quantity: ingredient.Quantity,
+			var item = {Quantity: ingredient.Quantity,
 				QuantityType: ingredient.QuantityType,
 				QuantityTypeId: ingredient.QuantityTypeId,
 				Name: ingredient.Food.Name,
-				FoodId: ingredient.FoodId
-			});
+				FoodId: ingredient.FoodId,
+				ShoppingListId: $scope.list.Id
+			};
+			$scope.addItemFromRecipe(item);
 		}
+	};
+
+	$scope.updateExisting = function(ingredient) {
+		var updated = false;
+		for (var i = 0; i < $scope.list.Items.length; i++) {
+			var itemToCheck = $scope.list.Items[i];
+			if (itemToCheck.FoodId == ingredient.FoodId && itemToCheck.QuantityTypeId == ingredient.QuantityTypeId) {
+				updated = true;
+				$scope.saved = false;
+				itemToCheck.ShoppingListId = $scope.list.Id;
+				itemToCheck.Quantity += ingredient.Quantity;
+				$http.post('/Home/InsertOrUpdateShoppingListItem', itemToCheck).success(function(data) {
+					if (!data.Success) {
+						itemToCheck.Quantity -= ingredient.Quantity;
+						alert(data.Message);
+					}
+					$scope.saved = true;
+				}).error(function(data, status, headers, config) {
+					var message = "Error: " + data;
+					alert(message);
+					$scope.saved = true;
+				});
+			}
+		}
+		return updated;
+	};
+
+	$scope.addItemFromRecipe = function (item) {
+		$http.post('/Home/InsertOrUpdateShoppingListItem', item).success(function (data) {
+			if (data.Success) {
+				$scope.list.Id = data.ShoppingListId;
+				item.Id = data.ShoppingListItemId;
+				$scope.list.Items.push(item);
+			}
+			else {
+				alert(data.Message);
+			}
+			$scope.saved = true;
+		}).error(function (data, status, headers, config) {
+			var message = "Error: " + data;
+			alert(message);
+			$scope.saved = true;
+		});
 	};
 
 	$scope.addItem = function () {
@@ -405,26 +461,31 @@ function listAddCtrl($scope, $http) {
 		if ($scope.quantityType) {
 			item.QuantityTypeId = $scope.quantityType.Id;
 		}
-		$http.post('/Home/InsertOrUpdateShoppingListItem', item).success(function (data) {
-			if (data.Success) {
-				$scope.foodSearch = '';
-				$scope.quantity = '';
-				$scope.ingredientQuantityTypes = '';
-				$scope.quantityType = '';
-				$scope.currentSelectedFood = '';
-				$scope.list.Id = data.ShoppingListId;
-				item.Id = data.ShoppingListItemId;
-				$scope.list.Items.push(item);
-			}
-			else {
-				alert(data.Message);
-			}
-			$scope.saved = true;
-		}).error(function (data, status, headers, config) {
-			var message = "Error: " + data;
-			alert(message);
-			$scope.saved = true;
-		});
+
+		var updated = $scope.updateExisting(item);
+
+		if (!updated) {
+			$http.post('/Home/InsertOrUpdateShoppingListItem', item).success(function (data) {
+				if (data.Success) {
+					$scope.foodSearch = '';
+					$scope.quantity = '';
+					$scope.ingredientQuantityTypes = '';
+					$scope.quantityType = '';
+					$scope.currentSelectedFood = '';
+					$scope.list.Id = data.ShoppingListId;
+					item.Id = data.ShoppingListItemId;
+					$scope.list.Items.push(item);
+				}
+				else {
+					alert(data.Message);
+				}
+				$scope.saved = true;
+			}).error(function (data, status, headers, config) {
+				var message = "Error: " + data;
+				alert(message);
+				$scope.saved = true;
+			});
+		}
 	};
 
 	$scope.insertOrUpdateList = function () {
@@ -482,7 +543,7 @@ function listAddCtrl($scope, $http) {
 	};
 }
 
-function listDetailCtrl($scope, $http, $routeParams) {
+function listDetailCtrl($scope, $http, $routeParams, $location) {
 	$http.get('/Home/GetListById?id=' + $routeParams.listId).success(function (data) {
 		$scope.list = data;
 		angular.forEach($scope.list.Items, function (item) {
@@ -506,6 +567,20 @@ function listDetailCtrl($scope, $http, $routeParams) {
 				var message = "Error: " + data;
 				alert(message);
 			});
+	};
+
+	$scope.delete = function() {
+		if (confirm("Are you sure you want to delete this list?")) {
+			$http.post('/Home/DeleteList/' + $scope.list.Id).success(function(data) {
+				if (data.Success)
+					$location.path('/lists');
+				else {
+					alert(data.Message);
+				}
+			}).error(function (data, status, headers, config) {
+				alert("error");
+			});
+		}
 	};
 }
 

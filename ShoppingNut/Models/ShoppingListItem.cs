@@ -42,20 +42,20 @@ namespace ShoppingNut.Models
 			}
 		}
 
-		[NotMapped]
-		public string UserQuantityType
-		{
-			get
-			{
-				if (this.QuantityTypeId.HasValue && this.QuantityTypeId != default(int))
-					return this.DatabaseQuantityType.Name;
-				return this.QuantityType;
-			}
-			set
-			{
-				if (!this.QuantityTypeId.HasValue)
-					this.QuantityType = value;
-			}
-		}
+		//[NotMapped]
+		//public string UserQuantityType
+		//{
+		//	get
+		//	{
+		//		if (this.QuantityTypeId.HasValue && this.QuantityTypeId != default(int))
+		//			return this.DatabaseQuantityType.Name;
+		//		return this.QuantityType;
+		//	}
+		//	set
+		//	{
+		//		if (!this.QuantityTypeId.HasValue)
+		//			this.QuantityType = value;
+		//	}
+		//}
 	}
 }

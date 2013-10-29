@@ -1,10 +1,17 @@
-﻿		{{list.Name}}
+﻿<h3>{{list.Name}}
+	<a href="/#/lists/edit/{{list.Id}}">
+		<i class="icon-pencil"></i>
+	</a>
+	<a href="">
+		<i class="icon-trash" ng-click="delete()"></i>
+	</a>
+</h3>
 <div>
 	<span>{{remaining()}} of {{list.Items.length}} remaining</span>
 	<ul class="unstyled">
 		<li ng-repeat="item in list.Items">
 			<input type="checkbox" ng-model="item.checked" ng-click="pickedUpChanged($index)">
-			<span class="picked-up-{{item.checked}}" >{{item.Quantity}} {{item.QuantityType}} {{item.Name}}</span>
+			<span class="picked-up-{{item.checked}}"><span ng-show="item.Quantity != 0">{{item.Quantity}}</span> {{item.QuantityType.Name}} {{item.Name}}</span>
 		</li>
 	</ul>
 </div>

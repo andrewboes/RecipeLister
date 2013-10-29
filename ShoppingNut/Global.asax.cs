@@ -23,6 +23,7 @@ namespace ShoppingNut
 			RouteConfig.RegisterRoutes(RouteTable.Routes);
 			WebSecurity.InitializeDatabaseConnection("ShoppingNutContext", "UserProfile", "UserId", "UserName", autoCreateTables: true);
 			OAuthWebSecurity.RegisterGoogleClient();
+
 		}
 	}
 }
