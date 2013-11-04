@@ -22,15 +22,16 @@ namespace ShoppingNut.Models
 		{
 			var Items = this.Items.Select(x => new
 			{
-				x.Id, 
-				x.FoodId, 
-				Name = x.UserItemName, 
-				x.Quantity, 
+				x.Id,
+				x.FoodId,
+				Name = x.UserItemName,
+				x.Quantity,
 				Food = x.Food != null ? x.Food.ToJson() : null,
-				QuantityType = x.DatabaseQuantityType != null ? new { x.DatabaseQuantityType.Name, x.DatabaseQuantityType.Id } : null,
+				QuantityType = x.DatabaseQuantityType != null ? new { x.DatabaseQuantityType.Name, x.DatabaseQuantityType.Id } : new { Name = string.Empty, Id = 0 },
 				x.QuantityTypeId,
 				x.PickedUp,
-				x.ShoppingListId
+				x.ShoppingListId,
+				Group = x.Food != null ? new { x.Food.FoodGroup.Description, x.Food.FoodGroup.Id } : new { Description = "Other", Id = 0 }
 			});
 			return new { this.Id, this.Name, this.Created, Items };
 		}

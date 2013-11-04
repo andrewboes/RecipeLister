@@ -1,7 +1,13 @@
 ﻿<div class="container-fluid">
 	<div class="row-fluid">
+				<select class="span4" ng-model="orderProp">
+					<option value="name">Alphabetical</option>
+					<option value="caloriesPerServing">Calories Per Serving</option>
+				</select>
+			</div>
+	<div class="row-fluid">
 		<div class="span10">
-			<ul>
+			<ul class="unstyled">
 				<li ng-repeat="list in lists">
 					<a href="#/lists/detail/{{list.Id}}">{{list.Name}} ({{list.numberPickedUp}}/{{list.Items.length}})</a>
 				</li>

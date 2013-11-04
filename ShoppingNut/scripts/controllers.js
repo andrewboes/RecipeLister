@@ -544,6 +544,8 @@ function listAddCtrl($scope, $http, $routeParams) {
 }
 
 function listDetailCtrl($scope, $http, $routeParams, $location) {
+	$scope.currentRole = '';
+	$scope.orderProp = 'Group.Description';
 	$http.get('/Home/GetListById?id=' + $routeParams.listId).success(function (data) {
 		$scope.list = data;
 		angular.forEach($scope.list.Items, function (item) {
@@ -581,6 +583,12 @@ function listDetailCtrl($scope, $http, $routeParams, $location) {
 				alert("error");
 			});
 		}
+	};
+
+	$scope.createGroupHeader = function(description) {
+		var showHeader = (description != $scope.currentRole);
+		$scope.currentRole = description;
+		return showHeader;
 	};
 }
 

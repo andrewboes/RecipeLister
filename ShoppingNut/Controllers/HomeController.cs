@@ -494,6 +494,16 @@ namespace ShoppingNut.Controllers
 			return View();
 		}
 
+		public ActionResult TouchSort()
+		{
+			return View();
+		}
+
+		public ActionResult SortTest()
+		{
+			return View();
+		}
+
 		#region Private Methods
 		private int GetUserId()
 		{
