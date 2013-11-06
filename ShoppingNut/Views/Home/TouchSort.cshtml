@@ -9,65 +9,71 @@
 	<meta name="viewport" content="width=device-width" />
 	<title>TouchSort</title>
 </head>
-<body>
-	<div>
-		@*<div class="draggable" style="position: absolute; width: 200px; height: 200px; background: #f00;"></div>
-		<div class="draggable" style="position: absolute; width: 50px; height: 50px; background: #f00;"></div>*@
-		<div id="console">
-			@*<div>Console here, waiting for info</div>*@
-		</div>
-		<ul class="draggable">
-			<li>Item 1</li>
-			<li>Item 2</li>
-			<li>Item 3</li>
-			<li>Item 4</li>
-			<li>Item 4</li>
-			<li>Item 5</li>
-			<li>Item 6</li>
-			<li>Item 7</li>
-			<li>Item 8</li>
-			<li>Item 9</li>
-			<li>Item 10</li>
-			<li>Item 11</li>
-			<li>Item 12</li>
-			<li>Item 13</li>
-			<li>Item 14</li>
-			<li>Item 15</li>
-			<li>Item 16</li>
-			<li>Item 17</li>
-			<li>Item 18</li>
-			<li>Item 19</li>
-			<li>Item 20</li>
-			<li>Item 21</li>
-			<li>Item 22</li>
-			<li>Item 23</li>
-			<li>Item 24</li>
-			<li>Item 25</li>
-			<li>Item 26</li>
-			<li>Item 27</li>
-			<li>Item 28</li>
-			<li>Item 29</li>
-			<li>Item 30</li>
-			<li>Item 32</li>
-			<li>Item 33</li>
-			<li>Item 34</li>
-			<li>Item 35</li>
-			<li>Item 36</li>
-			<li>Item 37</li>
-			<li>Item 38</li>
-			<li>Item 39</li>
-			<li>Item 40</li>
+	<body>
+		<ul>
+			<li><strike> Refactor so touch and mouse use same code.</strike></li>
+			<li>Add 'handle' for dragging.</li>
+			<li>Add line where item will be inserted, ala workflowy.</li>
+			<li>Add auto scroll, up and down</li>
 		</ul>
-		@*<ul>
+		<div>
+			@*<div class="draggable" style="position: absolute; width: 200px; height: 200px; background: #f00;"></div>
+		<div class="draggable" style="position: absolute; width: 50px; height: 50px; background: #f00;"></div>*@
+			<div id="console">
+				@*<div>Console here, waiting for info</div>*@
+			</div>
+			<ul class="draggable">
+				<li>Item 1</li>
+				<li>Item 2</li>
+				<li>Item 3</li>
+				<li>Item 4</li>
+				<li>Item 4</li>
+				<li>Item 5</li>
+				<li>Item 6</li>
+				<li>Item 7</li>
+				<li>Item 8</li>
+				<li>Item 9</li>
+				<li>Item 10</li>
+				<li>Item 11</li>
+				<li>Item 12</li>
+				<li>Item 13</li>
+				<li>Item 14</li>
+				<li>Item 15</li>
+				<li>Item 16</li>
+				<li>Item 17</li>
+				<li>Item 18</li>
+				<li>Item 19</li>
+				<li>Item 20</li>
+				<li>Item 21</li>
+				<li>Item 22</li>
+				<li>Item 23</li>
+				<li>Item 24</li>
+				<li>Item 25</li>
+				<li>Item 26</li>
+				<li>Item 27</li>
+				<li>Item 28</li>
+				<li>Item 29</li>
+				<li>Item 30</li>
+				<li>Item 32</li>
+				<li>Item 33</li>
+				<li>Item 34</li>
+				<li>Item 35</li>
+				<li>Item 36</li>
+				<li>Item 37</li>
+				<li>Item 38</li>
+				<li>Item 39</li>
+				<li>Item 40</li>
+			</ul>
+			@*<ul>
 			<li class="draggable" style="position: absolute;">
 				<div style="position: absolute; width: 50px; height: 50px; background: #f00;"></div>
 			</li>
 		</ul>*@
-		<div>
-		</div>
+			<div>
+			</div>
 
 
-		@*<ul id="sortable">
+			@*<ul id="sortable">
 			<li>Item 1</li>
 				<li>Item 2</li>
 				<li>Item 3</li>
@@ -89,7 +95,7 @@
 				<li>Item 18</li>
 				<li>Item 19</li>
 		</ul>*@
-		@*<h2>Sortable List With Handles</h2>
+			@*<h2>Sortable List With Handles</h2>
 		<ul id="sortable-with-handles" class="sortable list">
 			<li><span class="handle">::</span> Item 1</li>
 			<li><span class="handle">::</span> Item 2</li>
@@ -99,7 +105,7 @@
 			<li><span class="handle">::</span> Item 6</li>
 		</ul>*@
 
-		@*<div class="draggable" style="position:absolute; top:50px; left:20; width:200px; height:200px; background:#f00;"></div>
+			@*<div class="draggable" style="position:absolute; top:50px; left:20; width:200px; height:200px; background:#f00;"></div>
         <div class="draggable" style="position:absolute; top:50px; left:20; width:50px; height:50px; background:#f00;"></div>
         
         <div>
@@ -107,13 +113,17 @@
             <button id="disable">Disable</button>
         </div>*@
 
-	</div>
-</body>
+		</div>
+	</body>
 <script src="http://code.jquery.com/jquery-2.0.3.min.js"></script>
 <script>
 	(function ($) {
-		var dragging;
 		var placeholders = $();
+		var placeholder = $('<' + (/^ul|ol$/i.test(this.tagName) ? 'li' : 'div') + ' class="sortable-placeholder">');
+		var dragging;
+		var index;
+		var elementToMove;
+		var ulElement;
 		$.fn.draggableTouch = function (action) {
 
 			// check if the device has touch support, and if not, fallback to use mouse
@@ -132,57 +142,95 @@
 				/*********************************/
 
 
-				var ulElement = this;
+				ulElement = this;
 				var placeholder = $('<' + (/^ul|ol$/i.test(this.tagName) ? 'li' : 'div') + ' class="sortable-placeholder">');
 				var lastY = null;
 
-				var move = function (x, y) {
-					if (elementToMove) {
-						elementToMove.style.position = "absolute";
-						elementToMove.style.left = x + "px";
-						elementToMove.style.top = y + "px";
-						lastY = y;
-					}
-				};
+				//var move = function (x, y) {
+				//	if (elementToMove) {
+				//		elementToMove.style.position = "absolute";
+				//		elementToMove.style.left = x + "px";
+				//		elementToMove.style.top = y + "px";
+				//		lastY = y;
+				//	}
+				//};
 
 				$(this).delegate('li', 'touchend', function (event) {
-					if (!lastY)
-						return;
-					var v = $(this);
-					var u = "<li>" + v.text() + "</li>";
-					v.remove();
-					var newY = lastY;
+					eventEnd(event, this, lastY);
+					//if (!lastY)
+					//	return;
+					//var v = $(this);
+					//var u = "<li>" + v.text() + "</li>";
+					//v.remove();
+					//var newY = lastY;
 
-					var myChildren = $(ulElement).children();
-					var inserted = false;
-					for (var i = 0; i < myChildren.length; i++) {
-						var myChild = myChildren[i];
-						if (newY < $(myChild).offset().top) {
-							$(u).insertBefore($(myChild));
-							inserted = true;
-							break;
-						}
-					}
-					if (!inserted) {
-						$(u).insertAfter($(ulElement).children().last());
-					}
-					lastY = null;
-					placeholder.remove();
+					//var myChildren = $(ulElement).children();
+					//var inserted = false;
+					//for (var i = 0; i < myChildren.length; i++) {
+					//	var myChild = myChildren[i];
+					//	if (newY < $(myChild).offset().top) {
+					//		$(u).insertBefore($(myChild));
+					//		inserted = true;
+					//		break;
+					//	}
+					//}
+					//if (!inserted) {
+					//	$(u).insertAfter($(ulElement).children().last());
+					//}
+					//lastY = null;
+					//placeholder.remove();
 				});
 
-				$(this).delegate('li', 'touchstart', function () {
-					event.preventDefault();
-					elementToMove = this;
-					$(placeholder).insertAfter(elementToMove);
+				$(this).delegate('li', 'touchstart', function (event) {
+					eventStart(event, this);
+					//event.preventDefault();
+					//elementToMove = this;
+					//$(placeholder).insertAfter(elementToMove);
 				});
 
 				$(this).delegate('li', 'touchmove', function () {
 					var x = event.targetTouches[0].pageX;
 					var y = event.targetTouches[0].pageY;
 					move(x, y);
+					lastY = y;
 				});
 			});
 			return this;
+		};
+
+		var eventStart = function (event, objectCalling) {
+			//index = (dragging = $(this)).addClass('sortable-dragging').index();
+			event.preventDefault();
+			elementToMove = objectCalling;
+		};
+
+		var eventEnd = function (event, objectCalling, lastY) {
+			var v = $(objectCalling);
+			var u = "<li>" + v.text() + "</li>";
+			v.remove();
+			var myChildren = $(ulElement).children();
+			var inserted = false;
+			for (var i = 0; i < myChildren.length; i++) {
+				var myChild = myChildren[i];
+				if (lastY < $(myChild).offset().top) {
+					$(u).insertBefore($(myChild));
+					inserted = true;
+					break;
+				}
+			}
+			if (!inserted) {
+				$(u).insertAfter($(ulElement).children().last());
+			}
+			placeholder.remove();
+			//index = null;
+		};
+
+		var move = function (x, y) {
+			if (elementToMove) {
+				elementToMove.style.position = "absolute";
+				elementToMove.style.left = x + "px";
+				elementToMove.style.top = y + "px";
+			}
 		};
 
 		/**
@@ -196,50 +244,14 @@
 				return this;
 			}
 			this.each(function () {
-				var elementToMove = null;
-				var ulElement = this;
-				var index = null;
-				var placeholder = $('<' + (/^ul|ol$/i.test(this.tagName) ? 'li' : 'div') + ' class="sortable-placeholder">');
-				placeholders = placeholders.add(placeholder);
-
-				var move = function (x, y) {
-					if (elementToMove) {
-						elementToMove.style.position = "absolute";
-						elementToMove.style.left = x + "px";
-						elementToMove.style.top = y + "px";
-						$(placeholder).insertAfter(elementToMove);
-					}
-				};
+				ulElement = this;
 
 				$(this).delegate('li', 'mouseup', function (event) {
-					var v = $(this);
-					var u = "<li>" + v.text() + "</li>";
-					v.remove();
-					//$(ulElement).children().each(function (x) {
-					//	console.log($(this).offset().top);
-					//});
-					var newY = event.pageY;
-					var myChildren = $(ulElement).children();
-					var inserted = false;
-					for (var i = 0; i < myChildren.length; i++) {
-						var myChild = myChildren[i];
-						if (newY < $(myChild).offset().top) {
-							$(u).insertBefore($(myChild));
-							inserted = true;
-							break;
-						}
-					}
-					if (!inserted) {
-						$(u).insertAfter($(ulElement).children().last());
-					}
-					placeholder.remove();
-					index = null;
+					eventEnd(event, this, event.pageY);
 				});
 
 				$(this).delegate('li', 'mousedown', function (e) {
-					index = (dragging = $(this)).addClass('sortable-dragging').index();
-					event.preventDefault();
-					elementToMove = this;
+					eventStart(e, this);
 				});
 
 				document.onmousemove = function (e) {
