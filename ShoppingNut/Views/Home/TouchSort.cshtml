@@ -12,58 +12,60 @@
 	<body>
 		<ul>
 			<li><strike> Refactor so touch and mouse use same code.</strike></li>
-			<li>Add 'handle' for dragging.</li>
-			<li>Add line where item will be inserted, ala workflowy.</li>
+			<li><strike>Make it so the whole object is copied</strike></li>
+			<li><strike>Add 'handle' for dragging.</strike></li>
+			<li><strike>Add line where item will be inserted, ala workflowy.</strike></li>
 			<li>Add auto scroll, up and down</li>
 		</ul>
+		<div style='border-color:rgb(51,51,51); border-style: solid; border-width: 1px'><div></div></div>
 		<div>
 			@*<div class="draggable" style="position: absolute; width: 200px; height: 200px; background: #f00;"></div>
 		<div class="draggable" style="position: absolute; width: 50px; height: 50px; background: #f00;"></div>*@
 			<div id="console">
 				@*<div>Console here, waiting for info</div>*@
 			</div>
-			<ul class="draggable">
-				<li>Item 1</li>
-				<li>Item 2</li>
-				<li>Item 3</li>
-				<li>Item 4</li>
-				<li>Item 4</li>
-				<li>Item 5</li>
-				<li>Item 6</li>
-				<li>Item 7</li>
-				<li>Item 8</li>
-				<li>Item 9</li>
-				<li>Item 10</li>
-				<li>Item 11</li>
-				<li>Item 12</li>
-				<li>Item 13</li>
-				<li>Item 14</li>
-				<li>Item 15</li>
-				<li>Item 16</li>
-				<li>Item 17</li>
-				<li>Item 18</li>
-				<li>Item 19</li>
-				<li>Item 20</li>
-				<li>Item 21</li>
-				<li>Item 22</li>
-				<li>Item 23</li>
-				<li>Item 24</li>
-				<li>Item 25</li>
-				<li>Item 26</li>
-				<li>Item 27</li>
-				<li>Item 28</li>
-				<li>Item 29</li>
-				<li>Item 30</li>
-				<li>Item 32</li>
-				<li>Item 33</li>
-				<li>Item 34</li>
-				<li>Item 35</li>
-				<li>Item 36</li>
-				<li>Item 37</li>
-				<li>Item 38</li>
-				<li>Item 39</li>
-				<li>Item 40</li>
-			</ul>
+			@*<ul class="draggable">
+				<li><h4><span class="handle">::::::</span>Item 1</h4></li>
+				<li><span class="handle">::::::</span>Item 2</li>
+				<li><span class="handle">::::::</span>Item 3</li>
+				<li><span class="handle">::::::</span>Item 4</li>
+				<li><span class="handle">::::::</span>Item 4</li>
+				<li><span class="handle">::::::</span>Item 5</li>
+				<li><span class="handle">::::::</span>Item 6</li>
+				<li><span class="handle">::::::</span>Item 7</li>
+				<li><span class="handle">::::::</span>Item 8</li>
+				<li><span class="handle">::::::</span>Item 9</li>
+				<li><span class="handle">::::::</span>Item 10</li>
+				<li><span class="handle">::::::</span>Item 11</li>
+				<li><span class="handle">::::::</span>Item 12</li>
+				<li><span class="handle">::::::</span>Item 13</li>
+				<li><span class="handle">::::::</span>Item 14</li>
+				<li><span class="handle">::::::</span>Item 15</li>
+				<li><span class="handle">::::::</span>Item 16</li>
+				<li><span class="handle">::::::</span>Item 17</li>
+				<li><span class="handle">::::::</span>Item 18</li>
+				<li><span class="handle">::::::</span>Item 19</li>
+				<li><span class="handle">::::::</span>Item 20</li>
+				<li><span class="handle">::::::</span>Item 21</li>
+				<li><span class="handle">::::::</span>Item 22</li>
+				<li><span class="handle">::::::</span>Item 23</li>
+				<li><span class="handle">::::::</span>Item 24</li>
+				<li><span class="handle">::::::</span>Item 25</li>
+				<li><span class="handle">::::::</span>Item 26</li>
+				<li><span class="handle">::::::</span>Item 27</li>
+				<li><span class="handle">::::::</span>Item 28</li>
+				<li><span class="handle">::::::</span>Item 29</li>
+				<li><span class="handle">::::::</span>Item 30</li>
+				<li><span class="handle">::::::</span>Item 32</li>
+				<li><span class="handle">::::::</span>Item 33</li>
+				<li><span class="handle">::::::</span>Item 34</li>
+				<li><span class="handle">::::::</span>Item 35</li>
+				<li><span class="handle">::::::</span>Item 36</li>
+				<li><span class="handle">::::::</span>Item 37</li>
+				<li><span class="handle">::::::</span>Item 38</li>
+				<li><span class="handle">::::::</span>Item 39</li>
+				<li><span class="handle">::::::</span>Item 40</li>
+			</ul>*@
 			@*<ul>
 			<li class="draggable" style="position: absolute;">
 				<div style="position: absolute; width: 50px; height: 50px; background: #f00;"></div>
@@ -73,11 +75,10 @@
 			</div>
 
 
-			@*<ul id="sortable">
+		@*	<ul class="draggable">
 			<li>Item 1</li>
 				<li>Item 2</li>
 				<li>Item 3</li>
-				<li>Item 4</li>
 				<li>Item 4</li>
 				<li>Item 5</li>
 				<li>Item 6</li>
@@ -95,15 +96,14 @@
 				<li>Item 18</li>
 				<li>Item 19</li>
 		</ul>*@
-			@*<h2>Sortable List With Handles</h2>
-		<ul id="sortable-with-handles" class="sortable list">
-			<li><span class="handle">::</span> Item 1</li>
-			<li><span class="handle">::</span> Item 2</li>
-			<li><span class="handle">::</span> Item 3</li>
-			<li><span class="handle">::</span> Item 4</li>
-			<li><span class="handle">::</span> Item 5</li>
-			<li><span class="handle">::</span> Item 6</li>
-		</ul>*@
+		<ul class="draggable">
+			<li><span class="handle">: : :</span> Item 1</li>
+			<li><span class="handle">: : :</span> Item 2</li>
+			<li><span class="handle">: : :</span> Item 3</li>
+			<li><span class="handle">: : :</span> Item 4</li>
+			<li><span class="handle">: : :</span> Item 5</li>
+			<li><span class="handle">: : :</span> Item 6</li>
+		</ul>
 
 			@*<div class="draggable" style="position:absolute; top:50px; left:20; width:200px; height:200px; background:#f00;"></div>
         <div class="draggable" style="position:absolute; top:50px; left:20; width:50px; height:50px; background:#f00;"></div>
@@ -118,10 +118,6 @@
 <script src="http://code.jquery.com/jquery-2.0.3.min.js"></script>
 <script>
 	(function ($) {
-		var placeholders = $();
-		var placeholder = $('<' + (/^ul|ol$/i.test(this.tagName) ? 'li' : 'div') + ' class="sortable-placeholder">');
-		var dragging;
-		var index;
 		var elementToMove;
 		var ulElement;
 		$.fn.draggableTouch = function (action) {
@@ -131,64 +127,21 @@
 			if (!("ontouchstart" in document.documentElement)) {
 				return this.draggableMouse(action);
 			}
-			// check if we shall make it not draggable
-			if (action == "disable") {
-				this.unbind("mousedown");
-				this.unbind("mouseup");
-				return this;
-			}
+			
 			this.each(function () {
 
-				/*********************************/
-
-
 				ulElement = this;
-				var placeholder = $('<' + (/^ul|ol$/i.test(this.tagName) ? 'li' : 'div') + ' class="sortable-placeholder">');
 				var lastY = null;
 
-				//var move = function (x, y) {
-				//	if (elementToMove) {
-				//		elementToMove.style.position = "absolute";
-				//		elementToMove.style.left = x + "px";
-				//		elementToMove.style.top = y + "px";
-				//		lastY = y;
-				//	}
-				//};
-
-				$(this).delegate('li', 'touchend', function (event) {
-					eventEnd(event, this, lastY);
-					//if (!lastY)
-					//	return;
-					//var v = $(this);
-					//var u = "<li>" + v.text() + "</li>";
-					//v.remove();
-					//var newY = lastY;
-
-					//var myChildren = $(ulElement).children();
-					//var inserted = false;
-					//for (var i = 0; i < myChildren.length; i++) {
-					//	var myChild = myChildren[i];
-					//	if (newY < $(myChild).offset().top) {
-					//		$(u).insertBefore($(myChild));
-					//		inserted = true;
-					//		break;
-					//	}
-					//}
-					//if (!inserted) {
-					//	$(u).insertAfter($(ulElement).children().last());
-					//}
-					//lastY = null;
-					//placeholder.remove();
+				$(this).delegate('li .handle', 'touchend', function (event) {
+					eventEnd(event, this.parentNode, lastY);
 				});
 
-				$(this).delegate('li', 'touchstart', function (event) {
-					eventStart(event, this);
-					//event.preventDefault();
-					//elementToMove = this;
-					//$(placeholder).insertAfter(elementToMove);
+				$(this).delegate('li .handle', 'touchstart', function (event) {
+					eventStart(event, this.parentNode);
 				});
 
-				$(this).delegate('li', 'touchmove', function () {
+				$(this).delegate('li .handle', 'touchmove', function () {
 					var x = event.targetTouches[0].pageX;
 					var y = event.targetTouches[0].pageY;
 					move(x, y);
@@ -199,37 +152,44 @@
 		};
 
 		var eventStart = function (event, objectCalling) {
-			//index = (dragging = $(this)).addClass('sortable-dragging').index();
 			event.preventDefault();
 			elementToMove = objectCalling;
 		};
 
 		var eventEnd = function (event, objectCalling, lastY) {
+			$('#line').remove();
 			var v = $(objectCalling);
-			var u = "<li>" + v.text() + "</li>";
 			v.remove();
+			v.css('position', '');
+			v.css('left', '');
+			v.css('position', '');
+			findDropSpot(v, lastY);
+		};
+
+		var findDropSpot = function(element, location) {
 			var myChildren = $(ulElement).children();
 			var inserted = false;
 			for (var i = 0; i < myChildren.length; i++) {
 				var myChild = myChildren[i];
-				if (lastY < $(myChild).offset().top) {
-					$(u).insertBefore($(myChild));
+				if (location < $(myChild).offset().top) {
+					$(element).insertBefore($(myChild));
 					inserted = true;
 					break;
 				}
 			}
 			if (!inserted) {
-				$(u).insertAfter($(ulElement).children().last());
+				$(element).insertAfter($(ulElement).children().last());
 			}
-			placeholder.remove();
-			//index = null;
 		};
 
-		var move = function (x, y) {
+		var move = function (x, y){ 
 			if (elementToMove) {
 				elementToMove.style.position = "absolute";
 				elementToMove.style.left = x + "px";
 				elementToMove.style.top = y + "px";
+				$('#line').remove();
+				var v = "<div id='line' style='border-color:rgb(51,51,51); border-style: solid; border-width: 1px'><div></div></div>";
+				findDropSpot(v, y);
 			}
 		};
 
@@ -238,20 +198,16 @@
      */
 		$.fn.draggableMouse = function (action) {
 			// check if we shall make it not draggable
-			if (action == "disable") {
-				this.unbind("mousedown");
-				this.unbind("mouseup");
-				return this;
-			}
 			this.each(function () {
 				ulElement = this;
 
-				$(this).delegate('li', 'mouseup', function (event) {
-					eventEnd(event, this, event.pageY);
+				$(this).delegate('li .handle', 'mouseup', function (event) {
+					console.log('mouse up');
+					eventEnd(event, this.parentNode, event.pageY);
 				});
 
-				$(this).delegate('li', 'mousedown', function (e) {
-					eventStart(e, this);
+				$(this).delegate('li .handle', 'mousedown', function (e) {
+					eventStart(e, this.parentNode);
 				});
 
 				document.onmousemove = function (e) {
@@ -278,17 +234,17 @@
 
 	//if this is a touch device, we assume we don't have a visible console and use
 	//a crappy homemade one :)
-	if ("ontouchstart" in document.documentElement) {
-		window.console = {
-			log: function (a, b, c) {
-				if (a && b && c)
-					$("<div>" + a + " " + b + " " + c + "</div>").appendTo($("#console"));
-				else if (a && b)
-					$("<div>" + a + " " + b + "</div>").appendTo($("#console"));
-				else if (a)
-					$("<div>" + a + "</div>").appendTo($("#console"));
-			}
-		};
-	}
+	//if ("ontouchstart" in document.documentElement) {
+	//	window.console = {
+	//		log: function (a, b, c) {
+	//			if (a && b && c)
+	//				$("<div>" + a + " " + b + " " + c + "</div>").appendTo($("#console"));
+	//			else if (a && b)
+	//				$("<div>" + a + " " + b + "</div>").appendTo($("#console"));
+	//			else if (a)
+	//				$("<div>" + a + "</div>").appendTo($("#console"));
+	//		}
+	//	};
+	//}
 </script>
 </html>
