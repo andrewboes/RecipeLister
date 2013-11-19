@@ -9,169 +9,24 @@
 	<title>SortTest</title>
 </head>
 <body>
-	<div>
-		<ul class="sortable">
-			<li>Item 1</li>
-			<li>Item 2</li>
-			<li>Item 3</li>
-			<li>Item 4</li>
-			<li>Item 4</li>
-			<li>Item 5</li>
-			<li>Item 6</li>
-			<li>Item 7</li>
-			<li>Item 8</li>
-			<li>Item 9</li>
-			<li>Item 10</li>
-			<li>Item 11</li>
-			<li>Item 12</li>
-			<li>Item 13</li>
-			<li>Item 14</li>
-			<li>Item 15</li>
-			<li>Item 16</li>
-			<li>Item 17</li>
-			<li>Item 18</li>
-			<li>Item 19</li>
-			<li>Item 20</li>
-			<li>Item 21</li>
-			<li>Item 22</li>
-			<li>Item 23</li>
-			<li>Item 24</li>
-			<li>Item 25</li>
-			<li>Item 26</li>
-			<li>Item 27</li>
-			<li>Item 28</li>
-			<li>Item 29</li>
-			<li>Item 30</li>
-			<li>Item 32</li>
-			<li>Item 33</li>
-			<li>Item 34</li>
-			<li>Item 35</li>
-			<li>Item 36</li>
-			<li>Item 37</li>
-			<li>Item 38</li>
-			<li>Item 39</li>
-			<li>Item 40</li>
-		</ul>
-
-		@*<h2>Sortable List With Handles</h2>
-		<ul id="sortable-with-handles" class="sortable list">
-			<li><span class="handle">::</span> Item 1</li>
-			<li><span class="handle">::</span> Item 2</li>
-			<li><span class="handle">::</span> Item 3</li>
-			<li><span class="handle">::</span> Item 4</li>
-			<li><span class="handle">::</span> Item 5</li>
-			<li><span class="handle">::</span> Item 6</li>
-		</ul>*@
+	<div ng-app>
+		<div ng-controller="Ctrl">
+			<ul>
+				<li ng-repeat="f in friends | orderBy:'order'">{{f.name}}</li>
+			</ul>
+		</div>
 	</div>
+	<script src="../../scripts/lib/angular/angular.js"></script>
+	<script>
+		function Ctrl($scope) {
+			$scope.friends =
+			[{ name: 'John', phone: '555-1212', age: 10, order: 1 },
+				{ name: 'Mary', phone: '555-9876', age: 19, order: 2 },
+				{ name: 'Mike', phone: '555-4321', age: 21, order: 26 },
+				{ name: 'Adam', phone: '555-5678', age: 35, order: 12 },
+				{ name: 'Julie', phone: '555-8765', age: 29, order: 15 }];
+		}
+	</script>
 </body>
-<script src="http://code.jquery.com/jquery-2.0.3.min.js"></script>
-
-<script>
-	(function ($) {
-		var dragging, placeholders = $();
-		$.fn.sortable = function (options) {
-			//console.log('first');
-			console.log(placeholders);
-			var method = String(options);
-			options = $.extend({
-				connectWith: false
-			}, options);
-			return this.each(function () {
-				console.log(this);
-
-				//console.log('second');
-				//console.log(options);
-
-				//if (/^enable|disable|destroy$/.test(method)) {
-				//	var items = $(this).children($(this).data('items')).attr('draggable', method == 'enable');
-				//	if (method == 'destroy') {
-				//		items.add(this).removeData('connectWith items')
-				//						.off('dragstart.h5s dragend.h5s selectstart.h5s dragover.h5s dragenter.h5s drop.h5s');
-				//	}
-				//	return;
-				//}
-				var isHandle, index;
-				var items = $(this).children(options.items);
-				//console.log('third');
-				//console.log(options);
-				//console.log('items');
-				//console.log(items);
-				//console.log(items);
-				var placeholder = $('<' + (/^ul|ol$/i.test(this.tagName) ? 'li' : 'div') + ' class="sortable-placeholder">');
-				//console.log(placeholder);
-				items.find(options.handle).mousedown(function () {
-					//console.log('mousedown'); //only happens with handle
-					isHandle = true;
-				}).mouseup(function () {
-					isHandle = false;
-				});
-				$(this).data('items', options.items);
-				placeholders = placeholders.add(placeholder);
-				//if (options.connectWith) {
-				//	$(options.connectWith).add(this).data('connectWith', options.connectWith);
-				//}
-
-				items.attr('draggable', 'true').on('dragstart.h5s', function (e) {
-					if (options.handle && !isHandle) {
-						return false;
-					}
-					isHandle = false;
-					var dt = e.originalEvent.dataTransfer;
-					dt.effectAllowed = 'move';
-					dt.setData('Text', 'dummy');
-					index = (dragging = $(this)).addClass('sortable-dragging').index();
-					console.log(placeholders);
-
-				}).on('dragend.h5s', function () {
-					if (!dragging) {
-						return;
-					}
-					dragging.removeClass('sortable-dragging').show();
-					placeholders.detach();
-					if (index != dragging.index()) {
-						dragging.parent().trigger('sortupdate', { item: dragging });
-					}
-					dragging = null;
-				}).not('a[href], img').on('selectstart.h5s', function () {
-					this.dragDrop && this.dragDrop();
-					return false;
-				}).end().add([this, placeholder]).on('dragover.h5s dragenter.h5s drop.h5s', function (e) {
-					if (!items.is(dragging) && options.connectWith !== $(dragging).parent().data('connectWith')) {
-						return true;
-					}
-					if (e.type == 'drop') {
-						e.stopPropagation();
-						placeholders.filter(':visible').after(dragging);
-						dragging.trigger('dragend.h5s');
-						return false;
-					}
-					e.preventDefault();
-					e.originalEvent.dataTransfer.dropEffect = 'move';
-					console.log(items.is(this));
-					if (items.is(this)) {
-						if (options.forcePlaceholderSize) {
-							placeholder.height(dragging.outerHeight());
-						}
-						dragging.hide();
-						console.log("this");
-						console.log($(this));
-						$(this)[placeholder.index() < $(this).index() ? 'after' : 'before'](placeholder);
-						placeholders.not(placeholder).detach();
-					} else if (!placeholders.is(this) && !$(this).children(options.items).length) {
-						placeholders.detach();
-						$(this).append(placeholder);
-					}
-					return false;
-				});
-			});
-		};
-	})(jQuery);
-
-	$('.sortable').sortable();
-
-	//$('#sortable-with-handles').sortable({
-	//	handle: '.handle'
-	//});
-</script>
 
 </html>

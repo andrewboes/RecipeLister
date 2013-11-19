@@ -293,6 +293,7 @@
     <Content Include="img\glyphicons-halflings-white.png" />
     <Content Include="img\glyphicons-halflings.png" />
     <Content Include="img\pumpkin_soup_recipe.jpg" />
+    <Content Include="img\up-down-arrow.png" />
     <Content Include="scripts\ajaxlogin.js" />
     <Content Include="scripts\app.js">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
@@ -616,6 +617,7 @@
     <Content Include="scripts\lib\angular-ui\ui-bootstrap-0.5.0.js" />
     <Content Include="scripts\lib\angular-ui\ui-bootstrap-0.5.0.min.js" />
     <Content Include="scripts\lib\angular-file-upload\angular-file-upload.js" />
+    <Content Include="scripts\touchsort.js" />
     <Content Include="Web.config">
       <SubType>Designer</SubType>
     </Content>
@@ -677,7 +679,9 @@
     </EmbeddedResource>
   </ItemGroup>
   <ItemGroup>
+    <None Include="Properties\PublishProfiles\recipelist - FTP %282%29.pubxml" />
     <None Include="Properties\PublishProfiles\recipelist - FTP.pubxml" />
+    <None Include="Properties\PublishProfiles\recipelist - Web Deploy %282%29.pubxml" />
     <None Include="Properties\PublishProfiles\recipelist - Web Deploy.pubxml" />
     <Content Include="Views\Home\TouchTest.cshtml" />
     <Content Include="Views\Home\SortTest.cshtml" />

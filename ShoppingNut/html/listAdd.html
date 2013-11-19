@@ -1,4 +1,4 @@
-﻿<form class="well">
+﻿<ng:form class="well">
 	<span ng-hide="saved">saving...</span>
 	<span ng-show="saved">saved</span>
 	<br />
@@ -8,10 +8,13 @@
 	<fieldset>
 		<legend>Items</legend>
 		<div>
-			<ul class="unstyled">
-				<li ng-repeat="item in list.Items" class='row-fluid'>
-					<span ng-show="item.Quantity != 0">{{item.Quantity}}</span> {{item.QuantityType.Name}} {{item.Name}}
-					<button class="close" ng-click="deleteItem($index)" aria-hidden="true">&times</button>
+			<ul class="unstyled" ng-sortable="{update: finished}">
+				<li ng-repeat="item in list.Items" class='row-fluid' >
+					<img class="handle" src="/img/up-down-arrow.png" ng/>
+					<span ng-show="item.Quantity != 0">{{item.Quantity}}</span> {{item.QuantityType.Name}} {{item.Name}} 
+					<span class="recipeIndex" hidden>{{$index}}</span>
+					<span class="itemOrder">{{item.Order}}</span>
+					<button class="close" ng-click="deleteItem(item)" aria-hidden="true">&times</button>
 
 				</li>
 			</ul>
@@ -56,17 +59,5 @@
 				</ul>
 			</accordion-group>
 			</accordion>
-		<!--<ul>
-		<li ng-repeat="recipe in recipes| filter:query">{{recipe.Name}}
-			<input type="button" value="show items" ng-click="getIngredientsForRecipe($index, updateRecipe)"  />
-			<input type="button" value="add all items" ng-click="addAllIngredients($index)" />
-			<ul>
-				<li ng-repeat="ing in recipe.Ingredients">
-					<input type="button" value="add item" ng-click="addIngredient($parent.$index, $index)" />
-					{{ing.Quantity}} {{ing.QuantityType.Name}} {{ing.Food.Name}}
-				</li>
-			</ul>
-		</li>
-	</ul>-->
 	</fieldset>
-</form>
+</ng:form>

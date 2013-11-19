@@ -49,7 +49,6 @@
 						<div class="row-fluid">
 								<input id="foodSearch" class="span4" required placeholder="Search..." type="text" ng-model="foodSearch" typeahead-on-select="foodSelected($item)" typeahead="suggestion.Name for suggestion in foods($viewValue)"/>
 								<select class="span4" required ng-model="quantityType" ng-options="ingType.Name for ingType in currentSelectedFood.QuantityTypes" placeholder="quantity type">
-									<!--<option style="color: #ccc" value="" disabled selected>quantity type</option>-->
 								</select>
 							<input class="span4" required type="number" min="0" ng-model="quantity" placeholder="quantity" />
 								<div>

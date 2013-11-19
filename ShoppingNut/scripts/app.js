@@ -76,6 +76,13 @@ angular.module('shoppingNut', ['ui.bootstrap', 'angularFileUpload'])
 			});
 		};
 	})
+	.directive('ngSortable',  function () {
+		return {
+			link: function (scope, element) {
+				angular.element(element).draggableTouch({ onSortEndCallback: function () { scope.finishedSorting(); } });
+			}
+		};
+	})
 	.config(['$routeProvider', function ($routeProvider) {
   	$routeProvider.
 				when('/lists', { templateUrl: 'html/listList.html', controller: shoppingListCtrl }).

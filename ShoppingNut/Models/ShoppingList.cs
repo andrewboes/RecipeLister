@@ -22,6 +22,7 @@ namespace ShoppingNut.Models
 		{
 			var Items = this.Items.Select(x => new
 			{
+				Order = x.Id,
 				x.Id,
 				x.FoodId,
 				Name = x.UserItemName,

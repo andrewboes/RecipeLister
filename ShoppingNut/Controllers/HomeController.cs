@@ -467,7 +467,7 @@ namespace ShoppingNut.Controllers
 
 		public ActionResult Scrape(string url)
 		{
-			if(string.IsNullOrEmpty(url))
+			if(string.IsNullOrEmpty(url) || url == "undefined")
 			 url = "http://thepioneerwoman.com/cooking/2013/10/carb-buster-breakfast/";
 			HtmlWeb web = new HtmlWeb();
 			HtmlDocument doc = web.Load(url);
@@ -541,7 +541,7 @@ namespace ShoppingNut.Controllers
 			string amount = ing["[itemprop='amount']"].Text();
 			if (string.IsNullOrEmpty(amount))
 				amount = ing[".ingredient-amount"].Text();
-			return amount;
+			return amount.Trim();
 		}
 
 		private List<IDomObject> GetIngredients(CQ cqDoc)
@@ -557,7 +557,7 @@ namespace ShoppingNut.Controllers
 			string servings = cqDoc["[itemprop='yield']"].Text();
 			if (string.IsNullOrEmpty(servings))
 				servings = cqDoc["[itemprop='recipeYield']"].Text();
-			return servings;
+			return servings.Trim();
 		}
 
 		private string GetName(CQ cqDoc)
@@ -565,7 +565,7 @@ namespace ShoppingNut.Controllers
 			string name = cqDoc[".recipe-title"].Text();
 			if (string.IsNullOrEmpty(name))
 				name = cqDoc["[itemprop='name']"].Text();
-			return name;
+			return name.Trim();
 		}
 
 		private int GetUserEnteredFoodSourceId()
