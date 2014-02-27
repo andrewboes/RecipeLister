@@ -342,7 +342,8 @@ function newFoodCtrl($scope, $modalInstance, $http) {
 	};
 };
 
-function listAddCtrl($scope, $http, $routeParams) {
+function listAddCtrl($scope, $http, $routeParams, $location) {
+	$scope.orderProp = 'ShoppingListItem.Order';
 	var id = $routeParams.listId;
 	if (id) {
 		$http.get('/Home/GetListById?id=' + id).success(function (data) {
@@ -362,59 +363,81 @@ function listAddCtrl($scope, $http, $routeParams) {
 		alert("error");
 	});
 
-	$scope.addIngredientsForRecipe = function (index) {
+	$scope.addAllIngredientsForRecipe = function (index) {
 		var recipeIngredients = $scope.recipes[index];
-		for (var i = 0; i < recipeIngredients.Ingredients.length; i++) {
-			$scope.addIngredient(index, i);
-		}
-	};
-
-	$scope.addIngredient = function (recipeIndex, itemIndex) {
-		var ingredient = $scope.recipes[recipeIndex].Ingredients[itemIndex];
-		var updated = $scope.updateExisting(ingredient);
-		if (!updated) {
-			var item = {Quantity: ingredient.Quantity,
-				QuantityType: ingredient.QuantityType,
-				QuantityTypeId: ingredient.QuantityTypeId,
-				Name: ingredient.Food.Name,
-				FoodId: ingredient.FoodId,
-				ShoppingListId: $scope.list.Id
-			};
-			$scope.addItemFromRecipe(item);
-		}
-	};
-
-	$scope.updateExisting = function(ingredient) {
-		var updated = false;
-		for (var i = 0; i < $scope.list.Items.length; i++) {
-			var itemToCheck = $scope.list.Items[i];
-			if (itemToCheck.FoodId == ingredient.FoodId && itemToCheck.QuantityTypeId == ingredient.QuantityTypeId) {
-				updated = true;
-				$scope.saved = false;
-				itemToCheck.ShoppingListId = $scope.list.Id;
-				itemToCheck.Quantity += ingredient.Quantity;
-				$http.post('/Home/InsertOrUpdateShoppingListItem', itemToCheck).success(function(data) {
-					if (!data.Success) {
-						itemToCheck.Quantity -= ingredient.Quantity;
-						alert(data.Message);
-					}
-					$scope.saved = true;
-				}).error(function(data, status, headers, config) {
-					var message = "Error: " + data;
-					alert(message);
-					$scope.saved = true;
-				});
+		if ($scope.list.Id === 0) {
+			$scope.insertOrUpdateList(function () {
+				for (var i = 0; i < recipeIngredients.Ingredients.length; i++) {
+					$scope.addSingleIngredientFromRecipe(index, i);
+				}
+			});
+		} else {
+			for (var i = 0; i < recipeIngredients.Ingredients.length; i++) {
+				$scope.addSingleIngredientFromRecipe(index, i);
 			}
 		}
-		return updated;
 	};
 
-	$scope.addItemFromRecipe = function (item) {
-		$http.post('/Home/InsertOrUpdateShoppingListItem', item).success(function (data) {
+	$scope.addSingleIngredientFromRecipe = function (recipeIndex, itemIndex) {
+		var recipeIngredient = $scope.recipes[recipeIndex].Ingredients[itemIndex];
+		var shoppingListItemItem = {
+			ShoppingListId: $scope.list.Id,
+			Quantity: recipeIngredient.Quantity,
+			QuantityTypeId: recipeIngredient.QuantityType.Id,
+			QuantityType: recipeIngredient.QuantityType,
+			ShoppingListItem: {
+				Name: recipeIngredient.Food.Name,
+				FoodId: recipeIngredient.Food.Id,
+			}
+		};
+		if ($scope.list.Id === 0) {
+			$scope.insertOrUpdateList(function () {
+				shoppingListItemItem = $scope.list.Id;
+				$scope.insertOrUpdateItem(shoppingListItemItem);
+			});
+		} else {
+			$scope.insertOrUpdateItem(shoppingListItemItem);
+		}
+	};
+
+	$scope.insertOrUpdateItem = function (shoppingListItemItem) {
+		for (var i = 0; i < $scope.list.Items.length; i++) {
+			var itemToCheck = $scope.list.Items[i];
+			if (itemToCheck.ShoppingListItem.FoodId === shoppingListItemItem.ShoppingListItem.FoodId
+				&& itemToCheck.QuantityTypeId === shoppingListItemItem.QuantityTypeId) {
+				shoppingListItemItem.Id = itemToCheck.Id;
+				shoppingListItemItem.ShoppingListItem.Id = itemToCheck.ShoppingListItem.Id;
+				shoppingListItemItem.Quantity += itemToCheck.Quantity;
+				itemToCheck.Quantity = shoppingListItemItem.Quantity;
+				break;
+			}
+			if (!itemToCheck.ShoppingListItem.FoodId && itemToCheck.ShoppingListItem.Name === shoppingListItemItem.ShoppingListItem.Name) {
+				shoppingListItemItem.Id = itemToCheck.Id;
+				shoppingListItemItem.ShoppingListItem.Id = itemToCheck.ShoppingListItem.Id;
+				shoppingListItemItem.Quantity += itemToCheck.Quantity;
+				itemToCheck.Quantity = shoppingListItemItem.Quantity;
+				break;
+			}
+		}
+		var newRecord = false;
+		if (shoppingListItemItem.Id === 0 || !shoppingListItemItem.Id) {
+			newRecord = true;
+			var newOrder = 0;
+			if ($scope.list.Items.length > 0)
+				newOrder = $scope.list.Items[$scope.list.Items.length - 1].ShoppingListItem.Order + 1;
+			shoppingListItemItem.ShoppingListItem.Order = newOrder;
+		}
+		$http.post('/Home/InsertOrUpdateShoppingListItem', shoppingListItemItem).success(function (data) {
 			if (data.Success) {
-				$scope.list.Id = data.ShoppingListId;
-				item.Id = data.ShoppingListItemId;
-				$scope.list.Items.push(item);
+				$scope.foodSearch = '';
+				$scope.quantity = '';
+				$scope.ingredientQuantityTypes = '';
+				$scope.quantityType = '';
+				$scope.currentSelectedFood = '';
+				shoppingListItemItem.Id = data.listItemId;
+				shoppingListItemItem.ShoppingListItem.Id = data.baseItemId;
+				if(newRecord)
+					$scope.list.Items.push(shoppingListItemItem);
 			}
 			else {
 				alert(data.Message);
@@ -427,70 +450,54 @@ function listAddCtrl($scope, $http, $routeParams) {
 		});
 	};
 
-	$scope.addItem = function () {
+	$scope.addUserEnteredItem = function () {
 		$scope.saved = false;
-		var item = {
-			Name: $scope.foodSearch,
+		var shoppingListItemItem = {
+			ShoppingListId: $scope.list.Id,
 			Quantity: $scope.quantity,
-			QuantityType: $scope.quantityType,
-			ShoppingListId: $scope.list.Id
+			ShoppingListItem: {
+				Name: $scope.foodSearch,
+			}
 		};
 		if ($scope.currentSelectedFood)
-			item.FoodId = $scope.currentSelectedFood.Id;
+			shoppingListItemItem.ShoppingListItem.FoodId = $scope.currentSelectedFood.foodId;
 		if ($scope.quantityType) {
-			item.QuantityTypeId = $scope.quantityType.Id;
+			shoppingListItemItem.QuantityTypeId = $scope.quantityType.Id;
+			shoppingListItemItem.QuantityType = $scope.quantityType;
 		}
-
-		var updated = $scope.updateExisting(item);
-
-		if (!updated) {
-			$http.post('/Home/InsertOrUpdateShoppingListItem', item).success(function (data) {
-				if (data.Success) {
-					$scope.foodSearch = '';
-					$scope.quantity = '';
-					$scope.ingredientQuantityTypes = '';
-					$scope.quantityType = '';
-					$scope.currentSelectedFood = '';
-					$scope.list.Id = data.ShoppingListId;
-					item.Id = data.ShoppingListItemId;
-					$scope.list.Items.push(item);
-				}
-				else {
-					alert(data.Message);
-				}
-				$scope.saved = true;
-			}).error(function (data, status, headers, config) {
-				var message = "Error: " + data;
-				alert(message);
-				$scope.saved = true;
+		if ($scope.list.Id === 0) {
+			$scope.insertOrUpdateList(function () {
+				shoppingListItemItem.ShoppingListId = $scope.list.Id;
+				$scope.insertOrUpdateItem(shoppingListItemItem);
 			});
+		} else {
+			$scope.insertOrUpdateItem(shoppingListItemItem);
 		}
 	};
 
-	$scope.insertOrUpdateList = function () {
+	$scope.insertOrUpdateList = function (callback) {
 		$scope.saved = false;
 		var list = { Name: $scope.list.Name, Id: $scope.list.Id };
 		$http.post('/Home/InsertOrUpdateShoppingList', list).success(function (data) {
-			if (data.Success)
+			if (data.Success) {
 				$scope.list.Id = data.ShoppingListId;
-			else {
+				$location.path('/lists/edit/' + $scope.list.Id);
+			} else {
 				alert(data.Message);
 			}
+			if (callback)
+				callback();
 			$scope.saved = true;
 		}).error(function (data, status, headers, config) {
 			var message = "Error: " + data;
 			alert(message);
 			$scope.saved = true;
 		});
-	};
-
-	$scope.insertOrUpdateItem = function () {
-
 	};
 
 	$scope.foods = function (foodQuery) {
 		if (foodQuery !== null && foodQuery.length > 2) {
-			return $http.get('/Home/GetFoods?filter=' + foodQuery).then(function (response) {
+			return $http.get('/Home/GetFoodsAndShoppingListItems?filter=' + foodQuery).then(function (response) {
 				return response.data;
 			});
 		} else {
@@ -499,15 +506,14 @@ function listAddCtrl($scope, $http, $routeParams) {
 	};
 
 	$scope.foodSelected = function ($item) {
-		$http.get('/Home/GetFoodQuantityTypes?id=' + $item.Id).success(function (data) {
+		$http.get('/Home/GetFoodQuantityTypes?id=' + $item.foodId).success(function (data) {
 			$scope.ingredientQuantityTypes = data;
 		});
 		$scope.currentSelectedFood = $item;
 	};
 
 	$scope.deleteItem = function (index) {
-		console.log(index);
-		$scope.saved = false;
+		//$scope.saved = false;
 		$http.post('/Home/DeleteShoppingListItem/' + $scope.list.Items[index].Id).success(function (data) {
 			$scope.saved = true;
 			if (data.Success) {
@@ -522,14 +528,26 @@ function listAddCtrl($scope, $http, $routeParams) {
 		});
 	};
 
-	$scope.finishedSorting = function (index, newOrder) {
-		console.log('finished, ' + index + ', ' + newOrder);
+	$scope.finishedSorting = function (oldIndex, newIndex) {
+		$scope.$apply(function () {
+			var v = $scope.list.Items[oldIndex];
+			$scope.list.Items.splice(oldIndex, 1);
+			$scope.list.Items.splice(newIndex, 0, v);
+			var newOrder = 0;
+			if (newIndex > 0)
+				newOrder = $scope.list.Items[newIndex - 1].ShoppingListItem.Order + 1;
+			$http.post('/Home/ItemResorted?id=' + v.Id + '&order=' + newOrder).success(function (data) { })
+			.error(function (data, status, headers, config) {
+				var message = "Error: " + data;
+				alert(message);
+			});
+		});
 	};
 }
 
 function listDetailCtrl($scope, $http, $routeParams, $location) {
 	$scope.currentRole = '';
-	$scope.orderProp = 'Group.Description';
+	$scope.orderProp = 'ShoppingListItem.Order';
 	$http.get('/Home/GetListById?id=' + $routeParams.listId).success(function (data) {
 		$scope.list = data;
 		angular.forEach($scope.list.Items, function (item) {

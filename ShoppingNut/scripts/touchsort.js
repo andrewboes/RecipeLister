@@ -78,7 +78,6 @@
 			});
 
 			$(this).delegate('li .handle', 'mousedown', function (e) {
-
 				sortEventStart(e, this.parentNode);
 			});
 

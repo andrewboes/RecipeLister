@@ -16,23 +16,27 @@ namespace ShoppingNut.Models
 		public int UserId { get; set; }
 		public virtual UserProfile User { get; set; }
 
-		public virtual List<ShoppingListItem> Items { get; set; }
+		public virtual List<ShoppingListShoppingListItem> Items { get; set; }
 
 		internal object ToJson()
 		{
 			var Items = this.Items.Select(x => new
 			{
-				Order = x.Id,
 				x.Id,
-				x.FoodId,
-				Name = x.UserItemName,
+				ShoppingListItem = new
+				{
+					x.ShoppingListItem.Id,
+					x.ShoppingListItem.Order,
+					x.ShoppingListItem.Name,
+					Food = x.ShoppingListItem.Food != null ? x.ShoppingListItem.Food.ToJson() : null,
+					x.ShoppingListItem.FoodId,
+					Group = x.ShoppingListItem.Food != null ? new { x.ShoppingListItem.Food.FoodGroup.Description, x.ShoppingListItem.Food.FoodGroup.Id } : new { Description = "Other", Id = 0 }
+				},
 				x.Quantity,
-				Food = x.Food != null ? x.Food.ToJson() : null,
 				QuantityType = x.DatabaseQuantityType != null ? new { x.DatabaseQuantityType.Name, x.DatabaseQuantityType.Id } : new { Name = string.Empty, Id = 0 },
 				x.QuantityTypeId,
 				x.PickedUp,
-				x.ShoppingListId,
-				Group = x.Food != null ? new { x.Food.FoodGroup.Description, x.Food.FoodGroup.Id } : new { Description = "Other", Id = 0 }
+				x.ShoppingListId
 			});
 			return new { this.Id, this.Name, this.Created, Items };
 		}

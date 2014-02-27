@@ -22,7 +22,7 @@ namespace ShoppingNut.Controllers
 	[OutputCache(Location = OutputCacheLocation.None)]
 	public class HomeController : Controller
 	{
-
+		#region Public Methods
 		public ActionResult Index()
 		{
 			return View();
@@ -77,36 +77,31 @@ namespace ShoppingNut.Controllers
 
 		public ActionResult GetFoods(string filter)
 		{
-			//TODO: Fix issue where if a user is typing we go get values
-			FoodRepository foods = new FoodRepository();
-			List<Food> foodsJson = new List<Food>();
-			string[] filters = filter.Split(' ');
-			if (filters.Count() == 1)
-				foodsJson.AddRange(this.FoodsSearchStartsWith(filters, foods));
-			foodsJson.AddRange(this.FoodsSearch(filters, foods));
-			return Json(foodsJson.Distinct().Select(x => new { x.Id, x.Name, x.Calories }).ToList(), JsonRequestBehavior.AllowGet);
+			var foodsJson = GetFoodsFromQuery(filter);
+			return Json(foodsJson.Select(x => new { x.Id, x.Name, x.Calories }).ToList(), JsonRequestBehavior.AllowGet);
 		}
 
-		private List<Food> FoodsSearchStartsWith(string[] filters, FoodRepository foods)
+		public ActionResult GetFoodsAndShoppingListItems(string filter)
 		{
-			List<Food> foodSearchResults = new List<Food>();
-			foreach (var s in filters)
+			if (string.IsNullOrEmpty(filter))
+				return null;
+			ShoppingListItemSearchResults databaseSearchResults = new ShoppingListItemSearchResults
 			{
-				var foodSearch = foods.All;
-				var result = foodSearch.Where(x => x.Name.StartsWith(s));
-				foodSearchResults.AddRange(result.ToList());
-			}
-			return foodSearchResults.Take(20).ToList();
-		}
-
-		private List<Food> FoodsSearch(string[] filters, FoodRepository foods)
-		{
-			var foodSearchOne = foods.All;
-			foreach (var s in filters)
+				Foods = new List<Food>(),
+				ShoppingListItems = this.GetShoppingListItemsFromQuery(filter)
+			};
+			List<Food> foods = this.GetFoodsFromQuery(filter);
+			this.UniquifyFoods(foods, databaseSearchResults);
+			List<dynamic> resultsToUser = new List<dynamic>();
+			foreach (var item in databaseSearchResults.ShoppingListItems.Distinct())
 			{
-				foodSearchOne = foodSearchOne.Where(x => x.Name.Contains(s) || x.CommonName.Contains(s));
+				resultsToUser.Add(new { itemId = item.Id, foodId = item.FoodId, name = item.Name, order = item.Order });
 			}
-			return foodSearchOne.Take(20).ToList();
+			foreach (var f in databaseSearchResults.Foods)
+			{
+				resultsToUser.Add(new { foodId = f.Id, name = f.Name });
+			}
+			return Json(resultsToUser, JsonRequestBehavior.AllowGet);
 		}
 
 		public ActionResult GetFoodQuantityTypes(int id)
@@ -323,7 +318,7 @@ namespace ShoppingNut.Controllers
 				ShoppingListRepository lists = new ShoppingListRepository();
 				lists.InsertOrUpdate(list);
 				lists.Save();
-				return Json(new { Success = true, ShoppingListId = list.Id }, JsonRequestBehavior.AllowGet); 
+				return Json(new { Success = true, ShoppingListId = list.Id }, JsonRequestBehavior.AllowGet);
 			}
 			catch (Exception ex)
 			{
@@ -331,29 +326,25 @@ namespace ShoppingNut.Controllers
 			}
 		}
 
-		public ActionResult InsertOrUpdateShoppingListItem(ShoppingListItem item)
+		public ActionResult InsertOrUpdateShoppingListItem(ShoppingListShoppingListItem item)
 		{
 			if (!this.User.Identity.IsAuthenticated)
 				throw new Exception("User not logged in");
 			try
 			{
-				if (item.ShoppingListId == default(int))
-				{
-					ShoppingList list = new ShoppingList();
-					list.UserId = this.GetUserId();
-					ShoppingListRepository lists = new ShoppingListRepository();
-					lists.InsertOrUpdate(list);
-					lists.Save();
-					item.ShoppingListId = list.Id;
-				}
-				item.Food = null;
+				var baseItem = item.ShoppingListItem;
+				baseItem.Food = null;
+				ShoppingListItemRepository shoppingListItemRepo = new ShoppingListItemRepository();
+				shoppingListItemRepo.InsertOrUpdate(baseItem);
+				shoppingListItemRepo.Save();
+				ShoppingListShoppingListItemRepository otherRepo = new ShoppingListShoppingListItemRepository();
+				item.ShoppingList = null;
+				item.ShoppingListItem = null;
 				item.QuantityType = null;
-				item.DatabaseQuantityType = null;
-				ShoppingListItemRepository repo = new ShoppingListItemRepository();
-				repo.InsertOrUpdate(item);
-				repo.Save();
-				return Json(new { Success = true, item.ShoppingListId, ShoppingListItemId = item.Id }, JsonRequestBehavior.AllowGet); 
-
+				item.ShoppingListItemId = baseItem.Id;
+				otherRepo.InsertOrUpdate(item);
+				otherRepo.Save();
+				return Json(new { Success = true, listItemId = item.Id, baseItemId = baseItem.Id }, JsonRequestBehavior.AllowGet);
 			}
 			catch (Exception ex)
 			{
@@ -382,9 +373,23 @@ namespace ShoppingNut.Controllers
 		{
 			if (!this.User.Identity.IsAuthenticated)
 				throw new Exception("User not logged in");
-			ShoppingListItemRepository repo = new ShoppingListItemRepository();
+			var repo = new ShoppingListShoppingListItemRepository();
 			var item = repo.Find(id);
 			item.PickedUp = pickedUp;
+			repo.InsertOrUpdate(item);
+			repo.Save();
+			return null;
+		}
+
+		public ActionResult ItemResorted(int id, int order)
+		{
+			if (!this.User.Identity.IsAuthenticated)
+				throw new Exception("User not logged in");
+			var listItemRepo = new ShoppingListShoppingListItemRepository();
+			var v = listItemRepo.Find(id);
+			var repo = new ShoppingListItemRepository();
+			var item = repo.Find(v.ShoppingListItemId);
+			item.Order = order;
 			repo.InsertOrUpdate(item);
 			repo.Save();
 			return null;
@@ -459,16 +464,17 @@ namespace ShoppingNut.Controllers
 			food.SourceId = this.GetUserEnteredFoodSourceId();
 			FoodRepository repo = new FoodRepository();
 			if (repo.All.Any(x => x.Name.Contains(food.Name)))
-				return Json(new {Success = false, Message = string.Format("Food with name '{0}' already exists", food.Name)}, JsonRequestBehavior.AllowGet);
+				return Json(new { Success = false, Message = string.Format("Food with name '{0}' already exists", food.Name) }, JsonRequestBehavior.AllowGet);
 			repo.InsertOrUpdate(food);
 			repo.Save();
-			return Json(new {Success = true, @object = food.ToJson()}, JsonRequestBehavior.DenyGet);
+			return Json(new { Success = true, @object = food.ToJson() }, JsonRequestBehavior.DenyGet);
 		}
 
 		public ActionResult Scrape(string url)
 		{
-			if(string.IsNullOrEmpty(url) || url == "undefined")
-			 url = "http://thepioneerwoman.com/cooking/2013/10/carb-buster-breakfast/";
+			if (string.IsNullOrEmpty(url) || url == "undefined")
+				url = "http://thepioneerwoman.com/cooking/2013/10/carb-buster-breakfast/";
+			//url = "http://www.marthastewart.com/340496/angel-food-cake";
 			HtmlWeb web = new HtmlWeb();
 			HtmlDocument doc = web.Load(url);
 			CQ cqDoc = doc.DocumentNode.OuterHtml;
@@ -481,11 +487,13 @@ namespace ShoppingNut.Controllers
 				CQ ing = CQ.Create(ingredient);
 				var amount = this.GetIngredientAmount(ing);
 				var name = this.GetIngredientName(ing);
+				if (string.IsNullOrWhiteSpace(amount) && string.IsNullOrWhiteSpace(name))
+					name = this.GetIngredientText(ing);
 				Ingredients.Add(new Tuple<string, string>(amount, name));
 			}
 			var instructionDiv = this.GetInstuctionBlock(cqDoc);
 			var instructionPs = this.GetInstructions(instructionDiv);
-			List<string> Instructions = instructionPs.Select(instruction => instruction.InnerText).ToList();
+			List<string> Instructions = instructionPs.Select(instruction => instruction.InnerText).Where(x => !string.IsNullOrWhiteSpace(x)).ToList();
 			return Json(new { Name, Servings, Url = url, Ingredients, Instructions }, JsonRequestBehavior.AllowGet);
 		}
 
@@ -503,6 +511,7 @@ namespace ShoppingNut.Controllers
 		{
 			return View();
 		}
+		#endregion
 
 		#region Private Methods
 		private int GetUserId()
@@ -517,6 +526,8 @@ namespace ShoppingNut.Controllers
 			var instructions = cqDoc["div [itemprop='instructions']"].ToList();
 			if (!instructions.Any())
 				instructions = cqDoc[".directions"].ToList();
+			if (!instructions.Any())
+				instructions = cqDoc["[itemprop='recipeInstructions']"].ToList();
 			return instructions;
 		}
 
@@ -544,6 +555,12 @@ namespace ShoppingNut.Controllers
 			return amount.Trim();
 		}
 
+		private string GetIngredientText(CQ ing)
+		{
+			string text = ing.Text();
+			return text.Trim();
+		}
+
 		private List<IDomObject> GetIngredients(CQ cqDoc)
 		{
 			var ingredients = cqDoc["[itemprop='ingredient']"].ToList();
@@ -554,6 +571,7 @@ namespace ShoppingNut.Controllers
 
 		private string GetServings(CQ cqDoc)
 		{
+			//TODO: Get only digits of this field
 			string servings = cqDoc["[itemprop='yield']"].Text();
 			if (string.IsNullOrEmpty(servings))
 				servings = cqDoc["[itemprop='recipeYield']"].Text();
@@ -572,12 +590,74 @@ namespace ShoppingNut.Controllers
 		{
 			return 2;
 		}
+
+		private void UniquifyFoods(List<Food> foods, ShoppingListItemSearchResults databaseSearchResults)
+		{
+			foreach (var food in foods)
+			{
+				if (databaseSearchResults.ShoppingListItems.All(item => item.FoodId != food.Id))
+					databaseSearchResults.Foods.Add(food);
+			}
+		}
+
+		private List<ShoppingListItem> GetShoppingListItemsFromQuery(string filter)
+		{
+			ShoppingListShoppingListItemRepository repo = new ShoppingListShoppingListItemRepository();
+			var userId = this.GetUserId();
+			var searchResults = repo
+				.AllIncluding(x => x.ShoppingList, x => x.ShoppingListItem, x => x.ShoppingListItem.Food)
+				.Where(x => x.ShoppingList.UserId == userId)
+				.Where(x => (x.ShoppingListItem.Name.Contains(filter)) || (x.ShoppingListItem.Food.Name.Contains(filter)));
+			if (searchResults.Any())
+				return searchResults.Select(x => x.ShoppingListItem).ToList();
+			else
+				return new List<ShoppingListItem>();
+		}
+
+		private List<Food> FoodsSearchStartsWith(string[] filters, FoodRepository foods)
+		{
+			List<Food> foodSearchResults = new List<Food>();
+			foreach (var s in filters)
+			{
+				var foodSearch = foods.All;
+				var result = foodSearch.Where(x => x.Name.StartsWith(s));
+				foodSearchResults.AddRange(result.ToList());
+			}
+			return foodSearchResults.Take(20).ToList();
+		}
+
+		private List<Food> FoodsSearch(string[] filters, FoodRepository foods)
+		{
+			var foodSearchOne = foods.All;
+			foreach (var s in filters)
+			{
+				foodSearchOne = foodSearchOne.Where(x => x.Name.Contains(s) || x.CommonName.Contains(s));
+			}
+			return foodSearchOne.Take(20).ToList();
+		}
+
+		private List<Food> GetFoodsFromQuery(string filter)
+		{
+			FoodRepository foods = new FoodRepository();
+			List<Food> foodsJson = new List<Food>();
+			string[] filters = filter.Split(' ');
+			if (filters.Count() == 1)
+				foodsJson.AddRange(this.FoodsSearchStartsWith(filters, foods));
+			foodsJson.AddRange(this.FoodsSearch(filters, foods));
+			return foodsJson.Distinct().ToList();
+		}
 		#endregion
 
-		#region NestedTypes
+		#region Nested Types
 		public class RecipeIdWrapper
 		{
 			public string recipeId { get; set; }
+		}
+
+		public class ShoppingListItemSearchResults
+		{
+			public List<Food> Foods { get; set; }
+			public List<ShoppingListItem> ShoppingListItems { get; set; }
 		}
 		#endregion
 	}

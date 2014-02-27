@@ -10,24 +10,21 @@ namespace ShoppingNut.Models
 	{
 		public int Id { get; set; }
 		public string Name { get; set; }
-		public double Quantity { get; set; }
-		public string QuantityType { get; set; }
-		public bool PickedUp { get; set; }
+		//public double Quantity { get; set; }
+		//public string QuantityType { get; set; }
+		//public bool PickedUp { get; set; }
+		public int Order { get; set; }
 
-		[ForeignKey("ShoppingList")]
-		public int ShoppingListId { get; set; }
-		public virtual ShoppingList ShoppingList { get; set; }
+		//[ForeignKey("ShoppingList")]
+		//public int ShoppingListId { get; set; }
+		//public virtual ShoppingList ShoppingList { get; set; }
 
 		[ForeignKey("Food")]
 		public int? FoodId { get; set; }
 		public virtual Food Food { get; set; }
 
-		[ForeignKey("DatabaseQuantityType")]
-		public int? QuantityTypeId { get; set; }
-		public virtual QuantityType DatabaseQuantityType { get; set; }
-
 		[NotMapped]
-		public string UserItemName 
+		public string UserItemName
 		{
 			get
 			{
@@ -41,21 +38,5 @@ namespace ShoppingNut.Models
 					this.Name = value;
 			}
 		}
-
-		//[NotMapped]
-		//public string UserQuantityType
-		//{
-		//	get
-		//	{
-		//		if (this.QuantityTypeId.HasValue && this.QuantityTypeId != default(int))
-		//			return this.DatabaseQuantityType.Name;
-		//		return this.QuantityType;
-		//	}
-		//	set
-		//	{
-		//		if (!this.QuantityTypeId.HasValue)
-		//			this.QuantityType = value;
-		//	}
-		//}
 	}
 }

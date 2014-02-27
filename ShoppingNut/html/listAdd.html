@@ -8,14 +8,15 @@
 	<fieldset>
 		<legend>Items</legend>
 		<div>
-			<ul class="unstyled" ng-sortable="{update: finished}">
-				<li ng-repeat="item in list.Items" class='row-fluid' >
+			<ul class="unstyled sortable" ng-sortable>
+				<li ng-repeat="item in list.Items | orderBy:orderProp" class='row-fluid' id="{{$index}}" >
 					<img class="handle" src="/img/up-down-arrow.png" ng/>
-					<span ng-show="item.Quantity != 0">{{item.Quantity}}</span> {{item.QuantityType.Name}} {{item.Name}} 
-					<span class="recipeIndex" hidden>{{$index}}</span>
-					<span class="itemOrder">{{item.Order}}</span>
-					<button class="close" ng-click="deleteItem(item)" aria-hidden="true">&times</button>
-
+					<span ng-show="item.Quantity != 0">{{item.Quantity}}</span> 
+					<span ng-show="item.QuantityType.Name">{{item.QuantityType.Name}}</span> 
+					{{item.ShoppingListItem.Name}} 
+					{{item.ShoppingListItem.Food.Name}}
+					<!--<span class="itemOrder">{{item.Order}}</span>-->
+					<button class="close" ng-click="deleteItem($index)" aria-hidden="true">&times</button>
 				</li>
 			</ul>
 		</div>
@@ -25,12 +26,12 @@
 		<fieldset >
 			<legend>Add item</legend>
 			<div class="row-fluid">
-				<input class="span4" type="text" ng-model="foodSearch" placeholder="item" typeahead-on-select="foodSelected($item)" typeahead="suggestion.Name for suggestion in foods($viewValue)" />
+				<input class="span4" type="text" ng-model="foodSearch" placeholder="item" typeahead-on-select="foodSelected($item)" typeahead="suggestion.name for suggestion in foods($viewValue)" />
 				<select  class="span4" ng-model="quantityType" ng-options="ingType.Name for ingType in ingredientQuantityTypes" />
 				<input  class="span4" type="number" ng-model="quantity" placeholder="quantity" min="0" />
 			</div>
 				<div class="controls">
-					<button class="btn btn-primary btn-sm"  ng-click="addItem()" ng-disabled="ingredientsForm.$invalid">
+					<button class="btn btn-primary btn-sm"  ng-click="addUserEnteredItem()" ng-disabled="ingredientsForm.$invalid">
 						<i class="icon-plus icon-white"></i>
 					</button>
 				</div>
@@ -48,10 +49,10 @@
 				<accordion-heading>
 					{{recipe.Name}}
 				</accordion-heading>
-				<input type="button" class="btn btn-primary btn-sm" value="add all" ng-click="addIngredientsForRecipe($index)" />
+				<input type="button" class="btn btn-primary btn-sm" value="add all" ng-click="addAllIngredientsForRecipe($index)" />
 				<ul class="unstyled">
 					<li ng-repeat="ing in recipe.Ingredients">
-						<button class="btn btn-primary btn-sm" ng-click="addIngredient($parent.$index, $index)">
+						<button class="btn btn-primary btn-sm" ng-click="addSingleIngredientFromRecipe($parent.$index, $index)">
 						<i class="icon-plus icon-white"></i>							
 						</button>
 						{{ing.Quantity}} {{ing.QuantityType.Name}} {{ing.Food.Name}}

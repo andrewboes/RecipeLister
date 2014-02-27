@@ -239,6 +239,22 @@
     <Compile Include="Migrations\201310102054374_broke.Designer.cs">
       <DependentUpon>201310102054374_broke.cs</DependentUpon>
     </Compile>
+    <Compile Include="Migrations\201311212224284_ShoppingListShoppingListItem.cs" />
+    <Compile Include="Migrations\201311212224284_ShoppingListShoppingListItem.Designer.cs">
+      <DependentUpon>201311212224284_ShoppingListShoppingListItem.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Migrations\201311212229367_AddOrderToShoppingListItem.cs" />
+    <Compile Include="Migrations\201311212229367_AddOrderToShoppingListItem.Designer.cs">
+      <DependentUpon>201311212229367_AddOrderToShoppingListItem.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Migrations\201311212253265_MovedPropertiesToShoppingListItemItem.cs" />
+    <Compile Include="Migrations\201311212253265_MovedPropertiesToShoppingListItemItem.Designer.cs">
+      <DependentUpon>201311212253265_MovedPropertiesToShoppingListItemItem.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Migrations\201311220008561_MovedQuantityTypeId.cs" />
+    <Compile Include="Migrations\201311220008561_MovedQuantityTypeId.Designer.cs">
+      <DependentUpon>201311220008561_MovedQuantityTypeId.cs</DependentUpon>
+    </Compile>
     <Compile Include="Migrations\Configuration.cs" />
     <Compile Include="Models\AccountModels.cs" />
     <Compile Include="Models\Food.cs" />
@@ -259,6 +275,8 @@
     <Compile Include="Models\ShoppingListItem.cs" />
     <Compile Include="Models\ShoppingListItemRepository.cs" />
     <Compile Include="Models\ShoppingListRepository.cs" />
+    <Compile Include="Models\ShoppingListShoppingListItem.cs" />
+    <Compile Include="Models\ShoppingListShoppingListItemRepository.cs" />
     <Compile Include="Models\ShoppingNutContext.cs" />
     <Compile Include="Models\Source.cs" />
     <Compile Include="Models\SourceRepository.cs" />
@@ -676,6 +694,18 @@
     </EmbeddedResource>
     <EmbeddedResource Include="Migrations\201310102054374_broke.resx">
       <DependentUpon>201310102054374_broke.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Migrations\201311212224284_ShoppingListShoppingListItem.resx">
+      <DependentUpon>201311212224284_ShoppingListShoppingListItem.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Migrations\201311212229367_AddOrderToShoppingListItem.resx">
+      <DependentUpon>201311212229367_AddOrderToShoppingListItem.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Migrations\201311212253265_MovedPropertiesToShoppingListItemItem.resx">
+      <DependentUpon>201311212253265_MovedPropertiesToShoppingListItemItem.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Migrations\201311220008561_MovedQuantityTypeId.resx">
+      <DependentUpon>201311220008561_MovedQuantityTypeId.cs</DependentUpon>
     </EmbeddedResource>
   </ItemGroup>
   <ItemGroup>

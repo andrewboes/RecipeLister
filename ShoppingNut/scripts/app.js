@@ -77,10 +77,97 @@ angular.module('shoppingNut', ['ui.bootstrap', 'angularFileUpload'])
 		};
 	})
 	.directive('ngSortable',  function () {
-		return {
-			link: function (scope, element) {
-				angular.element(element).draggableTouch({ onSortEndCallback: function () { scope.finishedSorting(); } });
-			}
+		return function ($scope, element) {
+			var elementToMove;
+		
+			var sortEventStart = function (event, objectCalling) {
+				event.preventDefault();
+				elementToMove = objectCalling;
+				console.log();
+			};
+
+			var sortEventEnd = function (event, objectCalling, lastY) {
+				$('#linePlaceHolder').remove();
+				//var v = $(objectCalling);
+				//v.remove();
+				$(objectCalling).css('position', '');
+				$(objectCalling).css('left', '');
+				$(objectCalling).css('top', '');
+				//findDropSpot(objectCalling, lastY);
+				var newIndex = -1;
+				var myChildren = $(element).children();
+				for (var i = 0; i < myChildren.length; i++) {
+					var myChild = myChildren[i];
+					if (lastY < $(myChild).offset().top) {
+						newIndex = Number($(myChild).attr("id"));
+						break;
+					}
+				}
+				if(newIndex === -1)
+					newIndex = Number((element).children().last().attr("id")) + 1;
+				$scope.finishedSorting($(elementToMove).attr("id"), newIndex);
+				elementToMove = null;
+			};
+
+			var findDropSpot = function (myElement, location) {
+				var myChildren = $(element).children();
+				for (var i = 0; i < myChildren.length; i++) {
+					var myChild = myChildren[i];
+					if (location < $(myChild).offset().top) {
+						$(myElement).insertBefore($(myChild));
+						return;
+					}
+				}
+				$(myElement).insertAfter($(element).children().last());
+			};
+
+			var move = function (x, y, clientY) {
+				if (elementToMove) {
+					elementToMove.style.position = "absolute";
+					elementToMove.style.left = x + "px";
+					elementToMove.style.top = y + "px";
+					$('#linePlaceHolder').remove();
+					var v = "<div id='linePlaceHolder' style='border-color:rgb(51,51,51); border-style: solid; border-width: 1px'><div></div></div>";
+					findDropSpot(v, y);
+					if (clientY < 20) {
+						parent.window.scrollBy(0, -10);
+					}
+					if ($(window).height() - clientY < 50) {
+						parent.window.scrollBy(0, 10);
+					}
+				}
+			};
+			var lastY = null;
+
+			$(element).delegate('li .handle', 'touchend', function (event) {
+				sortEventEnd(event, this.parentNode, lastY);
+			});
+
+			$(element).delegate('li .handle', 'touchstart', function (event) {
+				sortEventStart(event, this.parentNode);
+			});
+
+			$(element).delegate('li .handle', 'touchmove', function () {
+				var x = event.targetTouches[0].pageX;
+				var y = event.targetTouches[0].pageY;
+				move(x, y, event.targetTouches[0].clientY);
+				lastY = y;
+			});
+
+			$(element).delegate('li .handle', 'mouseup', function (event) {
+				sortEventEnd(event, this.parentNode, event.pageY);
+			});
+
+			$(element).delegate('li .handle', 'mousedown', function (e) {
+				sortEventStart(e, this.parentNode);
+			});
+
+			document.onmousemove = function (e) {
+				move(e.pageX, e.pageY, e.clientY);
+			};
+			//link: function (scope, element) {
+			//	angular.element(element).draggableTouch({ onSortEndCallback: function () { scope.finishedSorting(); } });
+			//}
 		};
 	})
 	.config(['$routeProvider', function ($routeProvider) {

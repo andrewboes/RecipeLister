@@ -49,5 +49,7 @@ namespace ShoppingNut.Models
 			public DbSet<ShoppingNut.Models.FoodGroup> FoodGroups { get; set; }
 
 			public DbSet<ShoppingNut.Models.Source> Sources { get; set; }
+
+			public DbSet<ShoppingNut.Models.ShoppingListShoppingListItem> ShoppingListShoppingListItems { get; set; }
 		}
 }

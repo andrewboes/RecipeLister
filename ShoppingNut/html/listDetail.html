@@ -11,16 +11,16 @@
 	<div class="row-fluid">
 		<h5 class="span2">Order By:</h5>
 		<select class="span3" ng-model="orderProp">
-			<option value="Name">Alphabetical</option>
+			<option value="ShoppingListItem.Name">Alphabetical</option>
 			<option value="Group.Description">Group</option>
-			<option value="Id">Default</option>
+			<option value="ShoppingListItem.Order">Default</option>
 		</select>
 	</div>
 	<ul class="unstyled">
 		<li ng-repeat="item in list.Items | orderBy:orderProp">
 			<h5 ng-show="orderProp === 'Group.Description' && createGroupHeader(item.Group.Description)"> {{item.Group.Description}}</h5>			
 			<input type="checkbox" ng-model="item.checked" ng-click="pickedUpChanged($index)">
-			<span class="picked-up-{{item.checked}}"><span ng-show="item.Quantity != 0">{{item.Quantity}}</span> {{item.QuantityType.Name}} {{item.Name}}</span>
+			<span class="picked-up-{{item.checked}}"><span ng-show="item.Quantity != 0">{{item.Quantity}}</span> {{item.QuantityType.Name}} {{item.ShoppingListItem.Name}}</span>
 		</li>
 	</ul>
 </div>
